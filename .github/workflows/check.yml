@@ -19,9 +19,9 @@ jobs:
       - name: Install xray-knife
         run: |
           wget -q https://github.com/lilendian0x00/xray-knife/releases/latest/download/Xray-knife-linux-64.zip
-          unzip -o -q Xray-knife-linux-64.zip
-          chmod +x Xray-knife-linux/xray-knife
-          sudo mv Xray-knife-linux/xray-knife /usr/local/bin/xray-knife
+          mkdir -p /tmp/xray-knife
+          unzip -o -q Xray-knife-linux-64.zip -d /tmp/xray-knife
+          find /tmp/xray-knife -name "xray-knife" -type f -exec chmod +x {} \; -exec sudo mv {} /usr/local/bin/xray-knife \;
           xray-knife --version
           
       - name: Set up Python
