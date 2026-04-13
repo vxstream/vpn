@@ -1,7 +1,7 @@
 import subprocess, base64, datetime, re, json
 from urllib.parse import unquote
 
-INPUT_FILE  = "configs/input.txt"
+INPUT_FILE  = "configs/all_vless.txt"
 OUTPUT_FILE = "runvpn.txt"
 CHECK_URL   = "http://cp.cloudflare.com"   # работает из РФ
 TIMEOUT     = 10
