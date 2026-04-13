@@ -2,8 +2,8 @@ name: Check & Update VPN Configs
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # каждые 6 часов
-  workflow_dispatch:          # ручной запуск кнопкой
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,14 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install xray-knife
-        run: |
-          wget -q https://github.com/lilendian0x00/xray-knife/releases/latest/download/Xray-knife-linux-64.zip
-          mkdir -p /tmp/xray-knife
-          unzip -o -q Xray-knife-linux-64.zip -d /tmp/xray-knife
-          find /tmp/xray-knife -name "xray-knife" -type f -exec chmod +x {} \; -exec sudo mv {} /usr/local/bin/xray-knife \;
-          xray-knife --version
-          
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
