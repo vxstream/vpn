@@ -1,4 +1,4 @@
-name: Check & Update VPN Configs
+bash: Check & Update VPN Configs
 
 on:
   schedule:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+          sudo bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
           python -m pip install --upgrade pip
           pip install dnspython requests
 
