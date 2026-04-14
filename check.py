@@ -320,7 +320,7 @@ def build_subscription(working_with_country: list) -> str:
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         "",
         "# === JSON: 🇪🇺 SMART-Авто (load balancer) ===",
-        json.dumps(xray_config, ensure_ascii=False, separators=(",", ":")),
+        json.dumps(xray_config, ensure_ascii=False, indent=2),
         "# =============================================",
         "",
     ]
