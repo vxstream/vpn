@@ -27,13 +27,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install dnspython requests
 
-      - name: Run checker
+      - name: Step 1 - Collect configs from subscriptions
+        run: python t.py
+
+      - name: Step 2 - Check configs and generate subscription
         run: python check.py
 
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add runvpn.txt
+          git add configs/all_vless.txt runvpn.txt
           git diff --cached --quiet || git commit -m "♻️ Update configs $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
