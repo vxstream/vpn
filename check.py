@@ -117,6 +117,52 @@ def get_country(host: str):
     _country_cache[host] = result
     return result
 
+def build_vless_outbound(cfg: str, tag: str) -> dict:
+    """Строит один vless outbound из конфига."""
+    parsed = parse_vless_url(cfg)
+    if not parsed:
+        return None
+
+    out = {
+        "type": "vless",
+        "tag": tag,
+        "server": parsed["host"],
+        "server_port": parsed["port"],
+        "uuid": parsed["uuid"],
+        "flow": parsed["flow"],
+        "packet_encoding": "xudp",
+        "tls": {
+            "enabled": parsed["security"] in ("tls", "reality"),
+            "server_name": parsed["sni"],
+            "insecure": False,
+            "utls": {"enabled": True, "fingerprint": parsed["fp"]}
+        }
+    }
+
+    if parsed["security"] == "reality":
+        out["tls"]["reality"] = {
+            "enabled": True,
+            "public_key": parsed["pbk"],
+            "short_id": parsed["sid"]
+        }
+
+    if parsed["type"] == "ws":
+        out["transport"] = {
+            "type": "ws",
+            "path": parsed["path"],
+            "headers": {"Host": parsed["host_header"]} if parsed["host_header"] else {}
+        }
+    elif parsed["type"] == "grpc":
+        out["transport"] = {"type": "grpc", "service_name": parsed["service_name"]}
+    elif parsed["type"] in ("xhttp", "http"):
+        out["transport"] = {
+            "type": "http",
+            "path": parsed["path"],
+            "host": [parsed["host_header"]] if parsed["host_header"] else []
+        }
+
+    return out
+
 def build_subscription(working_with_country: list) -> str:
     now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
     now_str = now_msk.strftime("%d.%m.%Y %H:%M")
@@ -126,6 +172,59 @@ def build_subscription(working_with_country: list) -> str:
     announce_text = f"✅ Проверено: {now_str} (МСК)\n🟢 Рабочих серверов: {count}\n🔄 Если VPN не работает — нажми ↻ у подписки"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
+    # Строим SingBox JSON с urltest
+    vless_outbounds = []
+    all_tags = []
+
+    for i, (cfg, lat, flag, country) in enumerate(working_with_country):
+        tag = f"{flag} {country} #{i+1}"
+        out = build_vless_outbound(cfg, tag)
+        if out:
+            vless_outbounds.append(out)
+            all_tags.append(tag)
+
+    # JSON конфиг с urltest для автовыбора
+    singbox_full = {
+        "log": {"level": "warn", "timestamp": "false"},
+        "dns": {
+            "servers": [
+                {"tag": "dns_proxy", "address": "tcp://1.1.1.1", "address_resolver": "dns_direct"},
+                {"tag": "dns_direct", "address": "local", "detour": "direct"},
+                {"tag": "dns_fakeip", "address": "fakeip"}
+            ],
+            "rules": [
+                {"outbound": "any", "server": "dns_direct"}
+            ],
+            "final": "dns_proxy",
+            "independent_cache": True
+        },
+        "outbounds": [
+            {
+                "type": "urltest",
+                "tag": "🇪🇺 AUTOCONF",
+                "outbounds": all_tags,
+                "url": CHECK_URL,
+                "interval": "3m",
+                "tolerance": 50,
+                "idle_timeout": "30m"
+            },
+            {
+                "type": "selector",
+                "tag": "📌 Выбрать вручную",
+                "outbounds": ["🇪🇺 AUTOCONF"] + all_tags,
+                "default": "🇪🇺 AUTOCONF"
+            }
+        ] + vless_outbounds,
+        "route": {
+            "auto_detect_interface": True,
+            "final": "🇪🇺 AUTOCONF"
+        },
+        "experimental": {
+            "cache_file": {"enabled": True, "path": "cache.db"}
+        }
+    }
+
+    # Формируем файл: сначала мета, потом JSON, потом vless строки
     lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
@@ -144,94 +243,19 @@ def build_subscription(working_with_country: list) -> str:
         f"# Рабочих: {count}  |  Проверено: {now_str} МСК",
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         "",
+        "# ========== SINGBOX JSON — АВТОВЫБОР ЧЕРЕЗ URLTEST ==========",
+        "# Клиенты Hiddify/V2rayNG подхватят этот JSON как полноценную конфигурацию",
+        json.dumps(singbox_full, ensure_ascii=False, separators=(",", ":")),
+        "# ==============================================================",
+        "",
     ]
 
-    vless_outbounds = []
+    # Добавляем vless строки для клиентов которые не понимают JSON
     for i, (cfg, lat, flag, country) in enumerate(working_with_country):
-        parsed = parse_vless_url(cfg)
         tag = f"{flag} {country} #{i+1}"
         clean_cfg = cfg.split("#")[0]
         lines.append(f"{clean_cfg}#{tag}")
-        
-        if not parsed:
-            continue
 
-        out = {
-            "type": "vless",
-            "tag": tag,
-            "server": parsed["host"],
-            "server_port": parsed["port"],
-            "uuid": parsed["uuid"],
-            "flow": parsed["flow"],
-            "packet_encoding": "xudp",
-            "tls": {
-                "enabled": parsed["security"] in ("tls", "reality"),
-                "server_name": parsed["sni"],
-                "insecure": False,
-                "utls": {"enabled": True, "fingerprint": parsed["fp"]}
-            }
-        }
-        
-        if parsed["security"] == "reality":
-            out["tls"]["reality"] = {
-                "enabled": True,
-                "public_key": parsed["pbk"],
-                "short_id": parsed["sid"]
-            }
-        
-        if parsed["type"] == "ws":
-            out["transport"] = {
-                "type": "ws",
-                "path": parsed["path"],
-                "headers": {"Host": parsed["host_header"]} if parsed["host_header"] else {}
-            }
-        elif parsed["type"] == "grpc":
-            out["transport"] = {"type": "grpc", "service_name": parsed["service_name"]}
-        
-        vless_outbounds.append(out)
-
-    all_tags = [o["tag"] for o in vless_outbounds if "tag" in o]
-    
-    urltest = {
-        "type": "urltest",
-        "tag": "auto",
-        "outbounds": all_tags,
-        "url": CHECK_URL,
-        "interval": "10m",
-        "tolerance": 50
-    }
-    
-    selector = {
-        "type": "selector",
-        "tag": "proxy",
-        "outbounds": ["auto"] + all_tags,
-        "default": "auto"
-    }
-
-    singbox_config = {
-        "log": {"level": "info"},
-        "dns": {
-            "servers": [
-                {"tag": "dns_proxy", "address": "tcp://1.1.1.1", "address_resolver": "dns_direct"},
-                {"tag": "dns_direct", "address": "local", "detour": "direct"},
-                {"tag": "dns_fakeip", "address": "fakeip"}
-            ],
-            "rules": [
-                {"outbound": "any", "server": "dns_direct"}
-            ],
-            "final": "dns_proxy",
-            "independent_cache": True
-        },
-        "outbounds": [urltest, selector] + vless_outbounds,
-        "route": {"auto_detect_interface": True, "final": "proxy"},
-        "experimental": {"cache_file": {"enabled": True, "path": "cache.db"}}
-    }
-
-    lines.append("")
-    lines.append("# ========== SINGBOX JSON КОНФИГУРАЦИЯ ДЛЯ АВТОВЫБОРА ==========")
-    lines.append(json.dumps(singbox_config, indent=2, ensure_ascii=False))
-    lines.append("# =======================================================")
-    
     return "\n".join(lines) + "\n"
 
 def main():
@@ -268,7 +292,7 @@ def main():
 
     # Этап 2: Определение стран параллельно
     unique_hosts = list(set(parse_vless_url(cfg)["host"] for cfg, _ in working if parse_vless_url(cfg)))
-    
+
     with ThreadPoolExecutor(max_workers=COUNTRY_WORKERS) as executor:
         futures = {executor.submit(get_country, host): host for host in unique_hosts}
         for future in as_completed(futures):
