@@ -213,92 +213,19 @@ def build_subscription(working_with_country: list) -> str:
     announce_text = f"✅ Проверено: {now_str} (МСК)\n🟢 Рабочих серверов: {count}\n🔄 Если VPN не работает — нажми ↻ у подписки"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
-    # Строим Xray outbounds для JSON конфига
-    xray_outbounds = []
-    smart_tags = []
-
+    # Строим outbounds для JSON массива
+    json_array = []
     for i, (cfg, lat, flag, country, code) in enumerate(working_with_country):
         parsed = parse_vless_url(cfg)
         if not parsed:
             continue
-        tag = f"smart-{i}"
+        tag = f"{flag} {country} #{i+1}"
         out = build_xray_outbound(parsed, tag)
         if out:
-            xray_outbounds.append(out)
-            smart_tags.append(tag)
+            json_array.append(out)
 
-    # Добавляем direct и block
-    xray_outbounds.append({"protocol": "freedom", "tag": "direct"})
-    xray_outbounds.append({"protocol": "blackhole", "tag": "block"})
-
-    # Полный Xray JSON с load balancer
-    xray_config = {
-        "remarks": "🇪🇺 SMART-Авто",
-        "meta": {
-            "serverDescription": f"Автовыбор из {count} серверов — {now_str} МСК"
-        },
-        "dns": {
-            "queryStrategy": "UseIP",
-            "servers": ["8.8.8.8", "1.1.1.1"]
-        },
-        "inbounds": [
-            {
-                "tag": "socks",
-                "port": 10808,
-                "listen": "127.0.0.1",
-                "protocol": "socks",
-                "settings": {"udp": True, "auth": "noauth", "allowTransparent": False},
-                "sniffing": {"enabled": True, "routeOnly": False, "destOverride": ["http", "tls", "quic"]}
-            },
-            {
-                "tag": "http",
-                "port": 10809,
-                "listen": "127.0.0.1",
-                "protocol": "http",
-                "settings": {"udp": True, "auth": "noauth", "allowTransparent": False},
-                "sniffing": {"enabled": True, "routeOnly": False, "destOverride": ["http", "tls", "quic"]}
-            }
-        ],
-        "outbounds": xray_outbounds,
-        "observatory": {
-            "enableConcurrency": True,
-            "probeInterval": "2m",
-            "probeUrl": PROBE_URL,
-            "subjectSelector": smart_tags
-        },
-        "routing": {
-            "balancers": [{
-                "tag": "lb_smart",
-                "selector": smart_tags,
-                "strategy": {
-                    "type": "leastLoad",
-                    "settings": {
-                        "expected": 1,
-                        "maxRTT": "2s"
-                    }
-                },
-                "fallbackTag": "direct"
-            }],
-            "domainMatcher": "hybrid",
-            "domainStrategy": "IPIfNonMatch",
-            "rules": [
-                {
-                    "type": "field",
-                    "protocol": ["bittorrent"],
-                    "outboundTag": "block"
-                },
-                {
-                    "type": "field",
-                    "balancerTag": "lb_smart",
-                    "inboundTag": ["socks", "http"],
-                    "network": "tcp,udp"
-                }
-            ]
-        }
-    }
-
-    # Формируем подписку: мета + Xray JSON + vless строки
-    lines = [
+    # Формируем подписку: meta → vless строки → JSON array
+    meta_lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
         "#subscription-userinfo: upload=0; download=0; total=107374182400; expire=9999999999",
@@ -319,18 +246,16 @@ def build_subscription(working_with_country: list) -> str:
         f"# Рабочих: {count}  |  Проверено: {now_str} МСК",
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         "",
-        "# === JSON: 🇪🇺 SMART-Авто (load balancer) ===",
-        json.dumps(xray_config, ensure_ascii=False, indent=2),
-        "# =============================================",
-        "",
     ]
 
-    # vless строки — все сервера с флагами
+    vless_lines = []
     for i, (cfg, lat, flag, country, code) in enumerate(working_with_country):
         tag = f"{flag} {country} #{i+1}"
         clean_cfg = cfg.split("#")[0]
-        lines.append(f"{clean_cfg}#{tag}")
+        vless_lines.append(f"{clean_cfg}#{tag}")
 
+    json_str = json.dumps(json_array, ensure_ascii=False, separators=(",", ":"))
+    lines = meta_lines + vless_lines + ["", json_str]
     return "\n".join(lines) + "\n"
 
 def main():
