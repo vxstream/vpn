@@ -220,82 +220,7 @@ def build_subscription(working_with_country: list) -> str:
     announce_text = f"✅ Проверено: {now_str} (МСК)\n🟢 Рабочих серверов: {count}\n🔄 Если VPN не работает — нажми ↻ у подписки"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
-    # Строим все vless outbounds
-    vless_outbounds = []
-    all_tags = []
-
-    for i, (cfg, lat, flag, country, code) in enumerate(working_with_country):
-        tag = f"{flag} {country} #{i+1}"
-        out = build_vless_outbound(cfg, tag)
-        if out:
-            vless_outbounds.append(out)
-            all_tags.append(tag)
-
-    # Полный SingBox JSON — единственная запись в подписке
-    singbox_full = {
-        "log": {"level": "warn", "timestamp": "false"},
-        "dns": {
-            "servers": [
-                {"tag": "dns_proxy", "address": "tcp://1.1.1.1", "address_resolver": "dns_direct"},
-                {"tag": "dns_direct", "address": "local", "detour": "direct"},
-                {"tag": "dns_fakeip", "address": "fakeip"}
-            ],
-            "rules": [
-                {"outbound": "any", "server": "dns_direct"}
-            ],
-            "final": "dns_proxy",
-            "independent_cache": True
-        },
-        "outbounds": [
-            {
-                "type": "urltest",
-                "tag": "🇪🇺 AUTOCONF",
-                "outbounds": all_tags,
-                "url": CHECK_URL,
-                "interval": "3m",
-                "tolerance": 50,
-                "idle_timeout": "30m"
-            },
-            {
-                "type": "selector",
-                "tag": "📌 Выбрать вручную",
-                "outbounds": ["🇪🇺 AUTOCONF"] + all_tags,
-                "default": "🇪🇺 AUTOCONF"
-            }
-        ] + vless_outbounds,
-        "route": {
-            "auto_detect_interface": True,
-            "rules": [
-                {
-                    "geoip": ["private", "cn"],
-                    "outbound": "direct"
-                },
-                {
-                    "geosite": ["category-ads-all"],
-                    "outbound": "block"
-                },
-                {
-                    "rule_set": ["geosite-ru"],
-                    "outbound": "direct"
-                }
-            ],
-            "final": "🇪🇺 AUTOCONF",
-            "rule_set": [
-                {
-                    "tag": "geosite-ru",
-                    "type": "remote",
-                    "format": "binary",
-                    "url": "https://raw.githubusercontent.com/nekohasege/sing-geosite/rule-set/geosite-geolocation-ru.srs",
-                    "download_detour": "direct"
-                }
-            ]
-        },
-        "experimental": {
-            "cache_file": {"enabled": True, "path": "cache.db"}
-        }
-    }
-
-    # Формируем файл: мета + SingBox JSON
+    # Формируем vless:// строки — формат Happ/Hiddify
     lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
@@ -309,13 +234,20 @@ def build_subscription(working_with_country: list) -> str:
         "",
         "#ping-type: proxy",
         f"#check-url-via-proxy: {CHECK_URL}",
+        "#url-test: http://cp.cloudflare.com",
+        "#url-test-interval: 3m",
+        "#url-test-timeout: 5s",
         "",
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         f"# Рабочих: {count}  |  Проверено: {now_str} МСК",
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         "",
-        json.dumps(singbox_full, ensure_ascii=False, separators=(",", ":")),
     ]
+
+    for i, (cfg, lat, flag, country, code) in enumerate(working_with_country):
+        tag = f"{flag} {country} #{i+1}"
+        clean_cfg = cfg.split("#")[0]
+        lines.append(f"{clean_cfg}#{tag}")
 
     return "\n".join(lines) + "\n"
 
