@@ -96,7 +96,7 @@ def build_subscription(working: list[tuple[str, int, str]]) -> str:
     now_msk = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
     now_str = now_msk.strftime("%d.%m.%Y %H:%M")
 
-    title = "🇷🇺 RU VPN | Auto"
+    title = "🇷🇺 RUN VPN"
     title_b64 = base64.b64encode(title.encode("utf-8")).decode()
 
     nodes = sorted(working, key=lambda x: x[1])
