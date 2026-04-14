@@ -26,6 +26,46 @@ DNS_SERVERS = ["77.88.8.8", "77.88.8.1"]
 
 _country_cache = {}
 
+# Список сервисов для определения страны (без ключей)
+GEO_SERVICES = [
+    lambda ip: _ip_api_com(ip),
+    lambda ip: _ip_api_io(ip),
+    lambda ip: _ipinfo_io(ip),
+]
+
+def _ip_api_com(ip):
+    """ip-api.com — основной, но иногда банит"""
+    try:
+        r = requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode", timeout=3)
+        d = r.json()
+        if d.get("status") == "success" and d.get("countryCode"):
+            return d["countryCode"], d["country"]
+    except:
+        pass
+    return None, None
+
+def _ip_api_io(ip):
+    """ip-api.io — бесплатный, без лимитов"""
+    try:
+        r = requests.get(f"https://ip-api.io/json/{ip}", timeout=3)
+        d = r.json()
+        if d.get("country_code") and d.get("country"):
+            return d["country_code"], d["country"]
+    except:
+        pass
+    return None, None
+
+def _ipinfo_io(ip):
+    """ipinfo.io — бесплатный, 1000 запросов/день"""
+    try:
+        r = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
+        d = r.json()
+        if d.get("country") and len(d["country"]) == 2:
+            return d["country"], d.get("city", "")
+    except:
+        pass
+    return None, None
+
 def resolve_host(host: str) -> str:
     if not DNS_AVAILABLE:
         return host
@@ -98,27 +138,35 @@ def check_tcp_fast(parsed: dict):
     except Exception:
         return False, 9999
 
+def code_to_flag(code):
+    """Конвертирует 2-буквенный код страны в флаг"""
+    if not code or len(code) != 2:
+        return "🌍"
+    try:
+        return chr(127462 + ord(code[0].upper()) - 65) + chr(127462 + ord(code[1].upper()) - 65)
+    except:
+        return "🌍"
+
 def get_country(host: str):
     if host in _country_cache:
         return _country_cache[host]
-    try:
-        ip = resolve_host(host)
-        resp = requests.get(f"http://ip-api.com/json/{ip}", timeout=2)
-        data = resp.json()
-        if data.get("status") == "success":
-            code = data.get("countryCode", "UN")
-            country = data.get("country", "Unknown")
-            flag = chr(127462 + ord(code[0]) - 65) + chr(127462 + ord(code[1]) - 65)
-            result = (flag, country)
-        else:
-            result = ("🌍", "Unknown")
-    except Exception:
-        result = ("🌍", "Unknown")
+
+    ip = resolve_host(host)
+
+    # Пробуем все сервисы по очереди
+    for service in GEO_SERVICES:
+        code, name = service(ip)
+        if code and name:
+            flag = code_to_flag(code)
+            result = (flag, name, code)
+            _country_cache[host] = result
+            return result
+
+    result = ("🌍", "Unknown", "XX")
     _country_cache[host] = result
     return result
 
 def build_vless_outbound(cfg: str, tag: str) -> dict:
-    """Строит один vless outbound из конфига."""
     parsed = parse_vless_url(cfg)
     if not parsed:
         return None
@@ -172,18 +220,18 @@ def build_subscription(working_with_country: list) -> str:
     announce_text = f"✅ Проверено: {now_str} (МСК)\n🟢 Рабочих серверов: {count}\n🔄 Если VPN не работает — нажми ↻ у подписки"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
-    # Строим SingBox JSON с urltest
+    # Строим все vless outbounds
     vless_outbounds = []
     all_tags = []
 
-    for i, (cfg, lat, flag, country) in enumerate(working_with_country):
+    for i, (cfg, lat, flag, country, code) in enumerate(working_with_country):
         tag = f"{flag} {country} #{i+1}"
         out = build_vless_outbound(cfg, tag)
         if out:
             vless_outbounds.append(out)
             all_tags.append(tag)
 
-    # JSON конфиг с urltest для автовыбора
+    # Полный SingBox JSON — единственная запись в подписке
     singbox_full = {
         "log": {"level": "warn", "timestamp": "false"},
         "dns": {
@@ -217,14 +265,37 @@ def build_subscription(working_with_country: list) -> str:
         ] + vless_outbounds,
         "route": {
             "auto_detect_interface": True,
-            "final": "🇪🇺 AUTOCONF"
+            "rules": [
+                {
+                    "geoip": ["private", "cn"],
+                    "outbound": "direct"
+                },
+                {
+                    "geosite": ["category-ads-all"],
+                    "outbound": "block"
+                },
+                {
+                    "rule_set": ["geosite-ru"],
+                    "outbound": "direct"
+                }
+            ],
+            "final": "🇪🇺 AUTOCONF",
+            "rule_set": [
+                {
+                    "tag": "geosite-ru",
+                    "type": "remote",
+                    "format": "binary",
+                    "url": "https://raw.githubusercontent.com/nekohasege/sing-geosite/rule-set/geosite-geolocation-ru.srs",
+                    "download_detour": "direct"
+                }
+            ]
         },
         "experimental": {
             "cache_file": {"enabled": True, "path": "cache.db"}
         }
     }
 
-    # Формируем файл: сначала мета, потом JSON, потом vless строки
+    # Формируем файл: мета + SingBox JSON
     lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
@@ -243,18 +314,8 @@ def build_subscription(working_with_country: list) -> str:
         f"# Рабочих: {count}  |  Проверено: {now_str} МСК",
         f"# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         "",
-        "# ========== SINGBOX JSON — АВТОВЫБОР ЧЕРЕЗ URLTEST ==========",
-        "# Клиенты Hiddify/V2rayNG подхватят этот JSON как полноценную конфигурацию",
         json.dumps(singbox_full, ensure_ascii=False, separators=(",", ":")),
-        "# ==============================================================",
-        "",
     ]
-
-    # Добавляем vless строки для клиентов которые не понимают JSON
-    for i, (cfg, lat, flag, country) in enumerate(working_with_country):
-        tag = f"{flag} {country} #{i+1}"
-        clean_cfg = cfg.split("#")[0]
-        lines.append(f"{clean_cfg}#{tag}")
 
     return "\n".join(lines) + "\n"
 
@@ -295,11 +356,15 @@ def main():
 
     with ThreadPoolExecutor(max_workers=COUNTRY_WORKERS) as executor:
         futures = {executor.submit(get_country, host): host for host in unique_hosts}
+        done_count = 0
         for future in as_completed(futures):
             try:
                 future.result(timeout=5)
+                done_count += 1
+                if done_count % 50 == 0:
+                    print(f"  Страны: {done_count}/{len(unique_hosts)}")
             except:
-                pass
+                done_count += 1
 
     print(f"[+] Страны определены: {len(_country_cache)}")
 
@@ -308,10 +373,10 @@ def main():
     for cfg, lat in working:
         parsed = parse_vless_url(cfg)
         if parsed:
-            flag, country = get_country(parsed["host"])
-            working_with_country.append((cfg, lat, flag, country))
+            flag, country, code = get_country(parsed["host"])
+            working_with_country.append((cfg, lat, flag, country, code))
         else:
-            working_with_country.append((cfg, lat, "🌍", "Unknown"))
+            working_with_country.append((cfg, lat, "🌍", "Unknown", "XX"))
 
     print(f"[*] Генерация подписки...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
