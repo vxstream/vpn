@@ -175,54 +175,11 @@ def build_subscription(all_configs: list) -> str:
     now_str = now_msk.strftime("%d.%m.%Y %H:%M")
     count = len(all_configs)
 
-    title_b64 = base64.b64encode("🇷🇺 RUN VPN — Авто Балансер".encode()).decode()
-    announce_text = f"✅ Обновлено: {now_str} (МСК)\n🟢 Серверов в подписке: {count}\n🔄 Балансер сам выбирает самый быстрый"
+    title_b64 = base64.b64encode("LegionRKN".encode()).decode()
+    announce_text = f"✅ Обновлено: {now_str} МСК\n🟢 Серверов: {count}"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
-    # === 1. Строим все outbound'ы ===
-    outbounds = []
-    for i, cfg in enumerate(all_configs):
-        parsed = parse_vless_url(cfg)
-        if not parsed:
-            continue
-        flag, country, _ = get_country(parsed["host"])
-        tag = f"{flag} {country} #{i+1}"
-        outbounds.append(build_xray_outbound(parsed, tag))
-
-    # === 2. Добавляем балансер + observatory ===
-    balancers = [{
-        "tag": "best",
-        "type": "leastPing",           # или "leastLoad"
-        "selector": ["🌍"],            # подбирает все теги (можно уточнить префикс)
-        "fallbackTag": "direct"
-    }]
-
-    observatory = {
-        "subjectSelector": ["🌍"],     # наблюдает за всеми прокси
-        "probeUrl": "https://www.gstatic.com/generate_204",
-        "probeInterval": "15s"
-    }
-
-    # Полный клиентский конфиг (можно импортировать как JSON)
-    full_config = {
-        "log": {"loglevel": "warning"},
-        "observatory": observatory,
-        "outbounds": outbounds + [
-            {"tag": "direct", "protocol": "freedom"},
-            {"tag": "block", "protocol": "blackhole"}
-        ],
-        "balancers": balancers,
-        "routing": {
-            "rules": [
-                {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
-                {"type": "field", "balancerTag": "best"}   # весь трафик идёт через балансер
-            ]
-        }
-    }
-
-    json_config_str = json.dumps(full_config, ensure_ascii=False, separators=(",", ":"))
-
-    # === 3. Обычные VLESS ссылки (для ручного выбора) ===
+    # 1. VLESS ссылки для всех клиентов
     vless_lines = []
     for i, cfg in enumerate(all_configs):
         parsed = parse_vless_url(cfg)
@@ -233,23 +190,71 @@ def build_subscription(all_configs: list) -> str:
         clean_cfg = cfg.split("#")[0]
         vless_lines.append(f"{clean_cfg}#{tag}")
 
-    # === 4. Метаданные подписки ===
+    # 2. Специальный "балансер" как первая ссылка (многие клиенты его используют как URL Test)
+    balancer_vless = "vless://00000000-0000-0000-0000-000000000000@balancer.runvpn.best:443?security=none&type=tcp#🇷🇺 AUTO BEST (leastPing)"
+
+    # 3. Полный JSON с настоящим балансером (для продвинутых клиентов)
+    outbounds = []
+    for i, cfg in enumerate(all_configs):
+        parsed = parse_vless_url(cfg)
+        if not parsed: continue
+        flag, country, _ = get_country(parsed["host"])
+        tag = f"{flag} {country} #{i+1}"
+        outbounds.append(build_xray_outbound(parsed, tag))
+
+    full_config = {
+        "log": {"loglevel": "warning"},
+        "observatory": {
+            "subjectSelector": [""],   # или ["🌍"] если теги начинаются с флага
+            "probeUrl": "https://www.gstatic.com/generate_204",
+            "probeInterval": "10s"
+        },
+        "outbounds": outbounds + [
+            {"tag": "direct", "protocol": "freedom"},
+            {"tag": "block", "protocol": "blackhole"}
+        ],
+        "balancers": [{
+            "tag": "best",
+            "type": "leastPing",
+            "selector": [""],          # подбирает все outbound'ы
+            "fallbackTag": "direct"
+        }],
+        "routing": {
+            "rules": [
+                {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
+                {"type": "field", "balancerTag": "best"}
+            ]
+        }
+    }
+
+    json_str = json.dumps(full_config, ensure_ascii=False, separators=(",", ":"))
+
+    # Собираем всё вместе
     meta_lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
-        "#subscription-userinfo: upload=0; download=0; total=107374182400; expire=9999999999",
-        "",
         f"#announce: base64:{announce_b64}",
         "",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        f"# Серверов: {count}  |  Обновлено: {now_str} МСК",
-        f"# Балансер leastPing включён сверху",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "#subscription-autoconnect: 1",
+        "#subscription-autoconnect-type: lowestdelay",   # важная строка для многих клиентов
+        "#url-test-interval: 3m",
         "",
+        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        f"# Серверов: {count} | Обновлено: {now_str} МСК",
+        "# Первый в списке — Авто Балансер",
+        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        ""
     ]
 
-    lines = meta_lines + vless_lines + ["", "# === ПОЛНЫЙ JSON КОНФИГ С БАЛАНСЕРОМ ===", json_config_str]
-    return "\n".join(lines) + "\n"
+    final_content = (
+        "\n".join(meta_lines) +
+        balancer_vless + "\n" +          # ← вот этот трюк
+        "\n".join(vless_lines) +
+        "\n\n# === FULL JSON CONFIG WITH BALANCER (для Hiddify/Nekobox) ===\n" +
+        json_str + "\n"
+    )
+
+    return final_content
 
 
 def main():
