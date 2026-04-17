@@ -256,6 +256,111 @@ def build_subscription(all_configs: list) -> str:
 
     return final_content
 
+def build_clash_config(all_configs: list) -> str:
+    now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
+    now_str = now_msk.strftime("%d.%m.%Y %H:%M")
+    count = len(all_configs)
+
+    proxies = []
+    proxy_names = []   # список имён для url-test
+
+    for i, cfg in enumerate(all_configs):
+        parsed = parse_vless_url(cfg)
+        if not parsed:
+            continue
+
+        flag, country, _ = get_country(parsed["host"])
+        name = f"{flag} {country} #{i+1} | {parsed['host']}"
+
+        proxy = {
+            "name": name,
+            "type": "vless",
+            "server": parsed["host"],
+            "port": parsed["port"],
+            "uuid": parsed["uuid"],
+            "udp": True,
+            "skip-cert-verify": False,
+        }
+
+        # Network и TLS/Reality
+        if parsed["type"] == "ws":
+            proxy["network"] = "ws"
+            if parsed.get("path"):
+                proxy["ws-opts"] = {"path": parsed["path"]}
+            if parsed.get("host_header"):
+                proxy["ws-opts"] = proxy.get("ws-opts", {}) | {"headers": {"Host": parsed["host_header"]}}
+        else:
+            proxy["network"] = "tcp"
+
+        if parsed["security"] == "reality":
+            proxy["tls"] = True
+            proxy["servername"] = parsed["sni"] or parsed["host"]
+            proxy["client-fingerprint"] = parsed.get("fp", "chrome")
+            proxy["reality-opts"] = {
+                "public-key": parsed["pbk"],
+                "short-id": parsed.get("sid", "")
+            }
+        elif parsed["security"] == "tls":
+            proxy["tls"] = True
+            proxy["servername"] = parsed["sni"] or parsed["host"]
+            proxy["client-fingerprint"] = parsed.get("fp", "chrome")
+        else:
+            proxy["tls"] = False
+
+        if parsed.get("flow"):
+            proxy["flow"] = parsed["flow"]
+
+        proxies.append(proxy)
+        proxy_names.append(name)
+
+    # Основной автобалансер (url-test)
+    auto_group = {
+        "name": "🚀 Auto Best",
+        "type": "url-test",
+        "proxies": proxy_names,
+        "url": "https://www.gstatic.com/generate_204",
+        "interval": 300,      # 5 минут
+        "tolerance": 50,
+        "lazy": True
+    }
+
+    # Полный YAML
+    clash_config = {
+        "mixed-port": 7890,
+        "allow-lan": False,
+        "mode": "rule",
+        "log-level": "info",
+        "ipv6": True,
+
+        "proxies": proxies,
+
+        "proxy-groups": [
+            auto_group,
+            {
+                "name": "🌍 Select",
+                "type": "select",
+                "proxies": ["🚀 Auto Best"] + proxy_names
+            }
+        ],
+
+        "rules": [
+            "GEOIP,CN,DIRECT",
+            "GEOIP,PRIVATE,DIRECT",
+            "MATCH,🌍 Select"
+        ]
+    }
+
+    # Заголовок
+    header = f"""# RUN VPN Clash Meta Config
+# Обновлено: {now_str} МСК
+# Серверов: {count}
+# Автобалансер: 🚀 Auto Best (url-test)
+
+"""
+
+    import yaml
+    return header + yaml.dump(clash_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
+
 
 def main():
     configs = load_configs(INPUT_FILE)
@@ -285,11 +390,13 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(build_subscription([cfg for cfg, _ in parsed_list]))
 
-    print(f"[✓] Готово → {OUTPUT_FILE}")
-    print("   В подписке теперь есть:")
-    print("   • Балансер 'best' (leastPing) — подключайся к нему первым")
-    print("   • Все отдельные сервера ниже")
-    print("   • Полный JSON-конфиг с observatory в конце")
+    print("[*] Генерация Clash конфига...")
+    with open("runvpn_clash.yaml", "w", encoding="utf-8") as f:
+        f.write(build_clash_config([cfg for cfg, _ in parsed_list]))
+
+    print("[✓] Готово:")
+    print("   → runvpn.txt          (для v2rayN, Nekobox, Hiddify)")
+    print("   → runvpn_clash.yaml   (для Clash / FlClash / Mihomo)")
 
 if __name__ == "__main__":
     main()
