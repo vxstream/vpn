@@ -23,9 +23,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
           python -m pip install --upgrade pip
-          pip install dnspython requests
+          pip install requests pyyaml
 
       - name: Step 1 - Collect configs from subscriptions
         run: python t.py
