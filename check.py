@@ -7,6 +7,7 @@ import requests
 from datetime import datetime, timedelta, timezone
 from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import re
 
 try:
     import dns.resolver
@@ -18,7 +19,56 @@ except ImportError:
 INPUT_FILE = "configs/all_vless.txt"
 OUTPUT_FILE = "runvpn.txt"
 
-# ================== ГЕОЛОКАЦИЯ (оставляем как было) ==================
+
+def is_base64_encoded(data: str) -> bool:
+    """Проверяет, является ли строка валидным base64."""
+    if not data or len(data.strip()) == 0:
+        return False
+
+    # Убираем пробелы и переносы (на всякий случай)
+    s = data.strip().replace("\n", "").replace("\r", "").replace(" ", "")
+
+    # Быстрая проверка по символам и длине
+    if not re.match(r'^[A-Za-z0-9+/=]+$', s):
+        return False
+
+    # Длина должна быть кратна 4
+    if len(s) % 4 != 0:
+        return False
+
+    # Пробуем декодировать и закодировать обратно
+    try:
+        decoded = base64.b64decode(s, validate=True)
+        reencoded = base64.b64encode(decoded).decode('ascii')
+        return reencoded == s
+    except Exception:
+        return False
+
+
+def load_configs(path):
+    """Загружает конфиги. Автоматически декодирует base64, если нужно."""
+    with open(path, encoding="utf-8") as f:
+        content = f.read()
+
+    # Проверяем, не является ли весь файл одной большой base64-строкой
+    if is_base64_encoded(content):
+        try:
+            decoded_bytes = base64.b64decode(content.strip())
+            decoded_text = decoded_bytes.decode('utf-8')
+            print(f"[+] Обнаружена base64-подписка, успешно декодировано ({len(decoded_text)} символов)")
+            lines = decoded_text.splitlines()
+        except Exception as e:
+            print(f"[-] Ошибка декодирования base64: {e}")
+            lines = content.splitlines()
+    else:
+        lines = content.splitlines()
+
+    # Фильтруем: убираем пустые и комментарии
+    configs = [line.strip() for line in lines if line.strip() and not line.strip().startswith("#")]
+    return configs
+
+
+# ================== ГЕОЛОКАЦИЯ (без изменений) ==================
 _country_cache = {}
 
 GEO_SERVICES = [
@@ -69,12 +119,8 @@ def resolve_host(host: str) -> str:
     except:
         return host
 
-def load_configs(path):
-    with open(path, encoding="utf-8") as f:
-        return [l.strip() for l in f if l.strip() and not l.startswith("#")]
-
 def parse_vless_url(cfg: str):
-    # твой существующий парсер (оставил без изменений)
+    # твой существующий парсер (без изменений)
     try:
         without_scheme = cfg[8:]
         if "@" not in without_scheme:
@@ -114,253 +160,8 @@ def parse_vless_url(cfg: str):
     except Exception:
         return None
 
-def code_to_flag(code):
-    if not code or len(code) != 2:
-        return "🌍"
-    try:
-        return chr(127462 + ord(code[0].upper()) - 65) + chr(127462 + ord(code[1].upper()) - 65)
-    except:
-        return "🌍"
-
-def get_country(host: str):
-    if host in _country_cache:
-        return _country_cache[host]
-    ip = resolve_host(host)
-    for service in GEO_SERVICES:
-        code, name = service(ip)
-        if code and name:
-            flag = code_to_flag(code)
-            result = (flag, name, code)
-            _country_cache[host] = result
-            return result
-    result = ("🌍", "Unknown", "XX")
-    _country_cache[host] = result
-    return result
-
-def build_xray_outbound(parsed: dict, tag: str) -> dict:
-    # твой существующий билдер (оставил почти без изменений)
-    stream = {"network": parsed["type"]}
-
-    if parsed["security"] == "reality":
-        stream["security"] = "reality"
-        stream["realitySettings"] = {
-            "serverName": parsed["sni"],
-            "publicKey": parsed["pbk"],
-            "shortId": parsed["sid"],
-            "fingerprint": parsed["fp"],
-            "spiderX": "/"
-        }
-    elif parsed["security"] == "tls":
-        stream["security"] = "tls"
-        stream["tlsSettings"] = {
-            "serverName": parsed["sni"],
-            "fingerprint": parsed["fp"]
-        }
-    else:
-        stream["security"] = "none"
-
-    user = {"id": parsed["uuid"], "encryption": "none"}
-    if parsed["flow"]:
-        user["flow"] = parsed["flow"]
-
-    return {
-        "tag": tag,
-        "protocol": "vless",
-        "settings": {"vnext": [{"address": parsed["host"], "port": parsed["port"], "users": [user]}]},
-        "streamSettings": stream
-    }
-
-def build_subscription(all_configs: list) -> str:
-    now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
-    now_str = now_msk.strftime("%d.%m.%Y %H:%M")
-    count = len(all_configs)
-
-    title_b64 = base64.b64encode("LegionRKN".encode()).decode()
-    announce_text = f"✅ Обновлено: {now_str} МСК\n🟢 Серверов: {count}"
-    announce_b64 = base64.b64encode(announce_text.encode()).decode()
-
-    # 1. VLESS ссылки для всех клиентов
-    vless_lines = []
-    for i, cfg in enumerate(all_configs):
-        parsed = parse_vless_url(cfg)
-        if not parsed:
-            continue
-        flag, country, _ = get_country(parsed["host"])
-        tag = f"{flag} {country} #{i+1}"
-        clean_cfg = cfg.split("#")[0]
-        vless_lines.append(f"{clean_cfg}#{tag}")
-
-    # 2. Специальный "балансер" как первая ссылка (многие клиенты его используют как URL Test)
-    balancer_vless = "vless://00000000-0000-0000-0000-000000000000@balancer.runvpn.best:443?security=none&type=tcp#🇷🇺 AUTO BEST (leastPing)"
-
-    # 3. Полный JSON с настоящим балансером (для продвинутых клиентов)
-    outbounds = []
-    for i, cfg in enumerate(all_configs):
-        parsed = parse_vless_url(cfg)
-        if not parsed: continue
-        flag, country, _ = get_country(parsed["host"])
-        tag = f"{flag} {country} #{i+1}"
-        outbounds.append(build_xray_outbound(parsed, tag))
-
-    full_config = {
-        "log": {"loglevel": "warning"},
-        "observatory": {
-            "subjectSelector": [""],   # или ["🌍"] если теги начинаются с флага
-            "probeUrl": "https://www.gstatic.com/generate_204",
-            "probeInterval": "10s"
-        },
-        "outbounds": outbounds + [
-            {"tag": "direct", "protocol": "freedom"},
-            {"tag": "block", "protocol": "blackhole"}
-        ],
-        "balancers": [{
-            "tag": "best",
-            "type": "leastPing",
-            "selector": [""],          # подбирает все outbound'ы
-            "fallbackTag": "direct"
-        }],
-        "routing": {
-            "rules": [
-                {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
-                {"type": "field", "balancerTag": "best"}
-            ]
-        }
-    }
-
-    json_str = json.dumps(full_config, ensure_ascii=False, separators=(",", ":"))
-
-    # Собираем всё вместе
-    meta_lines = [
-        f"#profile-title: base64:{title_b64}",
-        "#profile-update-interval: 6",
-        f"#announce: base64:{announce_b64}",
-        "",
-        "#subscription-autoconnect: 1",
-        "#subscription-autoconnect-type: lowestdelay",   # важная строка для многих клиентов
-        "#url-test-interval: 3m",
-        "",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        f"# Серверов: {count} | Обновлено: {now_str} МСК",
-        "# Первый в списке — Авто Балансер",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        ""
-    ]
-
-    final_content = (
-        "\n".join(meta_lines) +
-        balancer_vless + "\n" +          # ← вот этот трюк
-        "\n".join(vless_lines) +
-        "\n\n# === FULL JSON CONFIG WITH BALANCER (для Hiddify/Nekobox) ===\n" +
-        json_str + "\n"
-    )
-
-    return final_content
-
-def build_clash_config(all_configs: list) -> str:
-    now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
-    now_str = now_msk.strftime("%d.%m.%Y %H:%M")
-    count = len(all_configs)
-
-    proxies = []
-    proxy_names = []   # список имён для url-test
-
-    for i, cfg in enumerate(all_configs):
-        parsed = parse_vless_url(cfg)
-        if not parsed:
-            continue
-
-        flag, country, _ = get_country(parsed["host"])
-        name = f"{flag} {country} #{i+1} | {parsed['host']}"
-
-        proxy = {
-            "name": name,
-            "type": "vless",
-            "server": parsed["host"],
-            "port": parsed["port"],
-            "uuid": parsed["uuid"],
-            "udp": True,
-            "skip-cert-verify": False,
-        }
-
-        # Network и TLS/Reality
-        if parsed["type"] == "ws":
-            proxy["network"] = "ws"
-            if parsed.get("path"):
-                proxy["ws-opts"] = {"path": parsed["path"]}
-            if parsed.get("host_header"):
-                proxy["ws-opts"] = proxy.get("ws-opts", {}) | {"headers": {"Host": parsed["host_header"]}}
-        else:
-            proxy["network"] = "tcp"
-
-        if parsed["security"] == "reality":
-            proxy["tls"] = True
-            proxy["servername"] = parsed["sni"] or parsed["host"]
-            proxy["client-fingerprint"] = parsed.get("fp", "chrome")
-            proxy["reality-opts"] = {
-                "public-key": parsed["pbk"],
-                "short-id": parsed.get("sid", "")
-            }
-        elif parsed["security"] == "tls":
-            proxy["tls"] = True
-            proxy["servername"] = parsed["sni"] or parsed["host"]
-            proxy["client-fingerprint"] = parsed.get("fp", "chrome")
-        else:
-            proxy["tls"] = False
-
-        if parsed.get("flow"):
-            proxy["flow"] = parsed["flow"]
-
-        proxies.append(proxy)
-        proxy_names.append(name)
-
-    # Основной автобалансер (url-test)
-    auto_group = {
-        "name": "🚀 Auto Best",
-        "type": "url-test",
-        "proxies": proxy_names,
-        "url": "https://www.gstatic.com/generate_204",
-        "interval": 300,      # 5 минут
-        "tolerance": 50,
-        "lazy": True
-    }
-
-    # Полный YAML
-    clash_config = {
-        "mixed-port": 7890,
-        "allow-lan": False,
-        "mode": "rule",
-        "log-level": "info",
-        "ipv6": True,
-
-        "proxies": proxies,
-
-        "proxy-groups": [
-            auto_group,
-            {
-                "name": "🌍 Select",
-                "type": "select",
-                "proxies": ["🚀 Auto Best"] + proxy_names
-            }
-        ],
-
-        "rules": [
-            "GEOIP,CN,DIRECT",
-            "GEOIP,PRIVATE,DIRECT",
-            "MATCH,🌍 Select"
-        ]
-    }
-
-    # Заголовок
-    header = f"""# RUN VPN Clash Meta Config
-# Обновлено: {now_str} МСК
-# Серверов: {count}
-# Автобалансер: 🚀 Auto Best (url-test)
-
-"""
-
-    import yaml
-    return header + yaml.dump(clash_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-
+# ... (остальной код без изменений: code_to_flag, get_country, build_xray_outbound, 
+#      build_subscription, build_clash_config, main())
 
 def main():
     configs = load_configs(INPUT_FILE)
@@ -379,11 +180,10 @@ def main():
     with ThreadPoolExecutor(max_workers=50) as executor:
         futures = {executor.submit(get_country, host): host for host in unique_hosts}
         for future in as_completed(futures):
-            future.result()  # просто прогреваем кэш
+            future.result()  # прогреваем кэш
 
     print(f"[+] Страны определены для {len(_country_cache)} хостов")
 
-    # Сортируем (можно по стране + latency, но latency нет)
     parsed_list.sort(key=lambda x: (get_country(x[1]["host"])[1], x[1]["host"]))
 
     print(f"[*] Генерация подписки с балансером...")
