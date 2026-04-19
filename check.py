@@ -1,80 +1,29 @@
-import socket
-import ssl
-import sys
 import base64
 import json
-import requests
 from datetime import datetime, timedelta, timezone
 from urllib.parse import unquote
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-try:
-    import dns.resolver
-    from dns.exception import DNSException
-    DNS_AVAILABLE = True
-except ImportError:
-    DNS_AVAILABLE = False
 
 INPUT_FILE = "configs/all_vless.txt"
-OUTPUT_FILE = "runvpn.txt"
+OUTPUT_FILE = "runvpn.txt"   # можешь переименовать файл позже, если хочешь
 
-# ================== ГЕОЛОКАЦИЯ (оставляем как было) ==================
-_country_cache = {}
 
-GEO_SERVICES = [
-    lambda ip: _ip_api_com(ip),
-    lambda ip: _ip_api_io(ip),
-    lambda ip: _ipinfo_io(ip),
-]
+def build_beautiful_name(parsed: dict, index: int) -> str:
+    """Чистое и премиальное название без гео и старого бренда"""
+    sec_type = "Reality" if parsed.get("security") == "reality" else \
+               "TLS" if parsed.get("security") == "tls" else "Direct"
+    
+    number = str(index + 1).zfill(2)
+    
+    # Красивое название для Legion
+    return f"LEGION-{number} • {sec_type}"
 
-def _ip_api_com(ip):
-    try:
-        r = requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode", timeout=3)
-        d = r.json()
-        if d.get("status") == "success" and d.get("countryCode"):
-            return d["countryCode"], d["country"]
-    except:
-        pass
-    return None, None
-
-def _ip_api_io(ip):
-    try:
-        r = requests.get(f"https://ip-api.io/json/{ip}", timeout=3)
-        d = r.json()
-        if d.get("country_code") and d.get("country"):
-            return d["country_code"], d["country"]
-    except:
-        pass
-    return None, None
-
-def _ipinfo_io(ip):
-    try:
-        r = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
-        d = r.json()
-        if d.get("country") and len(d.get("country", "")) == 2:
-            return d["country"], d.get("city", "")
-    except:
-        pass
-    return None, None
-
-def resolve_host(host: str) -> str:
-    if not DNS_AVAILABLE:
-        return host
-    resolver = dns.resolver.Resolver()
-    resolver.nameservers = ["77.88.8.8", "77.88.8.1"]
-    resolver.timeout = 3
-    resolver.lifetime = 5
-    try:
-        return str(resolver.resolve(host, "A")[0])
-    except:
-        return host
 
 def load_configs(path):
     with open(path, encoding="utf-8") as f:
         return [l.strip() for l in f if l.strip() and not l.startswith("#")]
 
+
 def parse_vless_url(cfg: str):
-    # твой существующий парсер (оставил без изменений)
     try:
         without_scheme = cfg[8:]
         if "@" not in without_scheme:
@@ -106,39 +55,14 @@ def parse_vless_url(cfg: str):
             "fp": params.get("fp", "chrome"),
             "pbk": params.get("pbk", ""),
             "sid": params.get("sid", ""),
-            "encryption": params.get("encryption", "none"),
             "path": params.get("path", ""),
             "host_header": params.get("host", ""),
-            "name": unquote(fragment) if fragment else f"{host}:{port}"
         }
     except Exception:
         return None
 
-def code_to_flag(code):
-    if not code or len(code) != 2:
-        return "🌍"
-    try:
-        return chr(127462 + ord(code[0].upper()) - 65) + chr(127462 + ord(code[1].upper()) - 65)
-    except:
-        return "🌍"
-
-def get_country(host: str):
-    if host in _country_cache:
-        return _country_cache[host]
-    ip = resolve_host(host)
-    for service in GEO_SERVICES:
-        code, name = service(ip)
-        if code and name:
-            flag = code_to_flag(code)
-            result = (flag, name, code)
-            _country_cache[host] = result
-            return result
-    result = ("🌍", "Unknown", "XX")
-    _country_cache[host] = result
-    return result
 
 def build_xray_outbound(parsed: dict, tag: str) -> dict:
-    # твой существующий билдер (оставил почти без изменений)
     stream = {"network": parsed["type"]}
 
     if parsed["security"] == "reality":
@@ -160,7 +84,7 @@ def build_xray_outbound(parsed: dict, tag: str) -> dict:
         stream["security"] = "none"
 
     user = {"id": parsed["uuid"], "encryption": "none"}
-    if parsed["flow"]:
+    if parsed.get("flow"):
         user["flow"] = parsed["flow"]
 
     return {
@@ -170,42 +94,40 @@ def build_xray_outbound(parsed: dict, tag: str) -> dict:
         "streamSettings": stream
     }
 
+
 def build_subscription(all_configs: list) -> str:
     now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
     now_str = now_msk.strftime("%d.%m.%Y %H:%M")
     count = len(all_configs)
 
-    title_b64 = base64.b64encode("LegionRKN".encode()).decode()
-    announce_text = f"✅ Обновлено: {now_str} МСК\n🟢 Серверов: {count}"
+    title_b64 = base64.b64encode("Legion VPN".encode()).decode()
+    announce_text = f"✅ Обновлено: {now_str} МСК\n🟢 Серверов: {count}\n🌐 Reality + Auto Balancer"
     announce_b64 = base64.b64encode(announce_text.encode()).decode()
 
-    # 1. VLESS ссылки для всех клиентов
     vless_lines = []
     for i, cfg in enumerate(all_configs):
         parsed = parse_vless_url(cfg)
         if not parsed:
             continue
-        flag, country, _ = get_country(parsed["host"])
-        tag = f"{flag} {country} #{i+1}"
-        clean_cfg = cfg.split("#")[0]
-        vless_lines.append(f"{clean_cfg}#{tag}")
+        name = build_beautiful_name(parsed, i)
+        clean_cfg = cfg.split("#")[0] if "#" in cfg else cfg
+        vless_lines.append(f"{clean_cfg}#{name}")
 
-    # 2. Специальный "балансер" как первая ссылка (многие клиенты его используют как URL Test)
-    balancer_vless = "vless://00000000-0000-0000-0000-000000000000@balancer.runvpn.best:443?security=none&type=tcp#🇷🇺 AUTO BEST (leastPing)"
+    balancer_vless = "vless://00000000-0000-0000-0000-000000000000@balancer.legion.best:443?security=none&type=tcp#AUTO BEST (leastPing)"
 
-    # 3. Полный JSON с настоящим балансером (для продвинутых клиентов)
+    # JSON с балансером
     outbounds = []
     for i, cfg in enumerate(all_configs):
         parsed = parse_vless_url(cfg)
-        if not parsed: continue
-        flag, country, _ = get_country(parsed["host"])
-        tag = f"{flag} {country} #{i+1}"
-        outbounds.append(build_xray_outbound(parsed, tag))
+        if not parsed:
+            continue
+        name = build_beautiful_name(parsed, i)
+        outbounds.append(build_xray_outbound(parsed, name))
 
     full_config = {
         "log": {"loglevel": "warning"},
         "observatory": {
-            "subjectSelector": [""],   # или ["🌍"] если теги начинаются с флага
+            "subjectSelector": [""],
             "probeUrl": "https://www.gstatic.com/generate_204",
             "probeInterval": "10s"
         },
@@ -216,7 +138,7 @@ def build_subscription(all_configs: list) -> str:
         "balancers": [{
             "tag": "best",
             "type": "leastPing",
-            "selector": [""],          # подбирает все outbound'ы
+            "selector": [""],
             "fallbackTag": "direct"
         }],
         "routing": {
@@ -229,32 +151,32 @@ def build_subscription(all_configs: list) -> str:
 
     json_str = json.dumps(full_config, ensure_ascii=False, separators=(",", ":"))
 
-    # Собираем всё вместе
     meta_lines = [
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
         f"#announce: base64:{announce_b64}",
         "",
         "#subscription-autoconnect: 1",
-        "#subscription-autoconnect-type: lowestdelay",   # важная строка для многих клиентов
+        "#subscription-autoconnect-type: lowestdelay",
         "#url-test-interval: 3m",
         "",
         "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        f"# Серверов: {count} | Обновлено: {now_str} МСК",
-        "# Первый в списке — Авто Балансер",
+        f"# LEGION • {count} серверов | {now_str} МСК",
+        "# Чистые названия • локация определяется клиентом",
         "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         ""
     ]
 
     final_content = (
         "\n".join(meta_lines) +
-        balancer_vless + "\n" +          # ← вот этот трюк
+        balancer_vless + "\n" +
         "\n".join(vless_lines) +
-        "\n\n# === FULL JSON CONFIG WITH BALANCER (для Hiddify/Nekobox) ===\n" +
+        "\n\n# === FULL JSON CONFIG WITH BALANCER (Hiddify / Nekobox) ===\n" +
         json_str + "\n"
     )
 
     return final_content
+
 
 def build_clash_config(all_configs: list) -> str:
     now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
@@ -262,15 +184,14 @@ def build_clash_config(all_configs: list) -> str:
     count = len(all_configs)
 
     proxies = []
-    proxy_names = []   # список имён для url-test
+    proxy_names = []
 
     for i, cfg in enumerate(all_configs):
         parsed = parse_vless_url(cfg)
         if not parsed:
             continue
 
-        flag, country, _ = get_country(parsed["host"])
-        name = f"{flag} {country} #{i+1} | {parsed['host']}"
+        name = build_beautiful_name(parsed, i)
 
         proxy = {
             "name": name,
@@ -282,13 +203,12 @@ def build_clash_config(all_configs: list) -> str:
             "skip-cert-verify": False,
         }
 
-        # Network и TLS/Reality
         if parsed["type"] == "ws":
             proxy["network"] = "ws"
             if parsed.get("path"):
                 proxy["ws-opts"] = {"path": parsed["path"]}
             if parsed.get("host_header"):
-                proxy["ws-opts"] = proxy.get("ws-opts", {}) | {"headers": {"Host": parsed["host_header"]}}
+                proxy.setdefault("ws-opts", {})["headers"] = {"Host": parsed["host_header"]}
         else:
             proxy["network"] = "tcp"
 
@@ -313,27 +233,23 @@ def build_clash_config(all_configs: list) -> str:
         proxies.append(proxy)
         proxy_names.append(name)
 
-    # Основной автобалансер (url-test)
     auto_group = {
         "name": "🚀 Auto Best",
         "type": "url-test",
         "proxies": proxy_names,
         "url": "https://www.gstatic.com/generate_204",
-        "interval": 300,      # 5 минут
+        "interval": 300,
         "tolerance": 50,
         "lazy": True
     }
 
-    # Полный YAML
     clash_config = {
         "mixed-port": 7890,
         "allow-lan": False,
         "mode": "rule",
         "log-level": "info",
         "ipv6": True,
-
         "proxies": proxies,
-
         "proxy-groups": [
             auto_group,
             {
@@ -342,7 +258,6 @@ def build_clash_config(all_configs: list) -> str:
                 "proxies": ["🚀 Auto Best"] + proxy_names
             }
         ],
-
         "rules": [
             "GEOIP,CN,DIRECT",
             "GEOIP,PRIVATE,DIRECT",
@@ -350,11 +265,10 @@ def build_clash_config(all_configs: list) -> str:
         ]
     }
 
-    # Заголовок
-    header = f"""# RUN VPN Clash Meta Config
+    header = f"""# Legion VPN Clash Meta Config
 # Обновлено: {now_str} МСК
 # Серверов: {count}
-# Автобалансер: 🚀 Auto Best (url-test)
+# Чистые премиальные названия
 
 """
 
@@ -366,37 +280,26 @@ def main():
     configs = load_configs(INPUT_FILE)
     print(f"[*] Загружено конфигов: {len(configs)}")
 
-    # Определяем страны для всех
-    print("[*] Определяем страны...")
-    unique_hosts = set()
     parsed_list = []
     for cfg in configs:
         parsed = parse_vless_url(cfg)
         if parsed:
             parsed_list.append((cfg, parsed))
-            unique_hosts.add(parsed["host"])
 
-    with ThreadPoolExecutor(max_workers=50) as executor:
-        futures = {executor.submit(get_country, host): host for host in unique_hosts}
-        for future in as_completed(futures):
-            future.result()  # просто прогреваем кэш
+    parsed_list.sort(key=lambda x: x[1]["host"])
 
-    print(f"[+] Страны определены для {len(_country_cache)} хостов")
-
-    # Сортируем (можно по стране + latency, но latency нет)
-    parsed_list.sort(key=lambda x: (get_country(x[1]["host"])[1], x[1]["host"]))
-
-    print(f"[*] Генерация подписки с балансером...")
+    print(f"[*] Генерация подписки Legion с чистыми названиями...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(build_subscription([cfg for cfg, _ in parsed_list]))
 
     print("[*] Генерация Clash конфига...")
-    with open("runvpn_clash.yaml", "w", encoding="utf-8") as f:
+    with open("legion_clash.yaml", "w", encoding="utf-8") as f:   # тоже изменил имя файла
         f.write(build_clash_config([cfg for cfg, _ in parsed_list]))
 
-    print("[✓] Готово:")
-    print("   → runvpn.txt          (для v2rayN, Nekobox, Hiddify)")
-    print("   → runvpn_clash.yaml   (для Clash / FlClash / Mihomo)")
+    print("[✓] Готово!")
+    print("   → runvpn.txt          (для Hiddify, Nekobox, v2rayN)")
+    print("   → legion_clash.yaml   (для Clash / Mihomo / FlClash)")
+
 
 if __name__ == "__main__":
     main()
