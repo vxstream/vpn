@@ -155,7 +155,7 @@ def build_subscription(all_configs: list) -> str:
         f"#profile-title: base64:{title_b64}",
         "#profile-update-interval: 6",
         f"#announce: base64:{announce_b64}",
-        'announce-url: "https://t.me/vpn_runner"',
+        '#announce-url: "https://t.me/vpn_runner"',
         "#subscription-autoconnect: 1",
         "#subscription-autoconnect-type: lowestdelay",
         "#url-test-interval: 3m",
