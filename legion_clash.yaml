@@ -1,6 +1,6 @@
 # Legion VPN Clash Meta Config
-# Обновлено: 23.04.2026 05:23 МСК
-# Серверов: 150
+# Обновлено: 23.04.2026 08:52 МСК
+# Серверов: 128
 # Чистые премиальные названия
 
 mixed-port: 7890
@@ -41,6 +41,21 @@ proxies:
   client-fingerprint: chrome
 - name: LEGION-03 • Reality
   type: vless
+  server: 107.181.151.241
+  port: 443
+  uuid: ee39fb11-56a3-4ee7-9e7c-35a4235bd30e
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: www.tradingview.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: FjcEZNQ8t5E4R04_11T6ghsOutdqwKKrelkuadakoQg
+    short-id: b27ba098687b
+  flow: xtls-rprx-vision
+- name: LEGION-04 • Reality
+  type: vless
   server: 109.120.189.4
   port: 443
   uuid: 2983c1d0-2c98-4e16-a92a-a64351ec2b30
@@ -54,7 +69,7 @@ proxies:
     public-key: YnOlmcxFiHgitIcjba45C7z6kw7txOWnImgSfMCtsiA
     short-id: 1da44564cda563cc
   flow: xtls-rprx-vision
-- name: LEGION-04 • Reality
+- name: LEGION-05 • Reality
   type: vless
   server: 147.45.248.201
   port: 443
@@ -68,7 +83,7 @@ proxies:
   reality-opts:
     public-key: zL5pAKteheIP6ZHmadgqDpxVnIKEzHYZ87LxFSG6-nM
     short-id: '8526'
-- name: LEGION-05 • Reality
+- name: LEGION-06 • Reality
   type: vless
   server: 155.212.223.55
   port: 52000
@@ -83,97 +98,7 @@ proxies:
     public-key: QxNM7Wad1AT-erPr2JpacYeluAAASMT5yHU_ANpWD1Q
     short-id: 9bcf6f2c
   flow: xtls-rprx-vision
-- name: LEGION-06 • Reality
-  type: vless
-  server: 158.160.104.79
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
 - name: LEGION-07 • Reality
-  type: vless
-  server: 158.160.105.127
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-08 • Reality
-  type: vless
-  server: 158.160.105.148
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-09 • Reality
-  type: vless
-  server: 158.160.117.157
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-10 • Reality
-  type: vless
-  server: 158.160.122.239
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-11 • Reality
-  type: vless
-  server: 158.160.124.16
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-12 • Reality
   type: vless
   server: 158.160.202.26
   port: 443
@@ -188,37 +113,7 @@ proxies:
     public-key: gwuAehnMX6e-n1fxIenfjx43j3qXXi7Cb4wfnW5VyBQ
     short-id: f04729f65b9ea261
   flow: xtls-rprx-vision
-- name: LEGION-13 • Reality
-  type: vless
-  server: 158.160.231.77
-  port: 443
-  uuid: 4e78dd4f-1d8f-0410-b43b-e2c662c4f956
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: ads.x5.ru
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: sYDQC1RUZKqtJau7wrl-i5yAYy613d9e72FRGAwvYUM
-    short-id: ''
-  flow: xtls-rprx-vision
-- name: LEGION-14 • Reality
-  type: vless
-  server: 158.160.37.177
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-15 • Reality
+- name: LEGION-08 • Reality
   type: vless
   server: 158.160.82.8
   port: 443
@@ -233,37 +128,7 @@ proxies:
     public-key: gwuAehnMX6e-n1fxIenfjx43j3qXXi7Cb4wfnW5VyBQ
     short-id: f04729f65b9ea261
   flow: xtls-rprx-vision
-- name: LEGION-16 • Reality
-  type: vless
-  server: 158.160.96.240
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-17 • Reality
-  type: vless
-  server: 158.160.99.178
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-18 • Reality
+- name: LEGION-09 • Reality
   type: vless
   server: 159.194.213.95
   port: 52000
@@ -278,7 +143,7 @@ proxies:
     public-key: QxNM7Wad1AT-erPr2JpacYeluAAASMT5yHU_ANpWD1Q
     short-id: 9bcf6f2c
   flow: xtls-rprx-vision
-- name: LEGION-19 • TLS
+- name: LEGION-10 • TLS
   type: vless
   server: 185.193.158.54
   port: 8443
@@ -293,7 +158,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-20 • TLS
+- name: LEGION-11 • TLS
   type: vless
   server: 185.193.159.11
   port: 8443
@@ -308,7 +173,7 @@ proxies:
   tls: true
   servername: 185.193.159.11
   client-fingerprint: chrome
-- name: LEGION-21 • TLS
+- name: LEGION-12 • TLS
   type: vless
   server: 185.193.159.21
   port: 8443
@@ -323,7 +188,7 @@ proxies:
   tls: true
   servername: 185.193.159.21
   client-fingerprint: chrome
-- name: LEGION-22 • TLS
+- name: LEGION-13 • TLS
   type: vless
   server: 185.247.143.104
   port: 443
@@ -338,21 +203,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-23 • Reality
-  type: vless
-  server: 185.40.153.191
-  port: 443
-  uuid: 9d94835e-2a8b-45a2-babc-86037288cd9f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: vk.com
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: NsRSWMDMKxVFiry3uRJB8tG5rG8LdIJqTJvHK0Uc6Gw
-    short-id: eeefb5bf
-- name: LEGION-24 • Reality
+- name: LEGION-14 • Reality
   type: vless
   server: 185.40.153.191
   port: 443
@@ -366,7 +217,21 @@ proxies:
   reality-opts:
     public-key: NsRSWMDMKxVFiry3uRJB8tG5rG8LdIJqTJvHK0Uc6Gw
     short-id: EeEFB5bF
-- name: LEGION-25 • TLS
+- name: LEGION-15 • Reality
+  type: vless
+  server: 185.40.153.191
+  port: 443
+  uuid: 9d94835e-2a8b-45a2-babc-86037288cd9f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: vk.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: NsRSWMDMKxVFiry3uRJB8tG5rG8LdIJqTJvHK0Uc6Gw
+    short-id: eeefb5bf
+- name: LEGION-16 • TLS
   type: vless
   server: 188.227.107.9
   port: 8443
@@ -381,7 +246,22 @@ proxies:
   tls: true
   servername: 188.227.107.9
   client-fingerprint: chrome
-- name: LEGION-26 • TLS
+- name: LEGION-17 • TLS
+  type: vless
+  server: 188.253.20.190
+  port: 443
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2F%253Fed%253D2560%2526Telegram%25F0%259F%2587%25A8%25F0%259F%2587%25B3%2540%2540jdfxq'
+    headers:
+      Host: sni.111000.indevs.in
+  tls: true
+  servername: 188.253.20.190
+  client-fingerprint: chrome
+- name: LEGION-18 • TLS
   type: vless
   server: 193.228.193.126
   port: 8443
@@ -396,7 +276,7 @@ proxies:
   tls: true
   servername: 193.228.193.126
   client-fingerprint: chrome
-- name: LEGION-27 • TLS
+- name: LEGION-19 • TLS
   type: vless
   server: 212.118.52.236
   port: 8443
@@ -411,7 +291,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-28 • TLS
+- name: LEGION-20 • TLS
   type: vless
   server: 212.34.141.125
   port: 8443
@@ -426,7 +306,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-29 • Reality
+- name: LEGION-21 • Reality
   type: vless
   server: 216.57.105.74
   port: 443
@@ -440,7 +320,7 @@ proxies:
   reality-opts:
     public-key: A1OvYDljz8ZJr7_1xe4j2H1AHsMuYEKifyjdWhdybzk
     short-id: 11e2
-- name: LEGION-30 • TLS
+- name: LEGION-22 • TLS
   type: vless
   server: 31.207.45.251
   port: 8080
@@ -454,7 +334,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-31 • Reality
+- name: LEGION-23 • Reality
   type: vless
   server: 37.9.54.205
   port: 443
@@ -469,7 +349,7 @@ proxies:
     public-key: pgG2grngQEtOFJImLfz0AEm-O2IodM2jCY4aMCYQI1U
     short-id: 6bd371f2f32e91d3
   flow: xtls-rprx-vision
-- name: LEGION-32 • Reality
+- name: LEGION-24 • Reality
   type: vless
   server: 45.12.62.62
   port: 8443
@@ -484,21 +364,37 @@ proxies:
     public-key: xQB2G8yqqT0J91mRafyjuiUG5DJjKqGVwg6fsJ53vCU
     short-id: f74cf952c0158225
   flow: xtls-rprx-vision
-- name: LEGION-33 • Reality
+- name: LEGION-25 • TLS
   type: vless
-  server: 45.128.235.211
+  server: 45.134.21.8
+  port: 8443
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2F%3FTelegram%F0%9F%87%A8%F0%9F%87%B3%2B%40WangCai2%3D'
+    headers:
+      Host: sni.111000.v6.navy
+  tls: true
+  servername: sni.111000.v6.navy
+  client-fingerprint: chrome
+- name: LEGION-26 • Reality
+  type: vless
+  server: 45.15.127.107
   port: 443
-  uuid: 91617ea4-d936-4803-8ec7-7c17f7f7aef6
+  uuid: 8df8d701-38b4-5175-89ef-7447a1250e67
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: mirror.yandex.ru
+  servername: eh.vk.com
   client-fingerprint: chrome
   reality-opts:
-    public-key: MNynXSgcTn7FaelWdrB6HixzPwwdhEFNUZL55tbrsXo
-    short-id: 946e
-- name: LEGION-34 • Reality
+    public-key: 3Q2wyMPpUbyfw7rmNxL25nnsNDmK9mHqcumAxYIGKVk
+    short-id: e3
+  flow: xtls-rprx-vision
+- name: LEGION-27 • Reality
   type: vless
   server: 45.15.152.168
   port: 443
@@ -512,7 +408,22 @@ proxies:
   reality-opts:
     public-key: P2ifN9qNV-B7AwF8Rc4nbBrnrMevMlZ02G49OUJBel0
     short-id: '1902'
-- name: LEGION-35 • TLS
+- name: LEGION-28 • TLS
+  type: vless
+  server: 45.43.79.121
+  port: 443
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2F%3FTelegram%F0%9F%87%A8%F0%9F%87%B3%2B%40WangCai2%3D'
+    headers:
+      Host: sni.111000.indevs.in
+  tls: true
+  servername: sni.111000.indevs.in
+  client-fingerprint: chrome
+- name: LEGION-29 • TLS
   type: vless
   server: 45.87.3.224
   port: 8443
@@ -527,7 +438,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-36 • TLS
+- name: LEGION-30 • TLS
   type: vless
   server: 45.88.67.37
   port: 2053
@@ -542,7 +453,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-37 • TLS
+- name: LEGION-31 • TLS
   type: vless
   server: 46.17.101.252
   port: 443
@@ -551,87 +462,58 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
+    path: '%2F%3Fed%3D2560'
     headers:
       Host: sni.111000.indevs.in
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-38 • Reality
+- name: LEGION-32 • TLS
   type: vless
-  server: 5.188.142.101
-  port: 8443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: max.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 1A0F4VsSyBFBj-1Lu_WyUA8OdF8rKAhFSgKl1ZxoNxs
-    short-id: f8b31c3be2f0fdee
-  flow: xtls-rprx-vision
-- name: LEGION-39 • Reality
-  type: vless
-  server: 5.188.142.101
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: yandex.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: XtdL-37-fMg79jlyMqpIHNgnL77458UVldAj6t2ogho
-    short-id: 646d0719715d735c
-  flow: xtls-rprx-vision
-- name: LEGION-40 • Reality
-  type: vless
-  server: 5.188.142.81
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: yandex.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: XtdL-37-fMg79jlyMqpIHNgnL77458UVldAj6t2ogho
-    short-id: 646d0719715d735c
-  flow: xtls-rprx-vision
-- name: LEGION-41 • Reality
-  type: vless
-  server: 5.188.142.81
-  port: 8443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: max.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 1A0F4VsSyBFBj-1Lu_WyUA8OdF8rKAhFSgKl1ZxoNxs
-    short-id: f8b31c3be2f0fdee
-  flow: xtls-rprx-vision
-- name: LEGION-42 • Reality
-  type: vless
-  server: 5.188.143.213
+  server: 46.32.184.75
   port: 443
-  uuid: 9e299679-d096-4da6-ba51-a1a853782c86
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%20%40WangCai2'
+    headers:
+      Host: sni.111000.v6.navy
+  tls: true
+  servername: sni.111000.v6.navy
+  client-fingerprint: chrome
+- name: LEGION-33 • Reality
+  type: vless
+  server: 5.188.142.81
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: yandex.ru
+  client-fingerprint: qq
+  reality-opts:
+    public-key: XtdL-37-fMg79jlyMqpIHNgnL77458UVldAj6t2ogho
+    short-id: 646d0719715d735c
+  flow: xtls-rprx-vision
+- name: LEGION-34 • Reality
+  type: vless
+  server: 5.188.142.81
+  port: 8443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
   servername: max.ru
-  client-fingerprint: chrome
+  client-fingerprint: qq
   reality-opts:
-    public-key: SHIYN7zN9aFVxwKK-bIvDbhUgtHvlBhDi1qSl2sWwRw
-    short-id: 513b0a
+    public-key: 1A0F4VsSyBFBj-1Lu_WyUA8OdF8rKAhFSgKl1ZxoNxs
+    short-id: f8b31c3be2f0fdee
   flow: xtls-rprx-vision
-- name: LEGION-43 • TLS
+- name: LEGION-35 • TLS
   type: vless
   server: 5.255.102.201
   port: 8443
@@ -646,7 +528,22 @@ proxies:
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-44 • Reality
+- name: LEGION-36 • Reality
+  type: vless
+  server: 51.158.206.12
+  port: 23576
+  uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: fuck.rkn
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
+    short-id: '01'
+  flow: xtls-rprx-vision
+- name: LEGION-37 • Reality
   type: vless
   server: 51.158.206.19
   port: 23576
@@ -661,9 +558,9 @@ proxies:
     public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
     short-id: '01'
   flow: xtls-rprx-vision
-- name: LEGION-45 • Reality
+- name: LEGION-38 • Reality
   type: vless
-  server: 51.158.206.29
+  server: 51.158.206.20
   port: 23576
   uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
   udp: true
@@ -676,9 +573,9 @@ proxies:
     public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
     short-id: '01'
   flow: xtls-rprx-vision
-- name: LEGION-46 • Reality
+- name: LEGION-39 • Reality
   type: vless
-  server: 51.158.206.86
+  server: 51.158.206.8
   port: 23576
   uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
   udp: true
@@ -691,82 +588,7 @@ proxies:
     public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
     short-id: '01'
   flow: xtls-rprx-vision
-- name: LEGION-47 • Reality
-  type: vless
-  server: 51.158.206.93
-  port: 23576
-  uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: fuck.rkn
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
-    short-id: '01'
-  flow: xtls-rprx-vision
-- name: LEGION-48 • Reality
-  type: vless
-  server: 51.158.206.98
-  port: 23576
-  uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: fuck.rkn
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
-    short-id: '01'
-  flow: xtls-rprx-vision
-- name: LEGION-49 • Reality
-  type: vless
-  server: 51.250.101.209
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-50 • Reality
-  type: vless
-  server: 51.250.105.209
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-51 • Reality
-  type: vless
-  server: 51.250.105.89
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-52 • Reality
+- name: LEGION-40 • Reality
   type: vless
   server: 51.250.107.80
   port: 443
@@ -781,22 +603,7 @@ proxies:
     public-key: oqRus6Z_Q1jqJaTEPu7ENbRL0-XKOw54K0jwCCGLtEk
     short-id: a9c4f17e3b62d8
   flow: xtls-rprx-vision
-- name: LEGION-53 • Reality
-  type: vless
-  server: 51.250.110.166
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-54 • Reality
+- name: LEGION-41 • Reality
   type: vless
   server: 51.250.14.212
   port: 443
@@ -811,112 +618,7 @@ proxies:
     public-key: UEKLXjQmUAh_6hhHqB4fmCo68a15hC18hgRCWbzr3UE
     short-id: 27e53bbcab7593d7
   flow: xtls-rprx-vision
-- name: LEGION-55 • Reality
-  type: vless
-  server: 51.250.17.244
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-56 • Reality
-  type: vless
-  server: 51.250.19.183
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-57 • Reality
-  type: vless
-  server: 51.250.22.142
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-58 • Reality
-  type: vless
-  server: 51.250.22.166
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-59 • Reality
-  type: vless
-  server: 51.250.22.210
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-60 • Reality
-  type: vless
-  server: 51.250.31.89
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: id.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: OCRYYq4e92sQ-wWFRX6WX9pdvuFBWOqybLhpSiv3nFA
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-61 • Reality
-  type: vless
-  server: 51.250.43.215
-  port: 443
-  uuid: 51d5b9b0-e0cb-4e6d-a351-5511e6590fcf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: 5post-gate.x5.ru
-  client-fingerprint: random
-  reality-opts:
-    public-key: XguLRlc-hWqFhf8-KTxtCE434F6e4Hiqoc5cTBpLxnE
-    short-id: '111111'
-  flow: xtls-rprx-vision
-- name: LEGION-62 • TLS
+- name: LEGION-42 • TLS
   type: vless
   server: 72.56.73.227
   port: 443
@@ -931,7 +633,7 @@ proxies:
   tls: true
   servername: 72.56.73.227
   client-fingerprint: chrome
-- name: LEGION-63 • TLS
+- name: LEGION-43 • TLS
   type: vless
   server: 77.238.238.133
   port: 8443
@@ -940,13 +642,13 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%20%40WangCai2'
+    path: /?ed=2560
     headers:
       Host: sni.111000.indevs.in
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-64 • TLS
+- name: LEGION-44 • TLS
   type: vless
   server: 80.74.26.226
   port: 443
@@ -961,7 +663,7 @@ proxies:
   tls: true
   servername: 80.74.26.226
   client-fingerprint: chrome
-- name: LEGION-65 • TLS
+- name: LEGION-45 • TLS
   type: vless
   server: 89.110.110.9
   port: 8443
@@ -976,7 +678,7 @@ proxies:
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-66 • TLS
+- name: LEGION-46 • TLS
   type: vless
   server: 89.248.207.37
   port: 443
@@ -991,7 +693,37 @@ proxies:
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-67 • TLS
+- name: LEGION-47 • Reality
+  type: vless
+  server: 91.132.142.10
+  port: 443
+  uuid: 5b77fb18-cece-4759-9a81-571f1be53e0c
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: vk.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: iCY6H8CpnIfqmIkEABduJEAeJrnYS089R1-jKEyVp3w
+    short-id: 92463ae1603044
+  flow: xtls-rprx-vision
+- name: LEGION-48 • TLS
+  type: vless
+  server: 91.149.254.224
+  port: 443
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: sni.111000.indevs.in
+  tls: true
+  servername: sni.111000.indevs.in
+  client-fingerprint: chrome
+- name: LEGION-49 • TLS
   type: vless
   server: 91.84.101.164
   port: 8443
@@ -1000,13 +732,13 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%20%40WangCai2'
+    path: '%2F%3Fed%3D2560%26telegram%F0%9F%87%A8%F0%9F%87%B3%40wangcai2'
     headers:
       Host: sni.111000.v6.navy
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-68 • TLS
+- name: LEGION-50 • TLS
   type: vless
   server: 91.84.101.33
   port: 8443
@@ -1020,7 +752,7 @@ proxies:
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-69 • TLS
+- name: LEGION-51 • TLS
   type: vless
   server: 91.84.105.115
   port: 8443
@@ -1029,12 +761,13 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
+    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%20%40WangCai2'
     headers:
       Host: sni.111000.indevs.in
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-70 • TLS
+- name: LEGION-52 • TLS
   type: vless
   server: 91.84.105.147
   port: 8443
@@ -1049,7 +782,7 @@ proxies:
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-71 • TLS
+- name: LEGION-53 • TLS
   type: vless
   server: 91.84.107.170
   port: 8443
@@ -1064,7 +797,7 @@ proxies:
   tls: true
   servername: sni.111000.v6.navy
   client-fingerprint: chrome
-- name: LEGION-72 • TLS
+- name: LEGION-54 • TLS
   type: vless
   server: 91.84.111.44
   port: 8443
@@ -1073,13 +806,13 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%2B%40WangCai2'
+    path: '%2F%3Fed%3D2560%26Telegram%F0%9F%87%A8%F0%9F%87%B3%20%40WangCai2'
     headers:
       Host: sni.111000.indevs.in
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-73 • TLS
+- name: LEGION-55 • TLS
   type: vless
   server: 91.84.99.166
   port: 8443
@@ -1088,13 +821,27 @@ proxies:
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /?ed=2560
     headers:
       Host: sni.111000.indevs.in
   tls: true
   servername: sni.111000.indevs.in
   client-fingerprint: chrome
-- name: LEGION-74 • Reality
+- name: LEGION-56 • Reality
+  type: vless
+  server: 92.255.58.233
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-57 • Reality
   type: vless
   server: 92.255.58.233
   port: 4443
@@ -1109,52 +856,7 @@ proxies:
     public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
     short-id: 1d6b2e894e42ea3e
   flow: xtls-rprx-vision
-- name: LEGION-75 • Reality
-  type: vless
-  server: 92.255.58.233
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-76 • Reality
-  type: vless
-  server: 92.255.58.233
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-77 • Reality
-  type: vless
-  server: 92.255.58.233
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-78 • Reality
+- name: LEGION-58 • Reality
   type: vless
   server: 92.255.58.233
   port: 1443
@@ -1169,7 +871,37 @@ proxies:
     public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
     short-id: 7ba6c86c7aa8684d
   flow: xtls-rprx-vision
-- name: LEGION-79 • Reality
+- name: LEGION-59 • Reality
+  type: vless
+  server: 92.255.58.233
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-60 • Reality
+  type: vless
+  server: 92.255.58.233
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-61 • Reality
   type: vless
   server: 92.255.58.233
   port: 2443
@@ -1184,7 +916,7 @@ proxies:
     public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
     short-id: 4d1548b1f5d4333d
   flow: xtls-rprx-vision
-- name: LEGION-80 • Reality
+- name: LEGION-62 • Reality
   type: vless
   server: 94.126.206.107
   port: 3443
@@ -1199,37 +931,7 @@ proxies:
     public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
     short-id: d10195d5995c1790
   flow: xtls-rprx-vision
-- name: LEGION-81 • Reality
-  type: vless
-  server: 94.126.206.107
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-82 • Reality
-  type: vless
-  server: 94.126.206.107
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-83 • Reality
+- name: LEGION-63 • Reality
   type: vless
   server: 94.126.206.107
   port: 1443
@@ -1244,9 +946,309 @@ proxies:
     public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
     short-id: 7ba6c86c7aa8684d
   flow: xtls-rprx-vision
-- name: LEGION-84 • Reality
+- name: LEGION-64 • Reality
   type: vless
   server: 94.126.206.107
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-65 • Reality
+  type: vless
+  server: 94.126.206.107
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-66 • Reality
+  type: vless
+  server: 94.126.206.107
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-67 • Reality
+  type: vless
+  server: 94.126.206.107
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-68 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-69 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-70 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-71 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-72 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-73 • Reality
+  type: vless
+  server: 94.126.206.109
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-74 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-75 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-76 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-77 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-78 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-79 • Reality
+  type: vless
+  server: 94.126.206.111
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-80 • Reality
+  type: vless
+  server: 94.126.206.115
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-81 • Reality
+  type: vless
+  server: 94.126.206.115
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-82 • Reality
+  type: vless
+  server: 94.126.206.115
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-83 • Reality
+  type: vless
+  server: 94.126.206.115
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-84 • Reality
+  type: vless
+  server: 94.126.206.115
   port: 2443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
@@ -1261,8 +1263,8 @@ proxies:
   flow: xtls-rprx-vision
 - name: LEGION-85 • Reality
   type: vless
-  server: 94.126.206.107
-  port: 4443
+  server: 94.126.206.115
+  port: 5443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1271,13 +1273,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
   flow: xtls-rprx-vision
 - name: LEGION-86 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 1443
+  server: 94.126.207.183
+  port: 9443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1286,13 +1288,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
   flow: xtls-rprx-vision
 - name: LEGION-87 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 2443
+  server: 94.126.207.183
+  port: 1443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1301,13 +1303,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
   flow: xtls-rprx-vision
 - name: LEGION-88 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 9443
+  server: 94.126.207.183
+  port: 4443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1316,13 +1318,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
   flow: xtls-rprx-vision
 - name: LEGION-89 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 4443
+  server: 94.126.207.183
+  port: 3443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1331,13 +1333,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
   flow: xtls-rprx-vision
 - name: LEGION-90 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 3443
+  server: 94.126.207.183
+  port: 5443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1346,13 +1348,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
   flow: xtls-rprx-vision
 - name: LEGION-91 • Reality
   type: vless
-  server: 94.126.206.109
-  port: 5443
+  server: 94.126.207.183
+  port: 2443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1361,280 +1363,10 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
   flow: xtls-rprx-vision
 - name: LEGION-92 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-93 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-94 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-95 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-96 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-97 • Reality
-  type: vless
-  server: 94.126.206.111
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-98 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-99 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-100 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-101 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-102 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-103 • Reality
-  type: vless
-  server: 94.126.206.115
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-104 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-105 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-106 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-107 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-108 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-109 • Reality
-  type: vless
-  server: 94.126.207.183
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-110 • Reality
   type: vless
   server: 94.131.100.16
   port: 47030
@@ -1649,7 +1381,7 @@ proxies:
     public-key: cZsRvk8pr8wfYiX1CNxdDjR38tow3HuL6IpBj8P82l8
     short-id: e18eda8458cab0d7
   flow: xtls-rprx-vision
-- name: LEGION-111 • Reality
+- name: LEGION-93 • Reality
   type: vless
   server: 94.131.113.138
   port: 443
@@ -1663,7 +1395,82 @@ proxies:
   reality-opts:
     public-key: wpLAX1ax15YI3H8kmmE8PH6S4vCjAwE2gYw6hG6QIh4
     short-id: a0
-- name: LEGION-112 • Reality
+- name: LEGION-94 • Reality
+  type: vless
+  server: 94.139.251.181
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-95 • Reality
+  type: vless
+  server: 94.139.251.181
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-96 • Reality
+  type: vless
+  server: 94.139.251.181
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-97 • Reality
+  type: vless
+  server: 94.139.251.181
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-98 • Reality
+  type: vless
+  server: 94.139.251.181
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-99 • Reality
   type: vless
   server: 94.139.251.181
   port: 9443
@@ -1677,11 +1484,206 @@ proxies:
   reality-opts:
     public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
     short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-100 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-101 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-102 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-103 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-104 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-105 • Reality
+  type: vless
+  server: 94.139.251.209
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-106 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 9443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
+  flow: xtls-rprx-vision
+- name: LEGION-107 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
+  flow: xtls-rprx-vision
+- name: LEGION-108 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 4443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
+  flow: xtls-rprx-vision
+- name: LEGION-109 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 1443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
+  flow: xtls-rprx-vision
+- name: LEGION-110 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 3443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
+  flow: xtls-rprx-vision
+- name: LEGION-111 • Reality
+  type: vless
+  server: 94.139.251.29
+  port: 5443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
+  flow: xtls-rprx-vision
+- name: LEGION-112 • Reality
+  type: vless
+  server: 94.139.251.45
+  port: 2443
+  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: google.com
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
+    short-id: 4d1548b1f5d4333d
   flow: xtls-rprx-vision
 - name: LEGION-113 • Reality
   type: vless
-  server: 94.139.251.181
-  port: 1443
+  server: 94.139.251.45
+  port: 4443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1690,13 +1692,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
+    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
+    short-id: 1d6b2e894e42ea3e
   flow: xtls-rprx-vision
 - name: LEGION-114 • Reality
   type: vless
-  server: 94.139.251.181
-  port: 4443
+  server: 94.139.251.45
+  port: 1443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1705,13 +1707,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
+    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
+    short-id: 7ba6c86c7aa8684d
   flow: xtls-rprx-vision
 - name: LEGION-115 • Reality
   type: vless
-  server: 94.139.251.181
-  port: 5443
+  server: 94.139.251.45
+  port: 9443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1720,13 +1722,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
+    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
+    short-id: d3a66b47c4f0792a
   flow: xtls-rprx-vision
 - name: LEGION-116 • Reality
   type: vless
-  server: 94.139.251.181
-  port: 2443
+  server: 94.139.251.45
+  port: 3443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1735,13 +1737,13 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
+    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
+    short-id: d10195d5995c1790
   flow: xtls-rprx-vision
 - name: LEGION-117 • Reality
   type: vless
-  server: 94.139.251.181
-  port: 3443
+  server: 94.139.251.45
+  port: 5443
   uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
   udp: true
   skip-cert-verify: false
@@ -1750,280 +1752,10 @@ proxies:
   servername: google.com
   client-fingerprint: qq
   reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
+    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
+    short-id: 7c8352c2443d8fff
   flow: xtls-rprx-vision
 - name: LEGION-118 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-119 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-120 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-121 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-122 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-123 • Reality
-  type: vless
-  server: 94.139.251.209
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-124 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-125 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-126 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-127 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-128 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-129 • Reality
-  type: vless
-  server: 94.139.251.29
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-130 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 2443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 639zNnbJNoEyG_LScz4MlkpKluImfvkkFddsk8ecjks
-    short-id: 4d1548b1f5d4333d
-  flow: xtls-rprx-vision
-- name: LEGION-131 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 3443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: wwGR_yrkQmb5atW8fWWR376idUXqTD8CnHhoFPTb7yQ
-    short-id: d10195d5995c1790
-  flow: xtls-rprx-vision
-- name: LEGION-132 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: Sh2gI-pXPLKvZNw5C8dPW9KYbgixMSBV1OfyL9O3w0o
-    short-id: 7c8352c2443d8fff
-  flow: xtls-rprx-vision
-- name: LEGION-133 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 4443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: UlBTudqqHkEZ2Lc3jFr4iIXCpHv1Wu-cUn9twS-Xqms
-    short-id: 1d6b2e894e42ea3e
-  flow: xtls-rprx-vision
-- name: LEGION-134 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 9443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: cSNsBZfv7R_GS3wuMRceNeFwpylt7YSj3xatEAfQ3ls
-    short-id: d3a66b47c4f0792a
-  flow: xtls-rprx-vision
-- name: LEGION-135 • Reality
-  type: vless
-  server: 94.139.251.45
-  port: 1443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: google.com
-  client-fingerprint: qq
-  reality-opts:
-    public-key: IY3FoZJxMLG_yyWJ7BkkL6cpfxypkx_XkogW0xbK-Es
-    short-id: 7ba6c86c7aa8684d
-  flow: xtls-rprx-vision
-- name: LEGION-136 • Reality
   type: vless
   server: amsterdam1.youtubesaver.ru
   port: 443
@@ -2038,37 +1770,22 @@ proxies:
     public-key: EjRaNzw5V0sIJPQelauhVJPc1nwJ-w11dqLgVsSwdR4
     short-id: '277393'
   flow: xtls-rprx-vision
-- name: LEGION-137 • Reality
+- name: LEGION-119 • Reality
   type: vless
-  server: bar.enigmabot.ru
-  port: 443
-  uuid: 9e299679-d096-4da6-ba51-a1a853782c86
+  server: amsterdam44.proverka11.ru
+  port: 8443
+  uuid: b8ef21f3-43f0-4380-bffb-bff550991ccf
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: max.ru
+  servername: yahoo.com
   client-fingerprint: chrome
   reality-opts:
-    public-key: SHIYN7zN9aFVxwKK-bIvDbhUgtHvlBhDi1qSl2sWwRw
-    short-id: 513b0a
+    public-key: UOsSEa4RGo2S9ZcUemY2MhChsalWv4Yugw7uik9z3RE
+    short-id: f98b
   flow: xtls-rprx-vision
-- name: LEGION-138 • Reality
-  type: vless
-  server: brick.ivideo-box.pro
-  port: 443
-  uuid: 4d3afaee-969b-4f9a-b57c-357b77ddaa3c
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: max.ru
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: x8wviceKY5DDJSk3tN2kJ4upEgEreWcedsXW7r5ul3w
-    short-id: ''
-  flow: xtls-rprx-vision
-- name: LEGION-139 • Reality
+- name: LEGION-120 • Reality
   type: vless
   server: download.lastilhame.monster
   port: 443
@@ -2083,22 +1800,7 @@ proxies:
     public-key: WOPZy8oOnvHN21pLYobZAGa7sVp7op3q575B5BaFxkU
     short-id: ff0654628ad5
   flow: xtls-rprx-vision
-- name: LEGION-140 • Reality
-  type: vless
-  server: edge8.samovargate.com
-  port: 443
-  uuid: 82b5b465-3307-4a25-acef-abd1649bbedf
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: max.ru
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: gwuAehnMX6e-n1fxIenfjx43j3qXXi7Cb4wfnW5VyBQ
-    short-id: f04729f65b9ea261
-  flow: xtls-rprx-vision
-- name: LEGION-141 • Reality
+- name: LEGION-121 • Reality
   type: vless
   server: f-eu3.powerhost.pro
   port: 443
@@ -2112,52 +1814,22 @@ proxies:
   reality-opts:
     public-key: KNJVnH7B-1BAb9z5DW9vgQ_XHMGdEop0_WzbfhXFoHI
     short-id: a60d3a8e9039648f
-- name: LEGION-142 • Reality
+- name: LEGION-122 • Reality
   type: vless
-  server: fi-1.maxg.ch
+  server: fin5.frostbot.ru
   port: 443
-  uuid: bceae1d9-0971-4e1c-a060-0e459793dac4
+  uuid: 5b77fb18-cece-4759-9a81-571f1be53e0c
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: api-maps.yandex.ru
-  client-fingerprint: ''
+  servername: vk.com
+  client-fingerprint: chrome
   reality-opts:
-    public-key: FJ4KCJmIbZw_lLKrIueo8yUEP959xvvCOVXUEc2Zclo
-    short-id: ''
+    public-key: iCY6H8CpnIfqmIkEABduJEAeJrnYS089R1-jKEyVp3w
+    short-id: 92463ae1603044
   flow: xtls-rprx-vision
-- name: LEGION-143 • Reality
-  type: vless
-  server: fi-3-yapi.maxg.ch
-  port: 443
-  uuid: bceae1d9-0971-4e1c-a060-0e459793dac4
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: api-maps.yandex.ru
-  client-fingerprint: ''
-  reality-opts:
-    public-key: FJ4KCJmIbZw_lLKrIueo8yUEP959xvvCOVXUEc2Zclo
-    short-id: ''
-  flow: xtls-rprx-vision
-- name: LEGION-144 • Reality
-  type: vless
-  server: hype1.snichvpn.ru
-  port: 5443
-  uuid: 2b7f78aa-3eb9-4fba-9a90-d56682c5e17f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: yandex.ru
-  client-fingerprint: qq
-  reality-opts:
-    public-key: XtdL-37-fMg79jlyMqpIHNgnL77458UVldAj6t2ogho
-    short-id: 646d0719715d735c
-  flow: xtls-rprx-vision
-- name: LEGION-145 • Reality
+- name: LEGION-123 • Reality
   type: vless
   server: hype1.snichvpn.ru
   port: 8443
@@ -2167,12 +1839,27 @@ proxies:
   network: tcp
   tls: true
   servername: max.ru
-  client-fingerprint: qq
+  client-fingerprint: chrome
   reality-opts:
     public-key: 1A0F4VsSyBFBj-1Lu_WyUA8OdF8rKAhFSgKl1ZxoNxs
     short-id: f8b31c3be2f0fdee
   flow: xtls-rprx-vision
-- name: LEGION-146 • Reality
+- name: LEGION-124 • Reality
+  type: vless
+  server: ob.odavpn.online
+  port: 8443
+  uuid: 95557ad5-5d90-4f80-a1e2-a72fda60ca4b
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: web.max.ru
+  client-fingerprint: qq
+  reality-opts:
+    public-key: oorlv4fppLwSZ3KdbfD41GYR8Qm8U5RtgxybrncTrzo
+    short-id: fe24f71a3ba8ac53
+  flow: xtls-rprx-vision
+- name: LEGION-125 • Reality
   type: vless
   server: ru.safepass.click
   port: 443
@@ -2186,7 +1873,7 @@ proxies:
   reality-opts:
     public-key: ELp9PUvVnkoFJYiscWrbnPXRnsYdELSCbIz9wNmMRRw
     short-id: 965af8960474c29c
-- name: LEGION-147 • Reality
+- name: LEGION-126 • Reality
   type: vless
   server: ru.zqwerty.ru
   port: 2053
@@ -2200,36 +1887,22 @@ proxies:
   reality-opts:
     public-key: aFsY-EZjSNTomlAFShKwQIQMJ5pHiZQXXJpWvcz8WkQ
     short-id: 0858af97f4e7324d
-- name: LEGION-148 • Reality
+- name: LEGION-127 • Reality
   type: vless
-  server: rus.friendlypetsclub.uk
+  server: staging.lastilhame.monster
   port: 443
-  uuid: 9d94835e-2a8b-45a2-babc-86037288cd9f
+  uuid: 317bc783-340f-453c-afb5-b6bf637c0b23
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: vk.com
+  servername: www.tradingview.com
   client-fingerprint: chrome
   reality-opts:
-    public-key: NsRSWMDMKxVFiry3uRJB8tG5rG8LdIJqTJvHK0Uc6Gw
-    short-id: EeEFB5bF
-- name: LEGION-149 • Reality
-  type: vless
-  server: stern.ivideo-box.pro
-  port: 443
-  uuid: 4d3afaee-969b-4f9a-b57c-357b77ddaa3c
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: ads.x5.ru
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: tFYTvPddRjfQmRf1SyPeZZP98hjU0NlOLydZGX_Wpy4
-    short-id: ''
+    public-key: FjcEZNQ8t5E4R04_11T6ghsOutdqwKKrelkuadakoQg
+    short-id: fc994ae7eb10
   flow: xtls-rprx-vision
-- name: LEGION-150 • Reality
+- name: LEGION-128 • Reality
   type: vless
   server: youtube.aprux.ru
   port: 443
@@ -2257,70 +1930,70 @@ proxy-groups:
   - LEGION-07 • Reality
   - LEGION-08 • Reality
   - LEGION-09 • Reality
-  - LEGION-10 • Reality
-  - LEGION-11 • Reality
-  - LEGION-12 • Reality
-  - LEGION-13 • Reality
+  - LEGION-10 • TLS
+  - LEGION-11 • TLS
+  - LEGION-12 • TLS
+  - LEGION-13 • TLS
   - LEGION-14 • Reality
   - LEGION-15 • Reality
-  - LEGION-16 • Reality
-  - LEGION-17 • Reality
-  - LEGION-18 • Reality
+  - LEGION-16 • TLS
+  - LEGION-17 • TLS
+  - LEGION-18 • TLS
   - LEGION-19 • TLS
   - LEGION-20 • TLS
-  - LEGION-21 • TLS
+  - LEGION-21 • Reality
   - LEGION-22 • TLS
   - LEGION-23 • Reality
   - LEGION-24 • Reality
   - LEGION-25 • TLS
-  - LEGION-26 • TLS
-  - LEGION-27 • TLS
+  - LEGION-26 • Reality
+  - LEGION-27 • Reality
   - LEGION-28 • TLS
-  - LEGION-29 • Reality
+  - LEGION-29 • TLS
   - LEGION-30 • TLS
-  - LEGION-31 • Reality
-  - LEGION-32 • Reality
+  - LEGION-31 • TLS
+  - LEGION-32 • TLS
   - LEGION-33 • Reality
   - LEGION-34 • Reality
   - LEGION-35 • TLS
-  - LEGION-36 • TLS
-  - LEGION-37 • TLS
+  - LEGION-36 • Reality
+  - LEGION-37 • Reality
   - LEGION-38 • Reality
   - LEGION-39 • Reality
   - LEGION-40 • Reality
   - LEGION-41 • Reality
-  - LEGION-42 • Reality
+  - LEGION-42 • TLS
   - LEGION-43 • TLS
-  - LEGION-44 • Reality
-  - LEGION-45 • Reality
-  - LEGION-46 • Reality
+  - LEGION-44 • TLS
+  - LEGION-45 • TLS
+  - LEGION-46 • TLS
   - LEGION-47 • Reality
-  - LEGION-48 • Reality
-  - LEGION-49 • Reality
-  - LEGION-50 • Reality
-  - LEGION-51 • Reality
-  - LEGION-52 • Reality
-  - LEGION-53 • Reality
-  - LEGION-54 • Reality
-  - LEGION-55 • Reality
+  - LEGION-48 • TLS
+  - LEGION-49 • TLS
+  - LEGION-50 • TLS
+  - LEGION-51 • TLS
+  - LEGION-52 • TLS
+  - LEGION-53 • TLS
+  - LEGION-54 • TLS
+  - LEGION-55 • TLS
   - LEGION-56 • Reality
   - LEGION-57 • Reality
   - LEGION-58 • Reality
   - LEGION-59 • Reality
   - LEGION-60 • Reality
   - LEGION-61 • Reality
-  - LEGION-62 • TLS
-  - LEGION-63 • TLS
-  - LEGION-64 • TLS
-  - LEGION-65 • TLS
-  - LEGION-66 • TLS
-  - LEGION-67 • TLS
-  - LEGION-68 • TLS
-  - LEGION-69 • TLS
-  - LEGION-70 • TLS
-  - LEGION-71 • TLS
-  - LEGION-72 • TLS
-  - LEGION-73 • TLS
+  - LEGION-62 • Reality
+  - LEGION-63 • Reality
+  - LEGION-64 • Reality
+  - LEGION-65 • Reality
+  - LEGION-66 • Reality
+  - LEGION-67 • Reality
+  - LEGION-68 • Reality
+  - LEGION-69 • Reality
+  - LEGION-70 • Reality
+  - LEGION-71 • Reality
+  - LEGION-72 • Reality
+  - LEGION-73 • Reality
   - LEGION-74 • Reality
   - LEGION-75 • Reality
   - LEGION-76 • Reality
@@ -2376,28 +2049,6 @@ proxy-groups:
   - LEGION-126 • Reality
   - LEGION-127 • Reality
   - LEGION-128 • Reality
-  - LEGION-129 • Reality
-  - LEGION-130 • Reality
-  - LEGION-131 • Reality
-  - LEGION-132 • Reality
-  - LEGION-133 • Reality
-  - LEGION-134 • Reality
-  - LEGION-135 • Reality
-  - LEGION-136 • Reality
-  - LEGION-137 • Reality
-  - LEGION-138 • Reality
-  - LEGION-139 • Reality
-  - LEGION-140 • Reality
-  - LEGION-141 • Reality
-  - LEGION-142 • Reality
-  - LEGION-143 • Reality
-  - LEGION-144 • Reality
-  - LEGION-145 • Reality
-  - LEGION-146 • Reality
-  - LEGION-147 • Reality
-  - LEGION-148 • Reality
-  - LEGION-149 • Reality
-  - LEGION-150 • Reality
   url: https://www.gstatic.com/generate_204
   interval: 300
   tolerance: 50
@@ -2415,70 +2066,70 @@ proxy-groups:
   - LEGION-07 • Reality
   - LEGION-08 • Reality
   - LEGION-09 • Reality
-  - LEGION-10 • Reality
-  - LEGION-11 • Reality
-  - LEGION-12 • Reality
-  - LEGION-13 • Reality
+  - LEGION-10 • TLS
+  - LEGION-11 • TLS
+  - LEGION-12 • TLS
+  - LEGION-13 • TLS
   - LEGION-14 • Reality
   - LEGION-15 • Reality
-  - LEGION-16 • Reality
-  - LEGION-17 • Reality
-  - LEGION-18 • Reality
+  - LEGION-16 • TLS
+  - LEGION-17 • TLS
+  - LEGION-18 • TLS
   - LEGION-19 • TLS
   - LEGION-20 • TLS
-  - LEGION-21 • TLS
+  - LEGION-21 • Reality
   - LEGION-22 • TLS
   - LEGION-23 • Reality
   - LEGION-24 • Reality
   - LEGION-25 • TLS
-  - LEGION-26 • TLS
-  - LEGION-27 • TLS
+  - LEGION-26 • Reality
+  - LEGION-27 • Reality
   - LEGION-28 • TLS
-  - LEGION-29 • Reality
+  - LEGION-29 • TLS
   - LEGION-30 • TLS
-  - LEGION-31 • Reality
-  - LEGION-32 • Reality
+  - LEGION-31 • TLS
+  - LEGION-32 • TLS
   - LEGION-33 • Reality
   - LEGION-34 • Reality
   - LEGION-35 • TLS
-  - LEGION-36 • TLS
-  - LEGION-37 • TLS
+  - LEGION-36 • Reality
+  - LEGION-37 • Reality
   - LEGION-38 • Reality
   - LEGION-39 • Reality
   - LEGION-40 • Reality
   - LEGION-41 • Reality
-  - LEGION-42 • Reality
+  - LEGION-42 • TLS
   - LEGION-43 • TLS
-  - LEGION-44 • Reality
-  - LEGION-45 • Reality
-  - LEGION-46 • Reality
+  - LEGION-44 • TLS
+  - LEGION-45 • TLS
+  - LEGION-46 • TLS
   - LEGION-47 • Reality
-  - LEGION-48 • Reality
-  - LEGION-49 • Reality
-  - LEGION-50 • Reality
-  - LEGION-51 • Reality
-  - LEGION-52 • Reality
-  - LEGION-53 • Reality
-  - LEGION-54 • Reality
-  - LEGION-55 • Reality
+  - LEGION-48 • TLS
+  - LEGION-49 • TLS
+  - LEGION-50 • TLS
+  - LEGION-51 • TLS
+  - LEGION-52 • TLS
+  - LEGION-53 • TLS
+  - LEGION-54 • TLS
+  - LEGION-55 • TLS
   - LEGION-56 • Reality
   - LEGION-57 • Reality
   - LEGION-58 • Reality
   - LEGION-59 • Reality
   - LEGION-60 • Reality
   - LEGION-61 • Reality
-  - LEGION-62 • TLS
-  - LEGION-63 • TLS
-  - LEGION-64 • TLS
-  - LEGION-65 • TLS
-  - LEGION-66 • TLS
-  - LEGION-67 • TLS
-  - LEGION-68 • TLS
-  - LEGION-69 • TLS
-  - LEGION-70 • TLS
-  - LEGION-71 • TLS
-  - LEGION-72 • TLS
-  - LEGION-73 • TLS
+  - LEGION-62 • Reality
+  - LEGION-63 • Reality
+  - LEGION-64 • Reality
+  - LEGION-65 • Reality
+  - LEGION-66 • Reality
+  - LEGION-67 • Reality
+  - LEGION-68 • Reality
+  - LEGION-69 • Reality
+  - LEGION-70 • Reality
+  - LEGION-71 • Reality
+  - LEGION-72 • Reality
+  - LEGION-73 • Reality
   - LEGION-74 • Reality
   - LEGION-75 • Reality
   - LEGION-76 • Reality
@@ -2534,28 +2185,6 @@ proxy-groups:
   - LEGION-126 • Reality
   - LEGION-127 • Reality
   - LEGION-128 • Reality
-  - LEGION-129 • Reality
-  - LEGION-130 • Reality
-  - LEGION-131 • Reality
-  - LEGION-132 • Reality
-  - LEGION-133 • Reality
-  - LEGION-134 • Reality
-  - LEGION-135 • Reality
-  - LEGION-136 • Reality
-  - LEGION-137 • Reality
-  - LEGION-138 • Reality
-  - LEGION-139 • Reality
-  - LEGION-140 • Reality
-  - LEGION-141 • Reality
-  - LEGION-142 • Reality
-  - LEGION-143 • Reality
-  - LEGION-144 • Reality
-  - LEGION-145 • Reality
-  - LEGION-146 • Reality
-  - LEGION-147 • Reality
-  - LEGION-148 • Reality
-  - LEGION-149 • Reality
-  - LEGION-150 • Reality
 rules:
 - GEOIP,CN,DIRECT
 - GEOIP,PRIVATE,DIRECT
