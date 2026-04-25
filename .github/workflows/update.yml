@@ -1,0 +1,39 @@
+name: Update Legion VPN
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Зависимости
+        run: pip install httpx pyyaml
+
+      - name: Собрать подписки
+        run: python t.py
+
+      - name: Проверить и построить JSON
+        run: python check.py
+
+      - name: Отправить в Cloudflare
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "X-Admin-Key: ${{ secrets.ADMIN_KEY }}" \
+            -H "Content-Type: application/json" \
+            --data-binary @runvpn.json \
+            ${{ secrets.WORKER_URL }}/admin/update)
+          echo "Статус CF: $STATUS"
+          [ "$STATUS" = "200" ] || exit 1
+
+      - name: Лог
+        run: cat check_log.txt
