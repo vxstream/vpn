@@ -100,82 +100,124 @@ def build_subscription(all_configs: list) -> str:
     now_str = now_msk.strftime("%d.%m.%Y %H:%M")
     count = len(all_configs)
 
-    title_b64 = base64.b64encode("Legion VPN".encode()).decode()
-    announce_text = f"✅ Обновлено: {now_str} МСК\n🟢 Серверов: {count}\n🌐 Reality + Auto Balancer"
-    announce_b64 = base64.b64encode(announce_text.encode()).decode()
-
-    vless_lines = []
+    parsed_entries = []
     for i, cfg in enumerate(all_configs):
         parsed = parse_vless_url(cfg)
         if not parsed:
             continue
+        tag = f"proxy-{i + 1}"
         name = build_beautiful_name(parsed, i)
-        clean_cfg = cfg.split("#")[0] if "#" in cfg else cfg
-        vless_lines.append(f"{clean_cfg}#{name}")
+        parsed_entries.append((parsed, tag, name))
 
-    balancer_vless = "vless://00000000-0000-0000-0000-000000000000@balancer.legion.best:443?security=none&type=tcp#AUTO BEST (leastPing)"
+    # ── helpers ──────────────────────────────────────────────────────────────
 
-    # JSON с балансером
-    outbounds = []
-    for i, cfg in enumerate(all_configs):
-        parsed = parse_vless_url(cfg)
-        if not parsed:
-            continue
-        name = build_beautiful_name(parsed, i)
-        outbounds.append(build_xray_outbound(parsed, name))
+    def base_xray_skeleton(remarks: str) -> dict:
+        """Общий скелет Xray-конфига"""
+        return {
+            "remarks": remarks,
+            "log": {"loglevel": "warning", "dnsLog": False},
+            "dns": {"queryStrategy": "UseIPv4", "servers": ["1.1.1.1", "1.0.0.1"]},
+            "policy": {
+                "levels": {
+                    "8": {
+                        "bufferSize": 3,
+                        "connIdle": 300,
+                        "downlinkOnly": 4,
+                        "handshake": 3,
+                        "uplinkOnly": 2
+                    }
+                }
+            },
+            "inbounds": [
+                {
+                    "tag": "socks-in",
+                    "listen": "127.0.0.1",
+                    "port": 10808,
+                    "protocol": "socks",
+                    "settings": {"auth": "noauth", "udp": True},
+                    "sniffing": {
+                        "enabled": True,
+                        "destOverride": ["tls", "http", "quic"],
+                        "routeOnly": True,
+                        "metadataOnly": False
+                    }
+                },
+                {
+                    "tag": "http",
+                    "listen": "127.0.0.1",
+                    "port": 10809,
+                    "protocol": "http",
+                    "settings": {"auth": "noauth", "udp": True},
+                    "sniffing": {
+                        "enabled": True,
+                        "destOverride": ["tls", "http", "quic"],
+                        "routeOnly": True,
+                        "metadataOnly": False
+                    }
+                }
+            ],
+        }
 
-    full_config = {
-        "log": {"loglevel": "warning"},
-        "observatory": {
-            "subjectSelector": [""],
-            "probeUrl": "https://www.gstatic.com/generate_204",
-            "probeInterval": "10s"
+    def base_routing(balancer_tag: str = None, outbound_tag: str = None) -> dict:
+        """Роутинг — либо на балансер, либо на конкретный аутбаунд"""
+        rules = [
+            {"type": "field", "ip": ["geoip:private"], "outboundTag": "block"}
+        ]
+        routing = {
+            "domainMatcher": "hybrid",
+            "domainStrategy": "IPIfNonMatch",
+            "rules": rules
+        }
+        if balancer_tag:
+            rules.append({"type": "field", "network": "tcp,udp", "balancerTag": balancer_tag})
+            routing["balancers"] = [
+                {
+                    "tag": balancer_tag,
+                    "selector": ["proxy-"],
+                    "strategy": {"type": "leastPing"}
+                }
+            ]
+        elif outbound_tag:
+            rules.append({"type": "field", "network": "tcp,udp", "outboundTag": outbound_tag})
+        return routing
+
+    # ── [0] autoconf — все серверы + балансер ────────────────────────────────
+
+    auto_config = base_xray_skeleton(f"⚡️ AUTO • {count} серверов • {now_str} МСК")
+    auto_config["burstObservatory"] = {
+        "pingConfig": {
+            "connectivity": "http://connectivitycheck.platform.hicloud.com/generate_204",
+            "destination": "http://www.google.com/generate_204",
+            "httpMethod": "HEAD",
+            "interval": "5m",
+            "sampling": 1,
+            "timeout": "10s"
         },
-        "outbounds": outbounds + [
+        "subjectSelector": ["proxy-"]
+    }
+    auto_config["outbounds"] = (
+        [build_xray_outbound(p, tag) for p, tag, _ in parsed_entries]
+        + [{"tag": "direct", "protocol": "freedom"}, {"tag": "block", "protocol": "blackhole"}]
+    )
+    auto_config["routing"] = base_routing(balancer_tag="proxy-balancer")
+
+    # ── [1..N] одиночные конфиги ─────────────────────────────────────────────
+
+    single_configs = []
+    for parsed, tag, name in parsed_entries:
+        cfg = base_xray_skeleton(name)
+        cfg["outbounds"] = [
+            build_xray_outbound(parsed, "proxy"),
             {"tag": "direct", "protocol": "freedom"},
             {"tag": "block", "protocol": "blackhole"}
-        ],
-        "balancers": [{
-            "tag": "best",
-            "type": "leastPing",
-            "selector": [""],
-            "fallbackTag": "direct"
-        }],
-        "routing": {
-            "rules": [
-                {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
-                {"type": "field", "balancerTag": "best"}
-            ]
-        }
-    }
+        ]
+        cfg["routing"] = base_routing(outbound_tag="proxy")
+        single_configs.append(cfg)
 
-    json_str = json.dumps(full_config, ensure_ascii=False, separators=(",", ":"))
+    # ── Финальный массив ─────────────────────────────────────────────────────
 
-    meta_lines = [
-        f"#profile-title: base64:{title_b64}",
-        "#profile-update-interval: 6",
-        f"#announce: base64:{announce_b64}",
-        '#announce-url: "https://t.me/vpn_runner"',
-        "#subscription-autoconnect: 1",
-        "#subscription-autoconnect-type: lowestdelay",
-        "#url-test-interval: 3m",
-        "",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        f"# LEGION • {count} серверов | {now_str} МСК",
-        "# Чистые названия • локация определяется клиентом",
-        "# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        ""
-    ]
-
-    final_content = (
-        "\n".join(meta_lines) +
-        balancer_vless + "\n" +
-        "\n".join(vless_lines) +
-        "\n\n# === FULL JSON CONFIG WITH BALANCER (Hiddify / Nekobox) ===\n" +
-        json_str + "\n"
-    )
-
-    return final_content
+    result = [auto_config] + single_configs
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 
 def build_clash_config(all_configs: list) -> str:
@@ -288,7 +330,7 @@ def main():
 
     parsed_list.sort(key=lambda x: x[1]["host"])
 
-    print(f"[*] Генерация подписки Legion с чистыми названиями...")
+    print(f"[*] Генерация подписки Legion (JSON array)...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(build_subscription([cfg for cfg, _ in parsed_list]))
 
