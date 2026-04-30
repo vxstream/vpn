@@ -1,7 +1,7 @@
 """
 check.py — Legion VPN subscription builder
 Проверяет конфиги по TCP, определяет страну через несколько API,
-генерирует JSON-массив [autoAll, autoDE, autoUS, ..., config1, config2, ...]
+генерирует JSON-массив и Clash Meta конфиг.
 """
 
 import asyncio
@@ -19,9 +19,9 @@ import yaml  # pip install pyyaml httpx
 # ─── Пути ────────────────────────────────────────────────────────────────────
 
 INPUT_FILE  = "configs/all_vless.txt"
-OUTPUT_JSON = "runvpn.json"        # JSON-массив для Happ / Hiddify / Nekobox
-OUTPUT_YAML = "legion_clash.yaml"  # Clash Meta / FlClash / Mihomo
-OUTPUT_LOG  = "check_log.txt"      # Лог проверки
+OUTPUT_JSON = "runvpn.json"
+OUTPUT_YAML = "legion_clash.yaml"
+OUTPUT_LOG  = "check_log.txt"
 
 # ─── Гео ─────────────────────────────────────────────────────────────────────
 
@@ -41,7 +41,22 @@ COUNTRY_FLAGS: dict[str, str] = {
     "ID": "🇮🇩", "VN": "🇻🇳", "IL": "🇮🇱", "ZA": "🇿🇦",
 }
 
-# Несколько API без ключей — опрашиваем по очереди до первого ответа
+COUNTRY_NAMES: dict[str, str] = {
+    "US": "United States", "DE": "Germany", "NL": "Netherlands", "FR": "France",
+    "GB": "United Kingdom", "FI": "Finland", "SE": "Sweden", "CH": "Switzerland",
+    "AT": "Austria", "JP": "Japan", "SG": "Singapore", "HK": "Hong Kong",
+    "PL": "Poland", "CZ": "Czechia", "UA": "Ukraine", "TR": "Turkey",
+    "RU": "Russia", "KZ": "Kazakhstan", "AE": "UAE", "LT": "Lithuania",
+    "LV": "Latvia", "EE": "Estonia", "BG": "Bulgaria", "RO": "Romania",
+    "CA": "Canada", "AU": "Australia", "BR": "Brazil", "IN": "India",
+    "IT": "Italy", "ES": "Spain", "PT": "Portugal", "NO": "Norway",
+    "DK": "Denmark", "BE": "Belgium", "HU": "Hungary", "GR": "Greece",
+    "SK": "Slovakia", "HR": "Croatia", "RS": "Serbia", "MD": "Moldova",
+    "GE": "Georgia", "AM": "Armenia", "AZ": "Azerbaijan", "UZ": "Uzbekistan",
+    "KR": "South Korea", "TW": "Taiwan", "TH": "Thailand", "MY": "Malaysia",
+    "ID": "Indonesia", "VN": "Vietnam", "IL": "Israel", "ZA": "South Africa",
+}
+
 GEO_APIS = [
     lambda ip: f"https://ipwho.is/{ip}",
     lambda ip: f"https://ipapi.co/{ip}/json/",
@@ -158,17 +173,30 @@ def build_xray_outbound(parsed: dict, tag: str) -> dict:
     }
 
 
+# ─── Описание сервера ─────────────────────────────────────────────────────────
+
+def server_description(parsed: dict) -> str:
+    """Краткое описание: протокол + транспорт + безопасность."""
+    sec = parsed.get("security", "none")
+    transport = parsed.get("type", "tcp")
+    parts = ["VLESS"]
+    if sec == "reality":
+        parts.append("Reality")
+    elif sec == "tls":
+        parts.append("TLS")
+    if transport != "tcp":
+        parts.append(transport.upper())
+    return " + ".join(parts)
+
+
 # ─── Имя конфига ─────────────────────────────────────────────────────────────
 
 def build_name(parsed: dict, index: int, flag: str = "🌐", country: str = "") -> str:
-    sec = (
-        "Reality" if parsed.get("security") == "reality" else
-        "TLS"     if parsed.get("security") == "tls"     else
-        "Direct"
-    )
-    num = str(index + 1).zfill(2)
-    suffix = f" • {country}" if country and country != "XX" else ""
-    return f"{flag} LEGION-{num} • {sec}{suffix}"
+    country_full = COUNTRY_NAMES.get(country, "")
+    num = f"#{index + 1}"
+    if country_full and country != "XX":
+        return f"{flag} {country_full} {num}"
+    return f"{flag} Server {num}"
 
 
 # ─── TCP-проверка ─────────────────────────────────────────────────────────────
@@ -185,14 +213,12 @@ def tcp_check(host: str, port: int, timeout: float = 4.0) -> float | None:
 # ─── Определение страны ───────────────────────────────────────────────────────
 
 async def get_country(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
-    """Пробует несколько гео-API, возвращает (code, flag)"""
     for api_fn in GEO_APIS:
         try:
             r = await client.get(api_fn(ip), timeout=5.0, follow_redirects=True)
             if r.status_code != 200:
                 continue
             data = r.json()
-            # Разные API — разные ключи
             code = (
                 data.get("country_code") or
                 data.get("countryCode") or
@@ -219,8 +245,6 @@ async def check_one(
 ) -> CheckResult:
     async with sem:
         loop = asyncio.get_event_loop()
-
-        # TCP в executor чтобы не блокировать event loop
         tcp_ms = await loop.run_in_executor(None, tcp_check, parsed["host"], parsed["port"])
         alive  = tcp_ms is not None
 
@@ -239,9 +263,13 @@ async def check_one(
 
 # ─── Скелет Xray-конфига ──────────────────────────────────────────────────────
 
-def xray_skeleton(remarks: str) -> dict:
-    return {
+def xray_skeleton(remarks: str, description: str = "") -> dict:
+    cfg: dict = {
         "remarks": remarks,
+    }
+    if description:
+        cfg["serverDescription"] = description
+    cfg.update({
         "log": {"loglevel": "warning", "dnsLog": False},
         "dns": {"queryStrategy": "UseIPv4", "servers": ["1.1.1.1", "1.0.0.1"]},
         "policy": {
@@ -283,7 +311,8 @@ def xray_skeleton(remarks: str) -> dict:
                 },
             },
         ],
-    }
+    })
+    return cfg
 
 
 BURST_OBSERVATORY = {
@@ -334,13 +363,24 @@ DIRECT_OUTBOUNDS = [
 ]
 
 
-# ─── Сборка AUTO-конфига (все или по стране) ──────────────────────────────────
+# ─── Описание для auto-конфигов ───────────────────────────────────────────────
+
+def auto_description(entries: list[tuple[dict, str, CheckResult]]) -> str:
+    """Собирает описание: какие типы серверов внутри группы."""
+    types = set()
+    for parsed, _, _ in entries:
+        types.add(server_description(parsed))
+    return "Auto select | " + ", ".join(sorted(types))
+
+
+# ─── Сборка AUTO-конфига ──────────────────────────────────────────────────────
 
 def build_auto_config(
     remarks: str,
-    entries: list[tuple[dict, str, CheckResult]],  # (parsed, tag, result)
+    entries: list[tuple[dict, str, CheckResult]],
+    description: str = "",
 ) -> dict:
-    cfg = xray_skeleton(remarks)
+    cfg = xray_skeleton(remarks, description)
     cfg["burstObservatory"] = BURST_OBSERVATORY
     cfg["outbounds"] = (
         [build_xray_outbound(p, t) for p, t, _ in entries]
@@ -353,7 +393,8 @@ def build_auto_config(
 # ─── Сборка одиночного конфига ────────────────────────────────────────────────
 
 def build_single_config(parsed: dict, result: CheckResult) -> dict:
-    cfg = xray_skeleton(result.name)
+    desc = server_description(parsed)
+    cfg = xray_skeleton(result.name, desc)
     cfg["outbounds"] = [
         build_xray_outbound(parsed, "proxy"),
         *DIRECT_OUTBOUNDS,
@@ -365,9 +406,6 @@ def build_single_config(parsed: dict, result: CheckResult) -> dict:
 # ─── Clash Meta конфиг ────────────────────────────────────────────────────────
 
 def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
-    now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
-    now_str = now_msk.strftime("%d.%m.%Y %H:%M")
-
     proxies   = []
     names_all = []
 
@@ -413,7 +451,6 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         proxies.append(proxy)
         names_all.append(name)
 
-    # Группы по странам для Clash
     by_country: dict[str, list[str]] = {}
     for _, _, result in entries:
         if result.country != "XX":
@@ -424,7 +461,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         if len(names) >= 2:
             flag = COUNTRY_FLAGS.get(code, "🌐")
             country_groups.append({
-                "name":      f"{flag} Auto {code}",
+                "name":      f"{flag} Smart {code}",
                 "type":      "url-test",
                 "proxies":   names,
                 "url":       "https://www.gstatic.com/generate_204",
@@ -434,7 +471,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
             })
 
     auto_group = {
-        "name":      "⚡️ Auto Best",
+        "name":      "🇪🇺 Smart Auto",
         "type":      "url-test",
         "proxies":   names_all,
         "url":       "https://www.gstatic.com/generate_204",
@@ -443,9 +480,9 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "lazy":      True,
     }
 
-    select_proxies = ["⚡️ Auto Best"] + [g["name"] for g in country_groups] + names_all
+    select_proxies = ["🇪🇺 Smart Auto"] + [g["name"] for g in country_groups] + names_all
     select_group = {
-        "name":    "🌍 Select",
+        "name":    "Select",
         "type":    "select",
         "proxies": select_proxies,
     }
@@ -461,26 +498,19 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "rules": [
             "GEOIP,CN,DIRECT",
             "GEOIP,PRIVATE,DIRECT",
-            "MATCH,🌍 Select",
+            "MATCH,Select",
         ],
     }
 
-    header = (
-        f"# Legion VPN — Clash Meta Config\n"
-        f"# Обновлено: {now_str} МСК | Серверов: {len(proxies)}\n\n"
-    )
-    return header + yaml.dump(clash_cfg, allow_unicode=True, sort_keys=False, default_flow_style=False)
+    return yaml.dump(clash_cfg, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 async def main() -> None:
-    now_msk = datetime.now(timezone.utc) + timedelta(hours=3)
-    now_str = now_msk.strftime("%d.%m.%Y %H:%M")
-
     # 1. Загрузка
     raw_configs = load_configs(INPUT_FILE)
-    print(f"[*] Загружено конфигов: {len(raw_configs)}")
+    print(f"[*] Loaded: {len(raw_configs)}")
 
     parsed_list: list[tuple[str, dict]] = []
     for cfg in raw_configs:
@@ -488,11 +518,11 @@ async def main() -> None:
         if p:
             parsed_list.append((cfg, p))
 
-    print(f"[*] Успешно распаршено: {len(parsed_list)}")
+    print(f"[*] Parsed: {len(parsed_list)}")
 
-    # 2. Асинхронная проверка (макс. 20 параллельных запросов)
+    # 2. Асинхронная проверка
     sem = asyncio.Semaphore(20)
-    print(f"[*] Запуск TCP + Geo проверки ({len(parsed_list)} конфигов)...")
+    print(f"[*] Checking...")
 
     async with httpx.AsyncClient(
         headers={"User-Agent": "Mozilla/5.0"},
@@ -504,38 +534,38 @@ async def main() -> None:
         ]
         results: list[CheckResult] = await asyncio.gather(*tasks)
 
-    # 3. Сортировка живых по пингу
+    # 3. Сортировка
     alive  = [(parsed_list[i][1], r) for i, r in enumerate(results) if r.alive]
     dead   = [(parsed_list[i][1], r) for i, r in enumerate(results) if not r.alive]
     alive.sort(key=lambda x: x[1].tcp_ms or 9999)
 
-    print(f"\n[✓] Живых: {len(alive)}  |  Мёртвых: {len(dead)}\n")
+    print(f"[+] Alive: {len(alive)} | Dead: {len(dead)}")
 
     # 4. Лог
     log_lines = [
-        f"Legion VPN — проверка {now_str} МСК",
-        f"Всего: {len(results)} | Живых: {len(alive)} | Мёртвых: {len(dead)}",
-        "─" * 60,
+        f"Alive: {len(alive)} | Dead: {len(dead)}",
+        "─" * 50,
     ]
     for parsed, r in alive:
-        log_lines.append(f"  ✅  {r.flag} {r.country:2}  {r.tcp_ms:>6.1f}ms  {r.host}:{r.port}")
-    log_lines.append("─" * 60)
+        log_lines.append(f"  + {r.flag} {r.country:2}  {r.tcp_ms:>6.1f}ms  {r.host}:{r.port}")
+    log_lines.append("─" * 50)
     for parsed, r in dead:
-        log_lines.append(f"  ❌  🌐 XX  TIMEOUT    {r.host}:{r.port}")
+        log_lines.append(f"  - XX  TIMEOUT  {r.host}:{r.port}")
     Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
-    print("\n".join(log_lines[:20]))  # Первые строки в консоль
+    print("\n".join(log_lines[:15]))
 
     if not alive:
-        print("[!] Нет живых конфигов, выходим.")
+        print("[!] No alive configs.")
         return
 
-    # 5. Переиндексация тегов только для живых
-    entries: list[tuple[dict, str, CheckResult]] = [
-        (parsed, f"proxy-{i + 1}", result)
-        for i, (parsed, result) in enumerate(alive)
-    ]
+    # 5. Переиндексация
+    entries: list[tuple[dict, str, CheckResult]] = []
+    for i, (parsed, result) in enumerate(alive):
+        new_tag = f"proxy-{i + 1}"
+        result.name = build_name(parsed, i, result.flag, result.country)
+        entries.append((parsed, new_tag, result))
 
-    # 6. Группировка по странам (минимум 2 сервера)
+    # 6. Группировка по странам
     by_country: dict[str, list[tuple[dict, str, CheckResult]]] = {}
     for item in entries:
         code = item[2].country
@@ -547,39 +577,35 @@ async def main() -> None:
         if len(items) < 2:
             continue
         flag = COUNTRY_FLAGS.get(code, "🌐")
-        remarks = f"{flag} AUTO {code} • {len(items)} серверов"
-        country_auto_configs.append(build_auto_config(remarks, items))
-        print(f"   {flag} AUTO {code}: {len(items)} серверов")
+        remarks = f"{flag} Smart {code}"
+        desc = auto_description(items)
+        country_auto_configs.append(build_auto_config(remarks, items, desc))
+        print(f"   {flag} Smart {code}: {len(items)}")
 
-    # 7. Главный AUTO (все живые)
+    # 7. Главный AUTO
     auto_all = build_auto_config(
-        f"⚡️ AUTO ALL • {len(alive)} серверов • {now_str} МСК",
+        f"🇪🇺 Smart Auto",
         entries,
+        auto_description(entries),
     )
 
-    # 8. Одиночные конфиги
+    # 8. Одиночные
     single_configs = [build_single_config(p, r) for p, _, r in entries]
 
-    # 9. Финальный JSON-массив
+    # 9. JSON
     subscription = [auto_all] + country_auto_configs + single_configs
     Path(OUTPUT_JSON).write_text(
         json.dumps(subscription, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"\n[✓] {OUTPUT_JSON} — {len(subscription)} конфигов")
+    print(f"\n[+] {OUTPUT_JSON} — {len(subscription)} configs")
 
     # 10. Clash
     Path(OUTPUT_YAML).write_text(
         build_clash_config(entries),
         encoding="utf-8",
     )
-    print(f"[✓] {OUTPUT_YAML}")
-    print(f"\n   AUTO ALL     : {len(alive)} серверов")
-    print(f"   Страновых AUTO: {len(country_auto_configs)}")
-    print(f"   Одиночных    : {len(single_configs)}")
-    print(f"\n   → {OUTPUT_JSON}")
-    print(f"   → {OUTPUT_YAML}")
-    print(f"   → {OUTPUT_LOG}")
+    print(f"[+] {OUTPUT_YAML}")
 
 
 if __name__ == "__main__":
