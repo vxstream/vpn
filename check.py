@@ -89,26 +89,69 @@ COUNTRY_NAMES_EN: dict[str, str] = {
     "IS": "Iceland",       "LU": "Luxembourg",  "CY": "Cyprus",       "MT": "Malta",
 }
 
-GEO_APIS = [
-    lambda ip: f"https://ipwho.is/{ip}",
-    lambda ip: f"https://ipapi.co/{ip}/json/",
-    lambda ip: f"https://freeipapi.com/api/json/{ip}",
-    lambda ip: f"https://ip.guide/{ip}",
-    lambda ip: f"https://api.iplocation.net/?ip={ip}",
+GEO_APIS: list[tuple[str, callable]] = [
+    # url_fn,  extractor_fn(data) → str | None
+    (
+        lambda ip: f"https://ipwho.is/{ip}",
+        lambda d: d.get("country_code"),
+    ),
+    (
+        lambda ip: f"https://ipapi.co/{ip}/json/",
+        lambda d: d.get("country_code"),
+    ),
+    (
+        lambda ip: f"https://freeipapi.com/api/json/{ip}",
+        lambda d: d.get("countryCode"),
+    ),
+    (
+        lambda ip: f"https://ip-api.com/json/{ip}?fields=countryCode",
+        lambda d: d.get("countryCode"),
+    ),
+    (
+        lambda ip: f"https://ipinfo.io/{ip}/json",
+        lambda d: d.get("country"),
+    ),
+    (
+        lambda ip: f"https://api.iplocation.net/?ip={ip}",
+        lambda d: d.get("country_code2"),
+    ),
+    (
+        lambda ip: f"https://ip.guide/{ip}",
+        lambda d: (
+            (d.get("location") or {}).get("country_code")
+            or (d.get("network") or {}).get("country_code")
+        ),
+    ),
+    (
+        lambda ip: f"https://extreme-ip-lookup.com/json/{ip}?key=free",
+        lambda d: d.get("countryCode"),
+    ),
+    (
+        lambda ip: f"https://ipapi.is/json/?ip={ip}",
+        lambda d: (d.get("location") or {}).get("country_code"),
+    ),
+    (
+        lambda ip: f"https://api.ipbase.com/v1/json/?ip={ip}",
+        lambda d: d.get("country_code"),
+    ),
 ]
 
 # ─── Датакласс результата ─────────────────────────────────────────────────────
 
 @dataclass
 class CheckResult:
-    tag:     str
-    name:    str
-    host:    str
-    port:    int
-    tcp_ms:  float | None
-    country: str
-    flag:    str
-    alive:   bool
+    tag:          str
+    name:         str
+    host:         str
+    port:         int
+    tcp_ms:       float | None
+    # entry = страна IP-адреса хоста (куда подключаемся)
+    country:      str
+    flag:         str
+    # exit = страна куда идёт трафик (SNI hostname → resolve → geo)
+    exit_country: str
+    exit_flag:    str
+    alive:        bool
 
 
 # ─── Парсинг VLESS URL ────────────────────────────────────────────────────────
@@ -227,15 +270,35 @@ def country_name_ru(code: str) -> str:
     return COUNTRY_NAMES_RU.get(code, code)
 
 
-def build_name(parsed: dict, index: int, flag: str = ICON_UNKNOWN, country: str = "") -> str:
+def build_name(
+    parsed: dict,
+    index: int,
+    entry_flag: str = ICON_UNKNOWN,
+    entry_code: str = "",
+    exit_code:  str = "",
+    exit_flag:  str = ICON_UNKNOWN,
+) -> str:
     """
-    Одиночный сервер: «🇳🇱 Нидерланды #1»
-    Неизвестная страна: «🇸🇴 Сервер #1»
+    Страна известна, exit совпадает или неизвестен: «🇩🇪 Германия #1»
+    Entry ≠ exit (трафик уходит в другую страну): «🇷🇺→🇩🇪 Германия #1»
+    Страна совсем неизвестна: «🇸🇴 Сервер #1»
     """
     num = f"#{index + 1}"
-    if country and country != "XX":
-        ru = country_name_ru(country)
-        return f"{flag} {ru} {num}"
+
+    has_entry = entry_code and entry_code != "XX"
+    has_exit  = exit_code  and exit_code  != "XX"
+
+    if has_exit and has_entry and exit_code != entry_code:
+        # Трафик идёт в другую страну — показываем маршрут entry→exit
+        ru_exit = country_name_ru(exit_code)
+        return f"{entry_flag}→{exit_flag} {ru_exit} {num}"
+
+    if has_exit:
+        return f"{exit_flag} {country_name_ru(exit_code)} {num}"
+
+    if has_entry:
+        return f"{entry_flag} {country_name_ru(entry_code)} {num}"
+
     return f"{ICON_UNKNOWN} Сервер {num}"
 
 
@@ -261,31 +324,87 @@ def tcp_check(host: str, port: int, timeout: float = 4.0) -> float | None:
         return None
 
 
-# ─── Определение страны ───────────────────────────────────────────────────────
+# ─── Определение страны — консенсус из всех API параллельно ─────────────────
 
-async def get_country(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
-    for api_fn in GEO_APIS:
-        try:
-            r = await client.get(api_fn(ip), timeout=5.0, follow_redirects=True)
-            if r.status_code != 200:
-                continue
-            data = r.json()
-            code = (
-                data.get("country_code") or
-                data.get("countryCode") or
-                data.get("country") or
-                (data.get("location") or {}).get("country_code") or
-                (data.get("network") or {}).get("country_code")
-            )
-            if code and isinstance(code, str) and len(code) == 2:
-                code = code.upper()
-                return code, COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
-        except Exception:
-            continue
-    return "XX", ICON_UNKNOWN
+def _extract_code(data: dict, extractor) -> str | None:
+    try:
+        code = extractor(data)
+        if code and isinstance(code, str) and len(code) == 2:
+            return code.upper()
+    except Exception:
+        pass
+    return None
+
+
+async def _query_one_geo(
+    ip: str,
+    url_fn,
+    extractor,
+    client: httpx.AsyncClient,
+) -> str | None:
+    try:
+        url = url_fn(ip)
+        r = await client.get(url, timeout=5.0, follow_redirects=True)
+        if r.status_code != 200:
+            return None
+        data = r.json()
+        return _extract_code(data, extractor)
+    except Exception:
+        return None
+
+
+async def get_country_consensus(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
+    """
+    Запрашивает все GEO_APIS параллельно, голосует за наиболее популярный ответ.
+    Возвращает (country_code, flag).
+    """
+    tasks = [_query_one_geo(ip, url_fn, ext, client) for url_fn, ext in GEO_APIS]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    votes: dict[str, int] = {}
+    for r in results:
+        if isinstance(r, str) and r and r != "XX":
+            votes[r] = votes.get(r, 0) + 1
+
+    if not votes:
+        return "XX", ICON_UNKNOWN
+
+    winner = max(votes, key=votes.__getitem__)
+    return winner, COUNTRY_FLAGS.get(winner, ICON_UNKNOWN)
+
+
+async def resolve_ip(hostname: str) -> str | None:
+    """DNS-резолв hostname → первый IPv4. None если не удалось."""
+    loop = asyncio.get_event_loop()
+    try:
+        infos = await loop.getaddrinfo(hostname, None, family=socket.AF_INET)
+        if infos:
+            return infos[0][4][0]
+    except Exception:
+        pass
+    return None
 
 
 # ─── Асинхронная проверка одного конфига ─────────────────────────────────────
+
+# ─── Асинхронная проверка одного конфига ─────────────────────────────────────
+
+async def _resolve_exit_country(
+    sni: str,
+    fallback_host: str,
+    client: httpx.AsyncClient,
+) -> tuple[str, str]:
+    """
+    Страна выхода трафика через SNI hostname.
+    Если SNI == хост или не резолвится — возвращает ("XX", ICON_UNKNOWN).
+    """
+    if not sni or sni == fallback_host:
+        return "XX", ICON_UNKNOWN
+    exit_ip = await resolve_ip(sni)
+    if not exit_ip or exit_ip == fallback_host:
+        return "XX", ICON_UNKNOWN
+    return await get_country_consensus(exit_ip, client)
+
 
 async def check_one(
     parsed: dict,
@@ -299,16 +418,31 @@ async def check_one(
         tcp_ms = await loop.run_in_executor(None, tcp_check, parsed["host"], parsed["port"])
         alive  = tcp_ms is not None
 
-        if alive:
-            country, flag = await get_country(parsed["host"], client)
-        else:
-            country, flag = "XX", ICON_UNKNOWN
+        if not alive:
+            return CheckResult(
+                tag=tag, name=f"{ICON_UNKNOWN} Сервер #{index + 1}",
+                host=parsed["host"], port=parsed["port"],
+                tcp_ms=None,
+                country="XX",      flag=ICON_UNKNOWN,
+                exit_country="XX", exit_flag=ICON_UNKNOWN,
+                alive=False,
+            )
 
-        name = build_name(parsed, index, flag, country)
+        # entry и exit — параллельно
+        sni = parsed.get("sni", "")
+        (entry_code, entry_flag), (exit_code, exit_flag) = await asyncio.gather(
+            get_country_consensus(parsed["host"], client),
+            _resolve_exit_country(sni, parsed["host"], client),
+        )
+
+        name = build_name(parsed, index, entry_flag, entry_code, exit_code, exit_flag)
         return CheckResult(
             tag=tag, name=name,
             host=parsed["host"], port=parsed["port"],
-            tcp_ms=tcp_ms, country=country, flag=flag, alive=alive,
+            tcp_ms=tcp_ms,
+            country=entry_code,    flag=entry_flag,
+            exit_country=exit_code, exit_flag=exit_flag,
+            alive=True,
         )
 
 
@@ -596,8 +730,18 @@ async def main() -> None:
     ]
     for parsed, r in alive:
         ms_str = f"{r.tcp_ms:>6.1f}мс"
-        ru = country_name_ru(r.country) if r.country != "XX" else "Неизвестно"
-        log_lines.append(f"  ✓  {r.flag} {ru:<16}  {ms_str}  {r.host}:{r.port}")
+        if r.exit_country and r.exit_country != "XX" and r.exit_country != r.country:
+            geo = (
+                f"{r.flag}{country_name_ru(r.country):<12}"
+                f" → {r.exit_flag}{country_name_ru(r.exit_country)}"
+            )
+        elif r.exit_country and r.exit_country != "XX":
+            geo = f"{r.exit_flag} {country_name_ru(r.exit_country):<16}"
+        elif r.country != "XX":
+            geo = f"{r.flag} {country_name_ru(r.country):<16}"
+        else:
+            geo = f"{ICON_UNKNOWN} Неизвестно       "
+        log_lines.append(f"  ✓  {geo}  {ms_str}  {r.host}:{r.port}")
     log_lines.append(f"{'─' * 60}")
     for parsed, r in dead:
         log_lines.append(f"  ✗  🇸🇴 Недоступен               TIMEOUT  {r.host}:{r.port}")
@@ -609,31 +753,52 @@ async def main() -> None:
         return
 
     # 5. Переиндексация — нумерация внутри каждой страны
-    # Сначала соберём порядковый номер по стране
+    # Для имени и группировки используем exit_country (где выходит трафик),
+    # при отсутствии — entry_country (IP хоста).
     country_counter: dict[str, int] = {}
     entries: list[tuple[dict, str, CheckResult]] = []
     global_index = 0
 
     for parsed, result in alive:
-        new_tag = f"proxy-{global_index + 1}"
-        code    = result.country
+        new_tag    = f"proxy-{global_index + 1}"
+        # "главная" страна для группировки — exit если есть, иначе entry
+        group_code = (
+            result.exit_country
+            if result.exit_country and result.exit_country != "XX"
+            else result.country
+        )
+        country_counter[group_code] = country_counter.get(group_code, 0) + 1
+        idx_in_country = country_counter[group_code]
 
-        if code and code != "XX":
-            country_counter[code] = country_counter.get(code, 0) + 1
-            idx_in_country = country_counter[code]  # 1, 2, 3…
-            flag = result.flag
-            ru   = country_name_ru(code)
-            result.name = f"{flag} {ru} #{idx_in_country}"
+        # Пересобираем имя с точным индексом внутри страны
+        if result.exit_country and result.exit_country != "XX":
+            if result.exit_country != result.country and result.country != "XX":
+                # entry→exit маршрут
+                result.name = (
+                    f"{result.flag}→{result.exit_flag} "
+                    f"{country_name_ru(result.exit_country)} #{idx_in_country}"
+                )
+            else:
+                result.name = (
+                    f"{result.exit_flag} "
+                    f"{country_name_ru(result.exit_country)} #{idx_in_country}"
+                )
+        elif result.country and result.country != "XX":
+            result.name = (
+                f"{result.flag} "
+                f"{country_name_ru(result.country)} #{idx_in_country}"
+            )
         else:
             result.name = f"{ICON_UNKNOWN} Сервер #{global_index + 1}"
 
         entries.append((parsed, new_tag, result))
         global_index += 1
 
-    # 6. Группировка по странам → несколько LEGION · Страна, LEGION · Страна 2, …
+    # 6. Группировка по exit-стране (где выходит трафик)
     by_country: dict[str, list[tuple[dict, str, CheckResult]]] = {}
     for item in entries:
-        code = item[2].country
+        r    = item[2]
+        code = r.exit_country if r.exit_country != "XX" else r.country
         if code != "XX":
             by_country.setdefault(code, []).append(item)
 
