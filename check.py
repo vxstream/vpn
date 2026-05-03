@@ -25,9 +25,11 @@ OUTPUT_LOG  = "check_log.txt"
 
 # ─── Бренд ───────────────────────────────────────────────────────────────────
 
-BRAND        = "LEGION"
-BRAND_AUTO   = f"🇸🇴 {BRAND} · Авто"
-BRAND_PREFIX = f"{BRAND} · "
+BRAND             = "LEGION"
+ICON_UNKNOWN      = "🇸🇴"                          # звёздочка для неизвестных стран
+BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"  # главный авто
+BRAND_AUTO_PREFIX = f"{BRAND} · Авто · "            # префикс страновых авто-групп
+BRAND_PREFIX      = f"{BRAND} · "                   # для будущих групп
 
 # ─── Гео ─────────────────────────────────────────────────────────────────────
 
@@ -225,25 +227,26 @@ def country_name_ru(code: str) -> str:
     return COUNTRY_NAMES_RU.get(code, code)
 
 
-def build_name(parsed: dict, index: int, flag: str = "🌐", country: str = "") -> str:
+def build_name(parsed: dict, index: int, flag: str = ICON_UNKNOWN, country: str = "") -> str:
     """
     Одиночный сервер: «🇳🇱 Нидерланды #1»
-    Неизвестная страна: «🌐 Сервер #1»
+    Неизвестная страна: «🇸🇴 Сервер #1»
     """
     num = f"#{index + 1}"
     if country and country != "XX":
         ru = country_name_ru(country)
         return f"{flag} {ru} {num}"
-    return f"🌐 Сервер {num}"
+    return f"{ICON_UNKNOWN} Сервер {num}"
 
 
 def build_group_name(code: str, group_index: int | None = None) -> str:
     """
-    Группа страны: «🇳🇱 LEGION · Нидерланды» или с индексом «🇳🇱 LEGION · Нидерланды 2»
+    Страновой авто-пул: «🇳🇱 LEGION · Авто · Нидерланды»
+    С индексом: «🇳🇱 LEGION · Авто · Нидерланды 2»
     """
-    flag = COUNTRY_FLAGS.get(code, "🌐")
+    flag = COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
     ru   = country_name_ru(code)
-    base = f"{flag} {BRAND_PREFIX}{ru}"
+    base = f"{flag} {BRAND_AUTO_PREFIX}{ru}"
     return base if group_index is None else f"{base} {group_index}"
 
 
@@ -276,10 +279,10 @@ async def get_country(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
             )
             if code and isinstance(code, str) and len(code) == 2:
                 code = code.upper()
-                return code, COUNTRY_FLAGS.get(code, "🌐")
+                return code, COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
         except Exception:
             continue
-    return "XX", "🌐"
+    return "XX", ICON_UNKNOWN
 
 
 # ─── Асинхронная проверка одного конфига ─────────────────────────────────────
@@ -299,7 +302,7 @@ async def check_one(
         if alive:
             country, flag = await get_country(parsed["host"], client)
         else:
-            country, flag = "XX", "🌐"
+            country, flag = "XX", ICON_UNKNOWN
 
         name = build_name(parsed, index, flag, country)
         return CheckResult(
@@ -314,7 +317,7 @@ async def check_one(
 def xray_skeleton(remarks: str, description: str = "") -> dict:
     cfg: dict = {"remarks": remarks}
     if description:
-        cfg["serverDescription"] = description
+        cfg["meta"] = {"serverDescription": description}
     cfg.update({
         "log": {"loglevel": "warning", "dnsLog": False},
         "dns": {"queryStrategy": "UseIPv4", "servers": ["1.1.1.1", "1.0.0.1"]},
@@ -597,7 +600,7 @@ async def main() -> None:
         log_lines.append(f"  ✓  {r.flag} {ru:<16}  {ms_str}  {r.host}:{r.port}")
     log_lines.append(f"{'─' * 60}")
     for parsed, r in dead:
-        log_lines.append(f"  ✗  🌐 Недоступен               TIMEOUT  {r.host}:{r.port}")
+        log_lines.append(f"  ✗  🇸🇴 Недоступен               TIMEOUT  {r.host}:{r.port}")
     Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
     print("\n".join(log_lines[:20]))
 
@@ -622,7 +625,7 @@ async def main() -> None:
             ru   = country_name_ru(code)
             result.name = f"{flag} {ru} #{idx_in_country}"
         else:
-            result.name = f"🌐 Сервер #{global_index + 1}"
+            result.name = f"{ICON_UNKNOWN} Сервер #{global_index + 1}"
 
         entries.append((parsed, new_tag, result))
         global_index += 1
@@ -648,7 +651,7 @@ async def main() -> None:
             desc = auto_description(chunk)
             country_auto_configs.append(build_auto_config(group_label, chunk, desc))
 
-        flag = COUNTRY_FLAGS.get(code, "🌐")
+        flag = COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
         ru   = country_name_ru(code)
         print(f"   {flag} {ru}: {len(items)} серверов → {len(chunks)} групп(ы)")
 
