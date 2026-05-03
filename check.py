@@ -23,6 +23,12 @@ OUTPUT_JSON = "runvpn.json"
 OUTPUT_YAML = "legion_clash.yaml"
 OUTPUT_LOG  = "check_log.txt"
 
+# ─── Бренд ───────────────────────────────────────────────────────────────────
+
+BRAND        = "LEGION"
+BRAND_AUTO   = f"🇸🇴 {BRAND} · Авто"
+BRAND_PREFIX = f"{BRAND} · "
+
 # ─── Гео ─────────────────────────────────────────────────────────────────────
 
 COUNTRY_FLAGS: dict[str, str] = {
@@ -39,22 +45,46 @@ COUNTRY_FLAGS: dict[str, str] = {
     "GE": "🇬🇪", "AM": "🇦🇲", "AZ": "🇦🇿", "UZ": "🇺🇿",
     "KR": "🇰🇷", "TW": "🇹🇼", "TH": "🇹🇭", "MY": "🇲🇾",
     "ID": "🇮🇩", "VN": "🇻🇳", "IL": "🇮🇱", "ZA": "🇿🇦",
+    "MX": "🇲🇽", "AR": "🇦🇷", "CL": "🇨🇱", "CO": "🇨🇴",
+    "IS": "🇮🇸", "LU": "🇱🇺", "CY": "🇨🇾", "MT": "🇲🇹",
 }
 
-COUNTRY_NAMES: dict[str, str] = {
-    "US": "United States", "DE": "Germany", "NL": "Netherlands", "FR": "France",
-    "GB": "United Kingdom", "FI": "Finland", "SE": "Sweden", "CH": "Switzerland",
-    "AT": "Austria", "JP": "Japan", "SG": "Singapore", "HK": "Hong Kong",
-    "PL": "Poland", "CZ": "Czechia", "UA": "Ukraine", "TR": "Turkey",
-    "RU": "Russia", "KZ": "Kazakhstan", "AE": "UAE", "LT": "Lithuania",
-    "LV": "Latvia", "EE": "Estonia", "BG": "Bulgaria", "RO": "Romania",
-    "CA": "Canada", "AU": "Australia", "BR": "Brazil", "IN": "India",
-    "IT": "Italy", "ES": "Spain", "PT": "Portugal", "NO": "Norway",
-    "DK": "Denmark", "BE": "Belgium", "HU": "Hungary", "GR": "Greece",
-    "SK": "Slovakia", "HR": "Croatia", "RS": "Serbia", "MD": "Moldova",
-    "GE": "Georgia", "AM": "Armenia", "AZ": "Azerbaijan", "UZ": "Uzbekistan",
-    "KR": "South Korea", "TW": "Taiwan", "TH": "Thailand", "MY": "Malaysia",
-    "ID": "Indonesia", "VN": "Vietnam", "IL": "Israel", "ZA": "South Africa",
+# Русские названия стран
+COUNTRY_NAMES_RU: dict[str, str] = {
+    "US": "США",          "DE": "Германия",     "NL": "Нидерланды",   "FR": "Франция",
+    "GB": "Великобритания","FI": "Финляндия",    "SE": "Швеция",       "CH": "Швейцария",
+    "AT": "Австрия",      "JP": "Япония",        "SG": "Сингапур",     "HK": "Гонконг",
+    "PL": "Польша",       "CZ": "Чехия",         "UA": "Украина",      "TR": "Турция",
+    "RU": "Россия",       "KZ": "Казахстан",     "AE": "ОАЭ",          "LT": "Литва",
+    "LV": "Латвия",       "EE": "Эстония",       "BG": "Болгария",     "RO": "Румыния",
+    "CA": "Канада",       "AU": "Австралия",      "BR": "Бразилия",     "IN": "Индия",
+    "IT": "Италия",       "ES": "Испания",        "PT": "Португалия",   "NO": "Норвегия",
+    "DK": "Дания",        "BE": "Бельгия",        "HU": "Венгрия",      "GR": "Греция",
+    "SK": "Словакия",     "HR": "Хорватия",       "RS": "Сербия",       "MD": "Молдова",
+    "GE": "Грузия",       "AM": "Армения",        "AZ": "Азербайджан",  "UZ": "Узбекистан",
+    "KR": "Корея",        "TW": "Тайвань",        "TH": "Таиланд",      "MY": "Малайзия",
+    "ID": "Индонезия",    "VN": "Вьетнам",        "IL": "Израиль",      "ZA": "ЮАР",
+    "MX": "Мексика",      "AR": "Аргентина",      "CL": "Чили",         "CO": "Колумбия",
+    "IS": "Исландия",     "LU": "Люксембург",     "CY": "Кипр",         "MT": "Мальта",
+}
+
+# Английские названия (для Clash совместимости)
+COUNTRY_NAMES_EN: dict[str, str] = {
+    "US": "United States", "DE": "Germany",     "NL": "Netherlands",  "FR": "France",
+    "GB": "United Kingdom","FI": "Finland",     "SE": "Sweden",       "CH": "Switzerland",
+    "AT": "Austria",       "JP": "Japan",       "SG": "Singapore",    "HK": "Hong Kong",
+    "PL": "Poland",        "CZ": "Czechia",     "UA": "Ukraine",      "TR": "Turkey",
+    "RU": "Russia",        "KZ": "Kazakhstan",  "AE": "UAE",          "LT": "Lithuania",
+    "LV": "Latvia",        "EE": "Estonia",     "BG": "Bulgaria",     "RO": "Romania",
+    "CA": "Canada",        "AU": "Australia",   "BR": "Brazil",       "IN": "India",
+    "IT": "Italy",         "ES": "Spain",       "PT": "Portugal",     "NO": "Norway",
+    "DK": "Denmark",       "BE": "Belgium",     "HU": "Hungary",      "GR": "Greece",
+    "SK": "Slovakia",      "HR": "Croatia",     "RS": "Serbia",       "MD": "Moldova",
+    "GE": "Georgia",       "AM": "Armenia",     "AZ": "Azerbaijan",   "UZ": "Uzbekistan",
+    "KR": "South Korea",   "TW": "Taiwan",      "TH": "Thailand",     "MY": "Malaysia",
+    "ID": "Indonesia",     "VN": "Vietnam",     "IL": "Israel",       "ZA": "South Africa",
+    "MX": "Mexico",        "AR": "Argentina",   "CL": "Chile",        "CO": "Colombia",
+    "IS": "Iceland",       "LU": "Luxembourg",  "CY": "Cyprus",       "MT": "Malta",
 }
 
 GEO_APIS = [
@@ -176,7 +206,6 @@ def build_xray_outbound(parsed: dict, tag: str) -> dict:
 # ─── Описание сервера ─────────────────────────────────────────────────────────
 
 def server_description(parsed: dict) -> str:
-    """Краткое описание: протокол + транспорт + безопасность."""
     sec = parsed.get("security", "none")
     transport = parsed.get("type", "tcp")
     parts = ["VLESS"]
@@ -189,14 +218,33 @@ def server_description(parsed: dict) -> str:
     return " + ".join(parts)
 
 
-# ─── Имя конфига ─────────────────────────────────────────────────────────────
+# ─── Имена конфигов ───────────────────────────────────────────────────────────
+
+def country_name_ru(code: str) -> str:
+    """Русское название страны или код, если нет перевода."""
+    return COUNTRY_NAMES_RU.get(code, code)
+
 
 def build_name(parsed: dict, index: int, flag: str = "🌐", country: str = "") -> str:
-    country_full = COUNTRY_NAMES.get(country, "")
+    """
+    Одиночный сервер: «🇳🇱 Нидерланды #1»
+    Неизвестная страна: «🌐 Сервер #1»
+    """
     num = f"#{index + 1}"
-    if country_full and country != "XX":
-        return f"{flag} {country_full} {num}"
-    return f"{flag} Server {num}"
+    if country and country != "XX":
+        ru = country_name_ru(country)
+        return f"{flag} {ru} {num}"
+    return f"🌐 Сервер {num}"
+
+
+def build_group_name(code: str, group_index: int | None = None) -> str:
+    """
+    Группа страны: «🇳🇱 LEGION · Нидерланды» или с индексом «🇳🇱 LEGION · Нидерланды 2»
+    """
+    flag = COUNTRY_FLAGS.get(code, "🌐")
+    ru   = country_name_ru(code)
+    base = f"{flag} {BRAND_PREFIX}{ru}"
+    return base if group_index is None else f"{base} {group_index}"
 
 
 # ─── TCP-проверка ─────────────────────────────────────────────────────────────
@@ -264,9 +312,7 @@ async def check_one(
 # ─── Скелет Xray-конфига ──────────────────────────────────────────────────────
 
 def xray_skeleton(remarks: str, description: str = "") -> dict:
-    cfg: dict = {
-        "remarks": remarks,
-    }
+    cfg: dict = {"remarks": remarks}
     if description:
         cfg["serverDescription"] = description
     cfg.update({
@@ -291,10 +337,10 @@ def xray_skeleton(remarks: str, description: str = "") -> dict:
                 "protocol": "socks",
                 "settings": {"auth": "noauth", "udp": True},
                 "sniffing": {
-                    "enabled":       True,
-                    "destOverride":  ["tls", "http", "quic"],
-                    "routeOnly":     True,
-                    "metadataOnly":  False,
+                    "enabled":      True,
+                    "destOverride": ["tls", "http", "quic"],
+                    "routeOnly":    True,
+                    "metadataOnly": False,
                 },
             },
             {
@@ -304,10 +350,10 @@ def xray_skeleton(remarks: str, description: str = "") -> dict:
                 "protocol": "http",
                 "settings": {"auth": "noauth", "udp": True},
                 "sniffing": {
-                    "enabled":       True,
-                    "destOverride":  ["tls", "http", "quic"],
-                    "routeOnly":     True,
-                    "metadataOnly":  False,
+                    "enabled":      True,
+                    "destOverride": ["tls", "http", "quic"],
+                    "routeOnly":    True,
+                    "metadataOnly": False,
                 },
             },
         ],
@@ -363,10 +409,7 @@ DIRECT_OUTBOUNDS = [
 ]
 
 
-# ─── Описание для auto-конфигов ───────────────────────────────────────────────
-
 def auto_description(entries: list[tuple[dict, str, CheckResult]]) -> str:
-    """Собирает описание: какие типы серверов внутри группы."""
     types = set()
     for parsed, _, _ in entries:
         types.add(server_description(parsed))
@@ -459,9 +502,9 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
     country_groups = []
     for code, names in by_country.items():
         if len(names) >= 2:
-            flag = COUNTRY_FLAGS.get(code, "🌐")
+            group_name = build_group_name(code)
             country_groups.append({
-                "name":      f"{flag} Smart {code}",
+                "name":      group_name,
                 "type":      "url-test",
                 "proxies":   names,
                 "url":       "https://www.gstatic.com/generate_204",
@@ -471,7 +514,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
             })
 
     auto_group = {
-        "name":      "🇪🇺 Smart Auto",
+        "name":      BRAND_AUTO,
         "type":      "url-test",
         "proxies":   names_all,
         "url":       "https://www.gstatic.com/generate_204",
@@ -480,9 +523,9 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "lazy":      True,
     }
 
-    select_proxies = ["🇪🇺 Smart Auto"] + [g["name"] for g in country_groups] + names_all
+    select_proxies = [BRAND_AUTO] + [g["name"] for g in country_groups] + names_all
     select_group = {
-        "name":    "Select",
+        "name":    f"⚡ {BRAND} · Выбор",
         "type":    "select",
         "proxies": select_proxies,
     }
@@ -498,7 +541,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "rules": [
             "GEOIP,CN,DIRECT",
             "GEOIP,PRIVATE,DIRECT",
-            "MATCH,Select",
+            f"MATCH,⚡ {BRAND} · Выбор",
         ],
     }
 
@@ -510,7 +553,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
 async def main() -> None:
     # 1. Загрузка
     raw_configs = load_configs(INPUT_FILE)
-    print(f"[*] Loaded: {len(raw_configs)}")
+    print(f"[*] Загружено: {len(raw_configs)}")
 
     parsed_list: list[tuple[str, dict]] = []
     for cfg in raw_configs:
@@ -518,11 +561,11 @@ async def main() -> None:
         if p:
             parsed_list.append((cfg, p))
 
-    print(f"[*] Parsed: {len(parsed_list)}")
+    print(f"[*] Распарсено: {len(parsed_list)}")
 
     # 2. Асинхронная проверка
     sem = asyncio.Semaphore(20)
-    print(f"[*] Checking...")
+    print(f"[*] Проверка...")
 
     async with httpx.AsyncClient(
         headers={"User-Agent": "Mozilla/5.0"},
@@ -535,56 +578,83 @@ async def main() -> None:
         results: list[CheckResult] = await asyncio.gather(*tasks)
 
     # 3. Сортировка
-    alive  = [(parsed_list[i][1], r) for i, r in enumerate(results) if r.alive]
-    dead   = [(parsed_list[i][1], r) for i, r in enumerate(results) if not r.alive]
+    alive = [(parsed_list[i][1], r) for i, r in enumerate(results) if r.alive]
+    dead  = [(parsed_list[i][1], r) for i, r in enumerate(results) if not r.alive]
     alive.sort(key=lambda x: x[1].tcp_ms or 9999)
 
-    print(f"[+] Alive: {len(alive)} | Dead: {len(dead)}")
+    print(f"[+] Живых: {len(alive)} | Мёртвых: {len(dead)}")
 
     # 4. Лог
     log_lines = [
-        f"Alive: {len(alive)} | Dead: {len(dead)}",
-        "─" * 50,
+        f"{'─' * 60}",
+        f"  {BRAND} VPN · Лог проверки",
+        f"  Живых: {len(alive)}   Мёртвых: {len(dead)}",
+        f"{'─' * 60}",
     ]
     for parsed, r in alive:
-        log_lines.append(f"  + {r.flag} {r.country:2}  {r.tcp_ms:>6.1f}ms  {r.host}:{r.port}")
-    log_lines.append("─" * 50)
+        ms_str = f"{r.tcp_ms:>6.1f}мс"
+        ru = country_name_ru(r.country) if r.country != "XX" else "Неизвестно"
+        log_lines.append(f"  ✓  {r.flag} {ru:<16}  {ms_str}  {r.host}:{r.port}")
+    log_lines.append(f"{'─' * 60}")
     for parsed, r in dead:
-        log_lines.append(f"  - XX  TIMEOUT  {r.host}:{r.port}")
+        log_lines.append(f"  ✗  🌐 Недоступен               TIMEOUT  {r.host}:{r.port}")
     Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
-    print("\n".join(log_lines[:15]))
+    print("\n".join(log_lines[:20]))
 
     if not alive:
-        print("[!] No alive configs.")
+        print("[!] Нет доступных конфигов.")
         return
 
-    # 5. Переиндексация
+    # 5. Переиндексация — нумерация внутри каждой страны
+    # Сначала соберём порядковый номер по стране
+    country_counter: dict[str, int] = {}
     entries: list[tuple[dict, str, CheckResult]] = []
-    for i, (parsed, result) in enumerate(alive):
-        new_tag = f"proxy-{i + 1}"
-        result.name = build_name(parsed, i, result.flag, result.country)
-        entries.append((parsed, new_tag, result))
+    global_index = 0
 
-    # 6. Группировка по странам
+    for parsed, result in alive:
+        new_tag = f"proxy-{global_index + 1}"
+        code    = result.country
+
+        if code and code != "XX":
+            country_counter[code] = country_counter.get(code, 0) + 1
+            idx_in_country = country_counter[code]  # 1, 2, 3…
+            flag = result.flag
+            ru   = country_name_ru(code)
+            result.name = f"{flag} {ru} #{idx_in_country}"
+        else:
+            result.name = f"🌐 Сервер #{global_index + 1}"
+
+        entries.append((parsed, new_tag, result))
+        global_index += 1
+
+    # 6. Группировка по странам → несколько LEGION · Страна, LEGION · Страна 2, …
     by_country: dict[str, list[tuple[dict, str, CheckResult]]] = {}
     for item in entries:
         code = item[2].country
         if code != "XX":
             by_country.setdefault(code, []).append(item)
 
+    # Разбивка на группы по ~10 серверов на группу
+    GROUP_SIZE = 10
     country_auto_configs: list[dict] = []
+
     for code, items in sorted(by_country.items(), key=lambda x: -len(x[1])):
         if len(items) < 2:
             continue
+
+        chunks = [items[i:i + GROUP_SIZE] for i in range(0, len(items), GROUP_SIZE)]
+        for idx, chunk in enumerate(chunks, start=1):
+            group_label = build_group_name(code, idx if len(chunks) > 1 else None)
+            desc = auto_description(chunk)
+            country_auto_configs.append(build_auto_config(group_label, chunk, desc))
+
         flag = COUNTRY_FLAGS.get(code, "🌐")
-        remarks = f"{flag} Smart {code}"
-        desc = auto_description(items)
-        country_auto_configs.append(build_auto_config(remarks, items, desc))
-        print(f"   {flag} Smart {code}: {len(items)}")
+        ru   = country_name_ru(code)
+        print(f"   {flag} {ru}: {len(items)} серверов → {len(chunks)} групп(ы)")
 
     # 7. Главный AUTO
     auto_all = build_auto_config(
-        f"🇪🇺 Smart Auto",
+        BRAND_AUTO,
         entries,
         auto_description(entries),
     )
@@ -592,20 +662,20 @@ async def main() -> None:
     # 8. Одиночные
     single_configs = [build_single_config(p, r) for p, _, r in entries]
 
-    # 9. JSON
+    # 9. JSON — порядок: Авто → страновые группы → одиночные
     subscription = [auto_all] + country_auto_configs + single_configs
     Path(OUTPUT_JSON).write_text(
         json.dumps(subscription, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"\n[+] {OUTPUT_JSON} — {len(subscription)} configs")
+    print(f"\n[+] {OUTPUT_JSON} — {len(subscription)} конфигов")
 
     # 10. Clash
     Path(OUTPUT_YAML).write_text(
         build_clash_config(entries),
         encoding="utf-8",
     )
-    print(f"[+] {OUTPUT_YAML}")
+    print(f"[+] {OUTPUT_YAML} — Clash Meta конфиг")
 
 
 if __name__ == "__main__":
