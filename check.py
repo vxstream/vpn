@@ -454,7 +454,41 @@ def xray_skeleton(remarks: str, description: str = "") -> dict:
         cfg["meta"] = {"serverDescription": description}
     cfg.update({
         "log": {"loglevel": "warning", "dnsLog": False},
-        "dns": {"queryStrategy": "UseIPv4", "servers": ["1.1.1.1", "1.0.0.1"]},
+        "dns": {
+            "servers": [
+                # AdGuard DNS (блокировка рекламы и трекеров)
+                "94.140.14.14",
+                "94.140.15.15",
+                # NextDNS
+                "45.90.28.231",
+                "45.90.30.231",
+                # Mullvad DNS с фильтрацией
+                "194.242.2.3",
+                # OpenDNS FamilyShield
+                "208.67.222.123",
+                "208.67.220.123",
+                # CleanBrowsing
+                "185.228.168.9",
+                "185.228.169.9",
+                # Cloudflare for Families (блокировка малвари)
+                "1.1.1.3",
+                "1.0.0.3",
+                # ControlD
+                "76.76.2.1",
+                # Резервные
+                "1.1.1.1",
+                "8.8.8.8",
+                # Принудительный резолв рекламных доменов через AdGuard
+                {
+                    "address": "94.140.14.14",
+                    "port":    53,
+                    "domains": [
+                        "geosite:category-ads",
+                        "geosite:category-ads-all",
+                    ],
+                },
+            ]
+        },
         "policy": {
             "levels": {
                 "8": {
@@ -523,6 +557,7 @@ def routing_balancer(balancer_tag: str = "proxy-balancer") -> dict:
             }
         ],
         "rules": [
+            ADBLOCK_RULE,
             {"type": "field", "ip": ["geoip:private"], "outboundTag": "block"},
             {"type": "field", "network": "tcp,udp",    "balancerTag": balancer_tag},
         ],
@@ -534,6 +569,7 @@ def routing_single() -> dict:
         "domainMatcher": "hybrid",
         "domainStrategy": "IPIfNonMatch",
         "rules": [
+            ADBLOCK_RULE,
             {"type": "field", "ip": ["geoip:private"], "outboundTag": "block"},
             {"type": "field", "network": "tcp,udp",    "outboundTag": "proxy"},
         ],
@@ -541,9 +577,32 @@ def routing_single() -> dict:
 
 
 DIRECT_OUTBOUNDS = [
-    {"tag": "direct", "protocol": "freedom"},
-    {"tag": "block",  "protocol": "blackhole"},
+    {"tag": "direct", "protocol": "freedom", "settings": {"domainStrategy": "UseIP"}},
+    {"tag": "block",  "protocol": "blackhole", "settings": {"response": {"type": "http"}}},
 ]
+
+# Правило блокировки рекламы — вставляется первым в любой routing.rules
+ADBLOCK_RULE = {
+    "type":        "field",
+    "outboundTag": "block",
+    "domain": [
+        "geosite:category-ads-all",
+        "geosite:category-ads",
+        "domain:ads.google.com",
+        "domain:adservice.google.com",
+        "domain:doubleclick.net",
+        "domain:adcolony.com",
+        "domain:applovin.com",
+        "domain:vungle.com",
+        "domain:unityads.unity3d.com",
+        "domain:amazon-adsystem.com",
+        "domain:an.yandex.ru",
+        "domain:ads.tiktok.com",
+        "domain:analytics.google.com",
+        "domain:mparticle.com",
+        "domain:adjust.com",
+    ],
+}
 
 
 def auto_description(entries: list[tuple[dict, str, CheckResult]]) -> str:
