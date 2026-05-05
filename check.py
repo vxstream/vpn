@@ -26,10 +26,10 @@ OUTPUT_LOG  = "check_log.txt"
 # ─── Бренд ───────────────────────────────────────────────────────────────────
 
 BRAND             = "Ascome"
-ICON_UNKNOWN      = "🇸🇴"                          # звёздочка для неизвестных стран
-BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"  # главный авто
-BRAND_AUTO_PREFIX = f"{BRAND} · Авто · "            # префикс страновых авто-групп
-BRAND_PREFIX      = f"{BRAND} · "                   # для будущих групп
+ICON_UNKNOWN      = "🇸🇴"
+BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"
+BRAND_AUTO_PREFIX = f"{BRAND} · Авто · "
+BRAND_PREFIX      = f"{BRAND} · "
 
 # ─── Гео ─────────────────────────────────────────────────────────────────────
 
@@ -51,7 +51,6 @@ COUNTRY_FLAGS: dict[str, str] = {
     "IS": "🇮🇸", "LU": "🇱🇺", "CY": "🇨🇾", "MT": "🇲🇹",
 }
 
-# Русские названия стран
 COUNTRY_NAMES_RU: dict[str, str] = {
     "US": "США",          "DE": "Германия",     "NL": "Нидерланды",   "FR": "Франция",
     "GB": "Великобритания","FI": "Финляндия",    "SE": "Швеция",       "CH": "Швейцария",
@@ -70,7 +69,6 @@ COUNTRY_NAMES_RU: dict[str, str] = {
     "IS": "Исландия",     "LU": "Люксембург",     "CY": "Кипр",         "MT": "Мальта",
 }
 
-# Английские названия (для Clash совместимости)
 COUNTRY_NAMES_EN: dict[str, str] = {
     "US": "United States", "DE": "Germany",     "NL": "Netherlands",  "FR": "France",
     "GB": "United Kingdom","FI": "Finland",     "SE": "Sweden",       "CH": "Switzerland",
@@ -90,7 +88,6 @@ COUNTRY_NAMES_EN: dict[str, str] = {
 }
 
 GEO_APIS: list[tuple[str, callable]] = [
-    # url_fn,  extractor_fn(data) → str | None
     (
         lambda ip: f"https://ipwho.is/{ip}",
         lambda d: d.get("country_code"),
@@ -145,14 +142,405 @@ class CheckResult:
     host:         str
     port:         int
     tcp_ms:       float | None
-    # entry = страна IP-адреса хоста (куда подключаемся)
     country:      str
     flag:         str
-    # exit = страна куда идёт трафик (SNI hostname → resolve → geo)
     exit_country: str
     exit_flag:    str
     alive:        bool
 
+
+# ─── Жёсткий адблок — централизованные списки ────────────────────────────────
+# Все правила сосредоточены здесь. Вставляются и в Xray и в Clash.
+# Пользователь не видит ни названий групп, ни каких-либо изменений.
+
+# Домены для блокировки через DNS (резолвятся в 0.0.0.0)
+ADBLOCK_DNS_DOMAINS: list[str] = [
+    # GeoSite категории
+    "geosite:category-ads-all",
+    "geosite:category-ads",
+]
+
+# Домены для блокировки через routing (blackhole)
+ADBLOCK_ROUTING_DOMAINS: list[str] = [
+    # ── GeoSite категории ──────────────────────────────────────────────────
+    "geosite:category-ads-all",
+    "geosite:category-ads",
+
+    # ── Google Ads / DoubleClick ───────────────────────────────────────────
+    "domain:ads.google.com",
+    "domain:adservice.google.com",
+    "domain:doubleclick.net",
+    "domain:googleadservices.com",
+    "domain:googlesyndication.com",
+    "domain:googletagmanager.com",
+    "domain:googletagservices.com",
+    "domain:g.doubleclick.net",
+    "domain:stats.g.doubleclick.net",
+    "domain:pagead2.googlesyndication.com",
+    "domain:adwords.google.com",
+    "domain:adsensecustomsearchads.com",
+
+    # ── Facebook / Meta Ads ────────────────────────────────────────────────
+    "domain:an.facebook.com",
+    "domain:graph.facebook.com",
+    "domain:connect.facebook.net",
+    "domain:fbcdn.net",          # CDN рекламных креативов
+    "domain:facebook-hardware.com",
+
+    # ── Yandex Реклама ────────────────────────────────────────────────────
+    "domain:an.yandex.ru",
+    "domain:bs.yandex.ru",
+    "domain:mc.yandex.ru",
+    "domain:banners.adfox.ru",
+    "domain:ads.adfox.ru",
+    "domain:pagead.l.doubleclick.net",
+
+    # ── TikTok / ByteDance Ads ────────────────────────────────────────────
+    "domain:ads.tiktok.com",
+    "domain:analytics.tiktok.com",
+    "domain:log.tiktok.com",
+    "domain:mon.tiktok.com",
+
+    # ── Twitter / X Ads ───────────────────────────────────────────────────
+    "domain:ads-twitter.com",
+    "domain:ads.twitter.com",
+    "domain:t.co",               # редиректы трекеров
+
+    # ── Amazon Ads ────────────────────────────────────────────────────────
+    "domain:amazon-adsystem.com",
+    "domain:aax.amazon-adsystem.com",
+    "domain:fls-na.amazon.com",
+
+    # ── Mobile Ad Networks ────────────────────────────────────────────────
+    "domain:adcolony.com",
+    "domain:applovin.com",
+    "domain:vungle.com",
+    "domain:unityads.unity3d.com",
+    "domain:ads.unityads.unity3d.com",
+    "domain:config.unityads.unity3d.com",
+    "domain:publisher-event.unityads.unity3d.com",
+    "domain:auction.unityads.unity3d.com",
+    "domain:pangle.io",            # ByteDance mobile
+    "domain:pangleglobal.com",
+    "domain:inmobi.com",
+    "domain:mopub.com",
+    "domain:smaato.net",
+    "domain:mobvista.com",
+    "domain:mintegral.com",
+    "domain:ogury.com",
+    "domain:tapjoy.com",
+    "domain:chartboost.com",
+    "domain:ironsrc.com",
+    "domain:ironsource.com",
+    "domain:supersonic.com",
+    "domain:fyber.com",
+    "domain:inner-active.mobi",
+    "domain:widespace.com",
+    "domain:loopme.com",
+    "domain:startapp.com",
+    "domain:kidoz.net",
+
+    # ── Analytics / Trackers ──────────────────────────────────────────────
+    "domain:analytics.google.com",
+    "domain:www.google-analytics.com",
+    "domain:ssl.google-analytics.com",
+    "domain:google-analytics.com",
+    "domain:mparticle.com",
+    "domain:adjust.com",
+    "domain:app.adjust.com",
+    "domain:appadj.st",
+    "domain:branch.io",
+    "domain:app.link",
+    "domain:mixpanel.com",
+    "domain:api.mixpanel.com",
+    "domain:amplitude.com",
+    "domain:api.amplitude.com",
+    "domain:segment.com",
+    "domain:api.segment.io",
+    "domain:cdn.segment.com",
+    "domain:heap.io",
+    "domain:heapanalytics.com",
+    "domain:hotjar.com",
+    "domain:static.hotjar.com",
+    "domain:insights.hotjar.com",
+    "domain:fullstory.com",
+    "domain:rs.fullstory.com",
+    "domain:logrocket.com",
+    "domain:sentry.io",         # можно убрать если нужен crash reporting
+    "domain:newrelic.com",
+    "domain:bam.nr-data.net",
+    "domain:datadog-browser-agent.com",
+    "domain:browser-intake-datadoghq.com",
+    "domain:appsflyer.com",
+    "domain:deep.link",
+    "domain:singular.net",
+    "domain:kochava.com",
+    "domain:control.kochava.com",
+    "domain:flurry.com",
+    "domain:data.flurry.com",
+    "domain:firebaselogging-pa.googleapis.com",
+    "domain:app-measurement.com",   # Firebase Analytics
+    "domain:crashlytics.com",
+    "domain:settings.crashlytics.com",
+    "domain:firebase-settings.crashlytics.com",
+
+    # ── Criteo / Retargeting ──────────────────────────────────────────────
+    "domain:criteo.com",
+    "domain:widget.criteo.com",
+    "domain:static.criteo.net",
+    "domain:dis.us.criteo.com",
+    "domain:dis.eu.criteo.com",
+
+    # ── Outbrain / Taboola / Native Ads ──────────────────────────────────
+    "domain:outbrain.com",
+    "domain:widgets.outbrain.com",
+    "domain:taboola.com",
+    "domain:trc.taboola.com",
+    "domain:nr-data.taboola.com",
+    "domain:zemanta.com",
+
+    # ── Programmatic / RTB ────────────────────────────────────────────────
+    "domain:rubiconproject.com",
+    "domain:fastlane.rubiconproject.com",
+    "domain:pubmatic.com",
+    "domain:ads.pubmatic.com",
+    "domain:openx.com",
+    "domain:delivery.openx.com",
+    "domain:appnexus.com",
+    "domain:ib.adnxs.com",
+    "domain:adnxs.com",
+    "domain:smartadserver.com",
+    "domain:europeaninternetregistry.eu",
+    "domain:triplelift.com",
+    "domain:tlx.3lift.com",
+    "domain:indexexchange.com",
+    "domain:casalemedia.com",
+    "domain:33across.com",
+    "domain:sic.33across.com",
+    "domain:sharethrough.com",
+    "domain:turn.com",
+    "domain:media.net",
+    "domain:contextweb.com",
+    "domain:pulsepoint.com",
+    "domain:advertising.com",
+    "domain:adtech.com",
+    "domain:yieldmo.com",
+    "domain:sonobi.com",
+    "domain:sovrn.com",
+    "domain:lijit.com",
+    "domain:districtm.io",
+    "domain:bidswitch.net",
+    "domain:e.bidswitch.net",
+    "domain:adform.net",
+    "domain:track.adform.net",
+    "domain:xandr.com",
+    "domain:adsrvr.org",         # The Trade Desk
+    "domain:thetradedesk.com",
+    "domain:id5-sync.com",       # ID sync
+    "domain:liveintent.com",
+    "domain:liveramp.com",
+    "domain:ats.rlcdn.com",
+    "domain:id.rlcdn.com",
+    "domain:quantserve.com",
+    "domain:pixel.quantserve.com",
+    "domain:scorecardresearch.com",
+    "domain:b.scorecardresearch.com",
+
+    # ── Spy / Fingerprinting ──────────────────────────────────────────────
+    "domain:fingerprintjs.com",
+    "domain:fp.fingerprintjs.com",
+    "domain:cdn.fingerprintjs.com",
+    "domain:visitorqueue.com",
+    "domain:ipqualityscore.com",
+    "domain:deviceatlas.com",
+    "domain:iovation.com",
+    "domain:threatmetrix.com",
+    "domain:h.clarity.ms",       # Microsoft Clarity
+    "domain:clarity.ms",
+    "domain:bat.bing.com",       # Bing Ads tracking
+    "domain:ads.microsoft.com",
+    "domain:c.msn.com",
+
+    # ── Push-уведомления рекламные ────────────────────────────────────────
+    "domain:onesignal.com",
+    "domain:cdn.onesignal.com",
+    "domain:onesignal.push.googleapis.com",
+    "domain:pushwoosh.com",
+    "domain:cp.pushwoosh.com",
+    "domain:airship.com",
+    "domain:go.urbanairship.com",
+    "domain:device-api.urbanairship.com",
+    "domain:pushpad.eu",
+    "domain:web.push.apple.com",  # Оставить в белом, если нужен Apple Push — убрать
+
+    # ── Spy-пиксели ───────────────────────────────────────────────────────
+    "domain:px.ads.linkedin.com",
+    "domain:snap.licdn.com",
+    "domain:linkedin.com",        # если хотите только пиксель — убрать всю строку
+    "domain:pin.it",              # Pinterest tracking
+    "domain:ct.pinterest.com",
+    "domain:trk.pinterest.com",
+    "domain:ads.pinterest.com",
+
+    # ── Разное ────────────────────────────────────────────────────────────
+    "domain:adskeeper.com",
+    "domain:adgrx.com",
+    "domain:ad.doubleclick.net",
+    "domain:securepubads.g.doubleclick.net",
+    "domain:tpc.googlesyndication.com",
+    "domain:partner.googleadservices.com",
+    "domain:cse.google.com",      # Custom Search Ads
+    "domain:fundingchoicesmessages.google.com",  # GDPR consent overlay
+    "domain:imasdk.googleapis.com",              # IMA SDK (video ads)
+    "domain:ad.youtube.com",
+    "domain:youtube.com",         # ОСТОРОЖНО: заблокирует весь YouTube
+                                  # ↑ Раскомментируйте если нужны только преролы
+                                  # Лучше убрать эту строку!
+]
+
+# Убираем youtube.com из списка — он блокирует весь сервис, а не только рекламу
+ADBLOCK_ROUTING_DOMAINS = [
+    d for d in ADBLOCK_ROUTING_DOMAINS
+    if d != "domain:youtube.com"
+]
+
+# IP-подсети рекламных CDN (blackhole на уровне IP)
+ADBLOCK_ROUTING_IPS: list[str] = [
+    # DoubleClick / Google Ads
+    "74.125.0.0/16",
+    "209.85.128.0/17",
+    # Criteo
+    "178.250.0.0/21",
+    # AppNexus / Xandr
+    "68.67.128.0/21",
+    "185.20.8.0/22",
+]
+
+# ─── Правило блокировки рекламы для Xray routing ─────────────────────────────
+# Единый объект — используется в routing_single() и routing_balancer()
+ADBLOCK_RULE: dict = {
+    "type":        "field",
+    "outboundTag": "block",
+    "domain":      ADBLOCK_ROUTING_DOMAINS,
+    "ip":          ADBLOCK_ROUTING_IPS,
+}
+
+# ─── Правила для Clash ────────────────────────────────────────────────────────
+# REJECT-правила вставляются в начало списка rules Clash конфига
+CLASH_ADBLOCK_RULES: list[str] = [
+    # GeoSite
+    "GEOSITE,category-ads-all,REJECT",
+    "GEOSITE,category-ads,REJECT",
+
+    # Google Ads
+    "DOMAIN-SUFFIX,ads.google.com,REJECT",
+    "DOMAIN-SUFFIX,adservice.google.com,REJECT",
+    "DOMAIN-SUFFIX,doubleclick.net,REJECT",
+    "DOMAIN-SUFFIX,googleadservices.com,REJECT",
+    "DOMAIN-SUFFIX,googlesyndication.com,REJECT",
+    "DOMAIN-SUFFIX,googletagmanager.com,REJECT",
+    "DOMAIN-SUFFIX,googletagservices.com,REJECT",
+    "DOMAIN-SUFFIX,pagead2.googlesyndication.com,REJECT",
+    "DOMAIN-SUFFIX,imasdk.googleapis.com,REJECT",
+    "DOMAIN-SUFFIX,fundingchoicesmessages.google.com,REJECT",
+    "DOMAIN-SUFFIX,ad.youtube.com,REJECT",
+    "DOMAIN-SUFFIX,google-analytics.com,REJECT",
+    "DOMAIN-SUFFIX,app-measurement.com,REJECT",
+
+    # Facebook / Meta
+    "DOMAIN-SUFFIX,an.facebook.com,REJECT",
+    "DOMAIN-SUFFIX,connect.facebook.net,REJECT",
+
+    # Yandex
+    "DOMAIN-SUFFIX,an.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,bs.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,mc.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,banners.adfox.ru,REJECT",
+    "DOMAIN-SUFFIX,ads.adfox.ru,REJECT",
+
+    # TikTok
+    "DOMAIN-SUFFIX,ads.tiktok.com,REJECT",
+    "DOMAIN-SUFFIX,analytics.tiktok.com,REJECT",
+    "DOMAIN-SUFFIX,log.tiktok.com,REJECT",
+    "DOMAIN-SUFFIX,mon.tiktok.com,REJECT",
+
+    # Amazon
+    "DOMAIN-SUFFIX,amazon-adsystem.com,REJECT",
+    "DOMAIN-SUFFIX,fls-na.amazon.com,REJECT",
+
+    # Mobile SDKs
+    "DOMAIN-SUFFIX,adcolony.com,REJECT",
+    "DOMAIN-SUFFIX,applovin.com,REJECT",
+    "DOMAIN-SUFFIX,vungle.com,REJECT",
+    "DOMAIN-SUFFIX,unityads.unity3d.com,REJECT",
+    "DOMAIN-SUFFIX,pangle.io,REJECT",
+    "DOMAIN-SUFFIX,pangleglobal.com,REJECT",
+    "DOMAIN-SUFFIX,inmobi.com,REJECT",
+    "DOMAIN-SUFFIX,mintegral.com,REJECT",
+    "DOMAIN-SUFFIX,ironsource.com,REJECT",
+    "DOMAIN-SUFFIX,chartboost.com,REJECT",
+    "DOMAIN-SUFFIX,tapjoy.com,REJECT",
+    "DOMAIN-SUFFIX,fyber.com,REJECT",
+    "DOMAIN-SUFFIX,startapp.com,REJECT",
+
+    # Analytics / Trackers
+    "DOMAIN-SUFFIX,adjust.com,REJECT",
+    "DOMAIN-SUFFIX,branch.io,REJECT",
+    "DOMAIN-SUFFIX,mixpanel.com,REJECT",
+    "DOMAIN-SUFFIX,amplitude.com,REJECT",
+    "DOMAIN-SUFFIX,segment.io,REJECT",
+    "DOMAIN-SUFFIX,heap.io,REJECT",
+    "DOMAIN-SUFFIX,hotjar.com,REJECT",
+    "DOMAIN-SUFFIX,fullstory.com,REJECT",
+    "DOMAIN-SUFFIX,appsflyer.com,REJECT",
+    "DOMAIN-SUFFIX,kochava.com,REJECT",
+    "DOMAIN-SUFFIX,flurry.com,REJECT",
+    "DOMAIN-SUFFIX,mparticle.com,REJECT",
+    "DOMAIN-SUFFIX,singular.net,REJECT",
+    "DOMAIN-SUFFIX,crashlytics.com,REJECT",
+
+    # Programmatic
+    "DOMAIN-SUFFIX,criteo.com,REJECT",
+    "DOMAIN-SUFFIX,outbrain.com,REJECT",
+    "DOMAIN-SUFFIX,taboola.com,REJECT",
+    "DOMAIN-SUFFIX,rubiconproject.com,REJECT",
+    "DOMAIN-SUFFIX,pubmatic.com,REJECT",
+    "DOMAIN-SUFFIX,openx.com,REJECT",
+    "DOMAIN-SUFFIX,adnxs.com,REJECT",
+    "DOMAIN-SUFFIX,smartadserver.com,REJECT",
+    "DOMAIN-SUFFIX,indexexchange.com,REJECT",
+    "DOMAIN-SUFFIX,casalemedia.com,REJECT",
+    "DOMAIN-SUFFIX,adsrvr.org,REJECT",
+    "DOMAIN-SUFFIX,thetradedesk.com,REJECT",
+    "DOMAIN-SUFFIX,quantserve.com,REJECT",
+    "DOMAIN-SUFFIX,scorecardresearch.com,REJECT",
+    "DOMAIN-SUFFIX,33across.com,REJECT",
+    "DOMAIN-SUFFIX,sharethrough.com,REJECT",
+    "DOMAIN-SUFFIX,triplelift.com,REJECT",
+    "DOMAIN-SUFFIX,bidswitch.net,REJECT",
+    "DOMAIN-SUFFIX,adform.net,REJECT",
+
+    # Fingerprinting / Spy
+    "DOMAIN-SUFFIX,fingerprintjs.com,REJECT",
+    "DOMAIN-SUFFIX,clarity.ms,REJECT",
+    "DOMAIN-SUFFIX,bat.bing.com,REJECT",
+    "DOMAIN-SUFFIX,ads.microsoft.com,REJECT",
+
+    # Push
+    "DOMAIN-SUFFIX,onesignal.com,REJECT",
+    "DOMAIN-SUFFIX,pushwoosh.com,REJECT",
+
+    # Pixels
+    "DOMAIN-SUFFIX,px.ads.linkedin.com,REJECT",
+    "DOMAIN-SUFFIX,ct.pinterest.com,REJECT",
+    "DOMAIN-SUFFIX,trk.pinterest.com,REJECT",
+    "DOMAIN-SUFFIX,ads.pinterest.com,REJECT",
+
+    # IP-блоки
+    "IP-CIDR,74.125.0.0/16,REJECT,no-resolve",
+    "IP-CIDR,209.85.128.0/17,REJECT,no-resolve",
+    "IP-CIDR,68.67.128.0/21,REJECT,no-resolve",
+]
 
 # ─── Парсинг VLESS URL ────────────────────────────────────────────────────────
 
@@ -266,7 +654,6 @@ def server_description(parsed: dict) -> str:
 # ─── Имена конфигов ───────────────────────────────────────────────────────────
 
 def country_name_ru(code: str) -> str:
-    """Русское название страны или код, если нет перевода."""
     return COUNTRY_NAMES_RU.get(code, code)
 
 
@@ -278,35 +665,21 @@ def build_name(
     exit_code:  str = "",
     exit_flag:  str = ICON_UNKNOWN,
 ) -> str:
-    """
-    Страна известна, exit совпадает или неизвестен: «🇩🇪 Германия #1»
-    Entry ≠ exit (трафик уходит в другую страну): «🇷🇺→🇩🇪 Германия #1»
-    Страна совсем неизвестна: «🇸🇴 Сервер #1»
-    """
     num = f"#{index + 1}"
-
     has_entry = entry_code and entry_code != "XX"
     has_exit  = exit_code  and exit_code  != "XX"
 
     if has_exit and has_entry and exit_code != entry_code:
-        # Трафик идёт в другую страну — показываем маршрут entry→exit
         ru_exit = country_name_ru(exit_code)
         return f"{entry_flag}→{exit_flag} {ru_exit} {num}"
-
     if has_exit:
         return f"{exit_flag} {country_name_ru(exit_code)} {num}"
-
     if has_entry:
         return f"{entry_flag} {country_name_ru(entry_code)} {num}"
-
     return f"{ICON_UNKNOWN} Сервер {num}"
 
 
 def build_group_name(code: str, group_index: int | None = None) -> str:
-    """
-    Страновой авто-пул: «🇳🇱 LEGION · Авто · Нидерланды»
-    С индексом: «🇳🇱 LEGION · Авто · Нидерланды 2»
-    """
     flag = COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
     ru   = country_name_ru(code)
     base = f"{flag} {BRAND_AUTO_PREFIX}{ru}"
@@ -324,7 +697,7 @@ def tcp_check(host: str, port: int, timeout: float = 4.0) -> float | None:
         return None
 
 
-# ─── Определение страны — консенсус из всех API параллельно ─────────────────
+# ─── Определение страны ───────────────────────────────────────────────────────
 
 def _extract_code(data: dict, extractor) -> str | None:
     try:
@@ -354,10 +727,6 @@ async def _query_one_geo(
 
 
 async def get_country_consensus(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
-    """
-    Запрашивает все GEO_APIS параллельно, голосует за наиболее популярный ответ.
-    Возвращает (country_code, flag).
-    """
     tasks = [_query_one_geo(ip, url_fn, ext, client) for url_fn, ext in GEO_APIS]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -374,7 +743,6 @@ async def get_country_consensus(ip: str, client: httpx.AsyncClient) -> tuple[str
 
 
 async def resolve_ip(hostname: str) -> str | None:
-    """DNS-резолв hostname → первый IPv4. None если не удалось."""
     loop = asyncio.get_event_loop()
     try:
         infos = await loop.getaddrinfo(hostname, None, family=socket.AF_INET)
@@ -387,17 +755,11 @@ async def resolve_ip(hostname: str) -> str | None:
 
 # ─── Асинхронная проверка одного конфига ─────────────────────────────────────
 
-# ─── Асинхронная проверка одного конфига ─────────────────────────────────────
-
 async def _resolve_exit_country(
     sni: str,
     fallback_host: str,
     client: httpx.AsyncClient,
 ) -> tuple[str, str]:
-    """
-    Страна выхода трафика через SNI hostname.
-    Если SNI == хост или не резолвится — возвращает ("XX", ICON_UNKNOWN).
-    """
     if not sni or sni == fallback_host:
         return "XX", ICON_UNKNOWN
     exit_ip = await resolve_ip(sni)
@@ -428,7 +790,6 @@ async def check_one(
                 alive=False,
             )
 
-        # entry и exit — параллельно
         sni = parsed.get("sni", "")
         (entry_code, entry_flag), (exit_code, exit_flag) = await asyncio.gather(
             get_country_consensus(parsed["host"], client),
@@ -446,6 +807,43 @@ async def check_one(
         )
 
 
+# ─── DNS конфиг Xray — жёсткий адблок через резолвинг ────────────────────────
+
+def build_xray_dns() -> dict:
+    """
+    DNS-сервера с приоритетом на блокирующие (AdGuard, NextDNS, Mullvad).
+    Рекламные домены принудительно резолвятся через AdGuard → получают NXDOMAIN.
+    """
+    return {
+        "servers": [
+            # AdGuard DNS — блокирует рекламу, трекеры, malware
+            "94.140.14.14",
+            "94.140.15.15",
+            # NextDNS — блокирует рекламу и трекеры
+            "45.90.28.231",
+            "45.90.30.231",
+            # Mullvad DNS с фильтрацией
+            "194.242.2.3",
+            # Cloudflare for Families (блокировка malware)
+            "1.1.1.3",
+            "1.0.0.3",
+            # CleanBrowsing
+            "185.228.168.9",
+            "185.228.169.9",
+            # Принудительный резолв рекламных доменов через AdGuard
+            # → они вернут NXDOMAIN или 0.0.0.0 автоматически
+            {
+                "address": "94.140.14.14",
+                "port":    53,
+                "domains": ADBLOCK_DNS_DOMAINS,
+            },
+            # Резервные
+            "1.1.1.1",
+            "8.8.8.8",
+        ]
+    }
+
+
 # ─── Скелет Xray-конфига ──────────────────────────────────────────────────────
 
 def xray_skeleton(remarks: str, description: str = "") -> dict:
@@ -454,41 +852,7 @@ def xray_skeleton(remarks: str, description: str = "") -> dict:
         cfg["meta"] = {"serverDescription": description}
     cfg.update({
         "log": {"loglevel": "warning", "dnsLog": False},
-        "dns": {
-            "servers": [
-                # AdGuard DNS (блокировка рекламы и трекеров)
-                "94.140.14.14",
-                "94.140.15.15",
-                # NextDNS
-                "45.90.28.231",
-                "45.90.30.231",
-                # Mullvad DNS с фильтрацией
-                "194.242.2.3",
-                # OpenDNS FamilyShield
-                "208.67.222.123",
-                "208.67.220.123",
-                # CleanBrowsing
-                "185.228.168.9",
-                "185.228.169.9",
-                # Cloudflare for Families (блокировка малвари)
-                "1.1.1.3",
-                "1.0.0.3",
-                # ControlD
-                "76.76.2.1",
-                # Резервные
-                "1.1.1.1",
-                "8.8.8.8",
-                # Принудительный резолв рекламных доменов через AdGuard
-                {
-                    "address": "94.140.14.14",
-                    "port":    53,
-                    "domains": [
-                        "geosite:category-ads",
-                        "geosite:category-ads-all",
-                    ],
-                },
-            ]
-        },
+        "dns": build_xray_dns(),
         "policy": {
             "levels": {
                 "8": {
@@ -557,9 +921,10 @@ def routing_balancer(balancer_tag: str = "proxy-balancer") -> dict:
             }
         ],
         "rules": [
+            # Адблок — первым, чтобы перехватить до любого другого правила
             ADBLOCK_RULE,
-            {"type": "field", "ip": ["geoip:private"], "outboundTag": "block"},
-            {"type": "field", "network": "tcp,udp",    "balancerTag": balancer_tag},
+            {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
+            {"type": "field", "network": "tcp,udp", "balancerTag": balancer_tag},
         ],
     }
 
@@ -569,40 +934,18 @@ def routing_single() -> dict:
         "domainMatcher": "hybrid",
         "domainStrategy": "IPIfNonMatch",
         "rules": [
+            # Адблок — первым
             ADBLOCK_RULE,
-            {"type": "field", "ip": ["geoip:private"], "outboundTag": "block"},
-            {"type": "field", "network": "tcp,udp",    "outboundTag": "proxy"},
+            {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
+            {"type": "field", "network": "tcp,udp", "outboundTag": "proxy"},
         ],
     }
 
 
 DIRECT_OUTBOUNDS = [
-    {"tag": "direct", "protocol": "freedom", "settings": {"domainStrategy": "UseIP"}},
+    {"tag": "direct", "protocol": "freedom",   "settings": {"domainStrategy": "UseIP"}},
     {"tag": "block",  "protocol": "blackhole", "settings": {"response": {"type": "http"}}},
 ]
-
-# Правило блокировки рекламы — вставляется первым в любой routing.rules
-ADBLOCK_RULE = {
-    "type":        "field",
-    "outboundTag": "block",
-    "domain": [
-        "geosite:category-ads-all",
-        "geosite:category-ads",
-        "domain:ads.google.com",
-        "domain:adservice.google.com",
-        "domain:doubleclick.net",
-        "domain:adcolony.com",
-        "domain:applovin.com",
-        "domain:vungle.com",
-        "domain:unityads.unity3d.com",
-        "domain:amazon-adsystem.com",
-        "domain:an.yandex.ru",
-        "domain:ads.tiktok.com",
-        "domain:analytics.google.com",
-        "domain:mparticle.com",
-        "domain:adjust.com",
-    ],
-}
 
 
 def auto_description(entries: list[tuple[dict, str, CheckResult]]) -> str:
@@ -732,10 +1075,42 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "mode":        "rule",
         "log-level":   "info",
         "ipv6":        False,
+        # ── Встроенные DNS Clash с блокирующими серверами ─────────────────
+        "dns": {
+            "enable":            True,
+            "ipv6":              False,
+            "enhanced-mode":     "fake-ip",
+            "fake-ip-range":     "198.18.0.1/16",
+            # Рекламные домены → fake-ip (они уйдут в REJECT через rules)
+            "fake-ip-filter":    [
+                "*.lan",
+                "localhost.ptlogin2.qq.com",
+            ],
+            "nameserver": [
+                # AdGuard DNS с блокировкой рекламы
+                "https://dns.adguard-dns.com/dns-query",
+                "https://94.140.14.14/dns-query",
+                # NextDNS
+                "https://dns.nextdns.io",
+                # Cloudflare for Families
+                "https://family.cloudflare-dns.com/dns-query",
+                # Mullvad (фильтрация)
+                "https://base.dns.mullvad.net/dns-query",
+            ],
+            "fallback": [
+                "https://dns.cloudflare.com/dns-query",
+                "https://dns.google/dns-query",
+            ],
+            "fallback-filter": {
+                "geoip":     True,
+                "geoip-code": "CN",
+                "ipcidr": ["240.0.0.0/4"],
+            },
+        },
         "proxies":     proxies,
         "proxy-groups": [auto_group, select_group] + country_groups,
-        "rules": [
-            "GEOIP,CN,DIRECT",
+        # ── Rules: сначала адблок, потом остальное ────────────────────────
+        "rules": CLASH_ADBLOCK_RULES + [
             "GEOIP,PRIVATE,DIRECT",
             f"MATCH,⚡ {BRAND} · Выбор",
         ],
@@ -747,7 +1122,6 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 async def main() -> None:
-    # 1. Загрузка
     raw_configs = load_configs(INPUT_FILE)
     print(f"[*] Загружено: {len(raw_configs)}")
 
@@ -759,7 +1133,6 @@ async def main() -> None:
 
     print(f"[*] Распарсено: {len(parsed_list)}")
 
-    # 2. Асинхронная проверка
     sem = asyncio.Semaphore(20)
     print(f"[*] Проверка...")
 
@@ -773,14 +1146,12 @@ async def main() -> None:
         ]
         results: list[CheckResult] = await asyncio.gather(*tasks)
 
-    # 3. Сортировка
     alive = [(parsed_list[i][1], r) for i, r in enumerate(results) if r.alive]
     dead  = [(parsed_list[i][1], r) for i, r in enumerate(results) if not r.alive]
     alive.sort(key=lambda x: x[1].tcp_ms or 9999)
 
     print(f"[+] Живых: {len(alive)} | Мёртвых: {len(dead)}")
 
-    # 4. Лог
     log_lines = [
         f"{'─' * 60}",
         f"  {BRAND} VPN · Лог проверки",
@@ -811,16 +1182,12 @@ async def main() -> None:
         print("[!] Нет доступных конфигов.")
         return
 
-    # 5. Переиндексация — нумерация внутри каждой страны
-    # Для имени и группировки используем exit_country (где выходит трафик),
-    # при отсутствии — entry_country (IP хоста).
     country_counter: dict[str, int] = {}
     entries: list[tuple[dict, str, CheckResult]] = []
     global_index = 0
 
     for parsed, result in alive:
         new_tag    = f"proxy-{global_index + 1}"
-        # "главная" страна для группировки — exit если есть, иначе entry
         group_code = (
             result.exit_country
             if result.exit_country and result.exit_country != "XX"
@@ -829,10 +1196,8 @@ async def main() -> None:
         country_counter[group_code] = country_counter.get(group_code, 0) + 1
         idx_in_country = country_counter[group_code]
 
-        # Пересобираем имя с точным индексом внутри страны
         if result.exit_country and result.exit_country != "XX":
             if result.exit_country != result.country and result.country != "XX":
-                # entry→exit маршрут
                 result.name = (
                     f"{result.flag}→{result.exit_flag} "
                     f"{country_name_ru(result.exit_country)} #{idx_in_country}"
@@ -853,7 +1218,6 @@ async def main() -> None:
         entries.append((parsed, new_tag, result))
         global_index += 1
 
-    # 6. Группировка по exit-стране (где выходит трафик)
     by_country: dict[str, list[tuple[dict, str, CheckResult]]] = {}
     for item in entries:
         r    = item[2]
@@ -861,7 +1225,6 @@ async def main() -> None:
         if code != "XX":
             by_country.setdefault(code, []).append(item)
 
-    # Разбивка на группы по ~10 серверов на группу
     GROUP_SIZE = 10
     country_auto_configs: list[dict] = []
 
@@ -879,17 +1242,14 @@ async def main() -> None:
         ru   = country_name_ru(code)
         print(f"   {flag} {ru}: {len(items)} серверов → {len(chunks)} групп(ы)")
 
-    # 7. Главный AUTO
     auto_all = build_auto_config(
         BRAND_AUTO,
         entries,
         auto_description(entries),
     )
 
-    # 8. Одиночные
     single_configs = [build_single_config(p, r) for p, _, r in entries]
 
-    # 9. JSON — порядок: Авто → страновые группы → одиночные
     subscription = [auto_all] + country_auto_configs + single_configs
     Path(OUTPUT_JSON).write_text(
         json.dumps(subscription, ensure_ascii=False, indent=2),
@@ -897,7 +1257,6 @@ async def main() -> None:
     )
     print(f"\n[+] {OUTPUT_JSON} — {len(subscription)} конфигов")
 
-    # 10. Clash
     Path(OUTPUT_YAML).write_text(
         build_clash_config(entries),
         encoding="utf-8",
