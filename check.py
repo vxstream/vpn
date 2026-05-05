@@ -25,7 +25,7 @@ OUTPUT_LOG  = "check_log.txt"
 
 # ─── Бренд ───────────────────────────────────────────────────────────────────
 
-BRAND             = "LEGION"
+BRAND             = "Ascome"
 ICON_UNKNOWN      = "🇸🇴"                          # звёздочка для неизвестных стран
 BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"  # главный авто
 BRAND_AUTO_PREFIX = f"{BRAND} · Авто · "            # префикс страновых авто-групп
