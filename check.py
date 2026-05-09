@@ -5,16 +5,14 @@ check.py — Legion VPN subscription builder
 """
 
 import asyncio
-import base64
 import json
 import socket
 import time
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from dataclasses import dataclass
 from pathlib import Path
 
 import httpx
-import yaml  # pip install pyyaml httpx
+import yaml
 
 # ─── Пути ────────────────────────────────────────────────────────────────────
 
@@ -52,42 +50,42 @@ COUNTRY_FLAGS: dict[str, str] = {
 }
 
 COUNTRY_NAMES_RU: dict[str, str] = {
-    "US": "США",          "DE": "Германия",     "NL": "Нидерланды",   "FR": "Франция",
-    "GB": "Великобритания","FI": "Финляндия",    "SE": "Швеция",       "CH": "Швейцария",
-    "AT": "Австрия",      "JP": "Япония",        "SG": "Сингапур",     "HK": "Гонконг",
-    "PL": "Польша",       "CZ": "Чехия",         "UA": "Украина",      "TR": "Турция",
-    "RU": "Россия",       "KZ": "Казахстан",     "AE": "ОАЭ",          "LT": "Литва",
-    "LV": "Латвия",       "EE": "Эстония",       "BG": "Болгария",     "RO": "Румыния",
-    "CA": "Канада",       "AU": "Австралия",      "BR": "Бразилия",     "IN": "Индия",
-    "IT": "Италия",       "ES": "Испания",        "PT": "Португалия",   "NO": "Норвегия",
-    "DK": "Дания",        "BE": "Бельгия",        "HU": "Венгрия",      "GR": "Греция",
-    "SK": "Словакия",     "HR": "Хорватия",       "RS": "Сербия",       "MD": "Молдова",
-    "GE": "Грузия",       "AM": "Армения",        "AZ": "Азербайджан",  "UZ": "Узбекистан",
-    "KR": "Корея",        "TW": "Тайвань",        "TH": "Таиланд",      "MY": "Малайзия",
-    "ID": "Индонезия",    "VN": "Вьетнам",        "IL": "Израиль",      "ZA": "ЮАР",
-    "MX": "Мексика",      "AR": "Аргентина",      "CL": "Чили",         "CO": "Колумбия",
-    "IS": "Исландия",     "LU": "Люксембург",     "CY": "Кипр",         "MT": "Мальта",
+    "US": "США",           "DE": "Германия",      "NL": "Нидерланды",    "FR": "Франция",
+    "GB": "Великобритания","FI": "Финляндия",     "SE": "Швеция",        "CH": "Швейцария",
+    "AT": "Австрия",       "JP": "Япония",         "SG": "Сингапур",      "HK": "Гонконг",
+    "PL": "Польша",        "CZ": "Чехия",          "UA": "Украина",       "TR": "Турция",
+    "RU": "Россия",        "KZ": "Казахстан",      "AE": "ОАЭ",           "LT": "Литва",
+    "LV": "Латвия",        "EE": "Эстония",        "BG": "Болгария",      "RO": "Румыния",
+    "CA": "Канада",        "AU": "Австралия",       "BR": "Бразилия",      "IN": "Индия",
+    "IT": "Италия",        "ES": "Испания",         "PT": "Португалия",    "NO": "Норвегия",
+    "DK": "Дания",         "BE": "Бельгия",         "HU": "Венгрия",       "GR": "Греция",
+    "SK": "Словакия",      "HR": "Хорватия",        "RS": "Сербия",        "MD": "Молдова",
+    "GE": "Грузия",        "AM": "Армения",         "AZ": "Азербайджан",   "UZ": "Узбекистан",
+    "KR": "Корея",         "TW": "Тайвань",         "TH": "Таиланд",       "MY": "Малайзия",
+    "ID": "Индонезия",     "VN": "Вьетнам",         "IL": "Израиль",       "ZA": "ЮАР",
+    "MX": "Мексика",       "AR": "Аргентина",       "CL": "Чили",          "CO": "Колумбия",
+    "IS": "Исландия",      "LU": "Люксембург",      "CY": "Кипр",          "MT": "Мальта",
 }
 
 COUNTRY_NAMES_EN: dict[str, str] = {
-    "US": "United States", "DE": "Germany",     "NL": "Netherlands",  "FR": "France",
-    "GB": "United Kingdom","FI": "Finland",     "SE": "Sweden",       "CH": "Switzerland",
-    "AT": "Austria",       "JP": "Japan",       "SG": "Singapore",    "HK": "Hong Kong",
-    "PL": "Poland",        "CZ": "Czechia",     "UA": "Ukraine",      "TR": "Turkey",
-    "RU": "Russia",        "KZ": "Kazakhstan",  "AE": "UAE",          "LT": "Lithuania",
-    "LV": "Latvia",        "EE": "Estonia",     "BG": "Bulgaria",     "RO": "Romania",
-    "CA": "Canada",        "AU": "Australia",   "BR": "Brazil",       "IN": "India",
-    "IT": "Italy",         "ES": "Spain",       "PT": "Portugal",     "NO": "Norway",
-    "DK": "Denmark",       "BE": "Belgium",     "HU": "Hungary",      "GR": "Greece",
-    "SK": "Slovakia",      "HR": "Croatia",     "RS": "Serbia",       "MD": "Moldova",
-    "GE": "Georgia",       "AM": "Armenia",     "AZ": "Azerbaijan",   "UZ": "Uzbekistan",
-    "KR": "South Korea",   "TW": "Taiwan",      "TH": "Thailand",     "MY": "Malaysia",
-    "ID": "Indonesia",     "VN": "Vietnam",     "IL": "Israel",       "ZA": "South Africa",
-    "MX": "Mexico",        "AR": "Argentina",   "CL": "Chile",        "CO": "Colombia",
-    "IS": "Iceland",       "LU": "Luxembourg",  "CY": "Cyprus",       "MT": "Malta",
+    "US": "United States", "DE": "Germany",      "NL": "Netherlands",   "FR": "France",
+    "GB": "United Kingdom","FI": "Finland",      "SE": "Sweden",        "CH": "Switzerland",
+    "AT": "Austria",       "JP": "Japan",        "SG": "Singapore",     "HK": "Hong Kong",
+    "PL": "Poland",        "CZ": "Czechia",      "UA": "Ukraine",       "TR": "Turkey",
+    "RU": "Russia",        "KZ": "Kazakhstan",   "AE": "UAE",           "LT": "Lithuania",
+    "LV": "Latvia",        "EE": "Estonia",      "BG": "Bulgaria",      "RO": "Romania",
+    "CA": "Canada",        "AU": "Australia",    "BR": "Brazil",        "IN": "India",
+    "IT": "Italy",         "ES": "Spain",        "PT": "Portugal",      "NO": "Norway",
+    "DK": "Denmark",       "BE": "Belgium",      "HU": "Hungary",       "GR": "Greece",
+    "SK": "Slovakia",      "HR": "Croatia",      "RS": "Serbia",        "MD": "Moldova",
+    "GE": "Georgia",       "AM": "Armenia",      "AZ": "Azerbaijan",    "UZ": "Uzbekistan",
+    "KR": "South Korea",   "TW": "Taiwan",       "TH": "Thailand",      "MY": "Malaysia",
+    "ID": "Indonesia",     "VN": "Vietnam",      "IL": "Israel",        "ZA": "South Africa",
+    "MX": "Mexico",        "AR": "Argentina",    "CL": "Chile",         "CO": "Colombia",
+    "IS": "Iceland",       "LU": "Luxembourg",   "CY": "Cyprus",        "MT": "Malta",
 }
 
-GEO_APIS: list[tuple[str, callable]] = [
+GEO_APIS: list[tuple] = [
     (
         lambda ip: f"https://ipwho.is/{ip}",
         lambda d: d.get("country_code"),
@@ -149,51 +147,262 @@ class CheckResult:
     alive:        bool
 
 
-# ─── Жёсткий адблок — централизованные списки ────────────────────────────────
-# Все правила сосредоточены здесь. Вставляются и в Xray и в Clash.
-# Пользователь не видит ни названий групп, ни каких-либо изменений.
+# ══════════════════════════════════════════════════════════════════════════════
+#  А Д Б Л О К  —  расширенные списки
+# ══════════════════════════════════════════════════════════════════════════════
 
-# Домены для блокировки через DNS (резолвятся в 0.0.0.0)
+# ── YouTube-специфичная реклама ───────────────────────────────────────────────
+# Блокируем только инфраструктуру доставки рекламы, НЕ сам YouTube
+YOUTUBE_AD_DOMAINS: list[str] = [
+    # IMA SDK — главный механизм показа рекламы в YouTube
+    "domain:imasdk.googleapis.com",
+    "domain:ad.youtube.com",
+    "domain:ads.youtube.com",
+    # Сервер монетизации
+    "domain:youtubei.googleapis.com",          # частичная — только /ads endpoint
+    # Трекинг просмотра рекламы
+    "domain:www.youtube.com/api/stats/ads",
+    "domain:www.youtube.com/pagead",
+    "domain:www.youtube.com/ptracking",
+    "domain:www.youtube.com/youtubei/v1/log_event",
+    # DoubleClick внутри YouTube
+    "domain:doubleclick.net",
+    "domain:ad.doubleclick.net",
+    "domain:stats.g.doubleclick.net",
+    "domain:securepubads.g.doubleclick.net",
+    # Consent / GDPR overlay
+    "domain:fundingchoicesmessages.google.com",
+    "domain:fundingchoices.google.com",
+    # Google Ads общие
+    "domain:adservice.google.com",
+    "domain:googleadservices.com",
+    "domain:pagead2.googlesyndication.com",
+    "domain:tpc.googlesyndication.com",
+    "domain:partner.googleadservices.com",
+    "domain:adsensecustomsearchads.com",
+]
+
+# ── Российские рекламные и трекинг-домены ─────────────────────────────────────
+RU_AD_DOMAINS: list[str] = [
+    # Яндекс реклама
+    "domain:an.yandex.ru",
+    "domain:bs.yandex.ru",
+    "domain:mc.yandex.ru",
+    "domain:webvisor.com",
+    "domain:metrika.yandex.ru",
+    "domain:metrika.yandex.com",
+    "domain:yandex-team.ru",           # внутренняя аналитика
+    "domain:counter.yadro.ru",
+    "domain:top.mail.ru",
+    "domain:top-fwz1.mail.ru",
+    "domain:rs.mail.ru",               # Mail.ru трекер
+    "domain:imgsmail.ru",              # рекламные баннеры Mail.ru
+    # Adfox
+    "domain:banners.adfox.ru",
+    "domain:ads.adfox.ru",
+    "domain:adfox.ru",
+    "domain:adfox.me",
+    # Sape, Begun, Nolix
+    "domain:sape.ru",
+    "domain:begun.ru",
+    "domain:nolix.ru",
+    "domain:adspirit.de",
+    # Soloway
+    "domain:soloway.ru",
+    # Rbk.money / РБК реклама
+    "domain:ads.rbc.ru",
+    "domain:banners.rbc.ru",
+    # Teasernet
+    "domain:teasernet.com",
+    "domain:gnezdo.ru",
+    # Advertur
+    "domain:advertur.ru",
+    # Rambler реклама
+    "domain:ad.rambler.ru",
+    "domain:tns-counter.ru",
+    "domain:rambler-co.ru",
+    # TargetMail / DMP
+    "domain:targetmail.ru",
+    "domain:dmp.one",
+    # Hybrid (российская programmatic)
+    "domain:hybrid.ai",
+    "domain:hyb.ru",
+    # ОК / Одноклассники реклама
+    "domain:ads.ok.ru",
+    "domain:static.ok.ru",
+    # ВКонтакте реклама
+    "domain:ads.vk.com",
+    "domain:vk-apps.com",              # tracking
+    # Спонсорский контент / Яндекс
+    "domain:yabs.yandex.ru",
+    "domain:awaps.yandex.net",
+    "domain:awaps.yandex.ru",
+    "domain:storage.mds.yandex.net",   # рекламные креативы
+    # Mindbox / RetailRocket
+    "domain:mindbox.ru",
+    "domain:retailrocket.ru",
+    "domain:retailrocket.net",
+    # Carrot quest / Jivosite чаты-всплывашки (опционально)
+    "domain:carrotquest.io",
+    # Calltouch
+    "domain:calltouch.ru",
+    # CoMagic
+    "domain:comagic.ru",
+    # Roistat
+    "domain:roistat.com",
+    # Mango Office
+    "domain:mango-office.ru",
+    # Albato / Bitrix трекеры
+    "domain:albato.ru",
+    # Click.ru
+    "domain:click.ru",
+    # Kadam
+    "domain:kadam.net",
+    # AdSmart
+    "domain:adsmart.ru",
+    # GetIntent
+    "domain:getintent.com",
+    # Segmento
+    "domain:segmento.ru",
+    # MyTarget (Mail.ru Group)
+    "domain:target.my.com",
+    "domain:targetix.net",
+    "domain:mradx.net",
+    "domain:mx5.mail.ru",
+    # Relap
+    "domain:relap.io",
+    # eSputnik
+    "domain:esputnik.com",
+    # Criteo RU
+    "domain:dis.eu.criteo.com",
+    "domain:criteo.com",
+    # Sociomantic / Dunnhumby
+    "domain:sociomantic.com",
+    # Weborama
+    "domain:weborama.ru",
+    "domain:weborama.com",
+    # Gemius
+    "domain:gemius.pl",
+    "domain:hit.gemius.pl",
+    # Hotlog
+    "domain:hotlog.ru",
+    # Liveinternet счётчик
+    "domain:counter.rambler.ru",
+    "domain:tns-counter.ru",
+    "domain:hit.ua",
+    "domain:bigmir.net",
+]
+
+# ── Телеметрия ОС и приложений ────────────────────────────────────────────────
+TELEMETRY_DOMAINS: list[str] = [
+    # Windows телеметрия
+    "domain:telemetry.microsoft.com",
+    "domain:vortex.data.microsoft.com",
+    "domain:vortex-win.data.microsoft.com",
+    "domain:telecommand.telemetry.microsoft.com",
+    "domain:oca.telemetry.microsoft.com",
+    "domain:sqm.telemetry.microsoft.com",
+    "domain:watson.telemetry.microsoft.com",
+    "domain:redir.metaservices.microsoft.com",
+    "domain:choice.microsoft.com",
+    "domain:df.telemetry.microsoft.com",
+    "domain:reports.wes.df.telemetry.microsoft.com",
+    "domain:wes.df.telemetry.microsoft.com",
+    "domain:services.wes.df.telemetry.microsoft.com",
+    "domain:sqm.df.telemetry.microsoft.com",
+    "domain:statsfe2.ws.microsoft.com",
+    "domain:corpext.msitadfs.glbdns2.microsoft.com",
+    "domain:compatexchange.cloudapp.net",
+    "domain:cs1.wpc.v0cdn.net",
+    "domain:a-0001.a-msedge.net",
+    "domain:statsfe2.update.microsoft.com.akadns.net",
+    "domain:sls.update.microsoft.com.akadns.net",
+    "domain:fe2.update.microsoft.com.akadns.net",
+    "domain:diagnostics.support.microsoft.com",
+    "domain:watson.ppe.telemetry.microsoft.com",
+    "domain:settings-win.data.microsoft.com",
+    "domain:v10.events.data.microsoft.com",
+    "domain:v10.vortex-win.data.microsoft.com",
+    "domain:v20.events.data.microsoft.com",
+    # Apple телеметрия
+    "domain:metrics.apple.com",
+    "domain:xp.apple.com",
+    "domain:radarsubmissions.apple.com",
+    # Google телеметрия
+    "domain:app-measurement.com",
+    "domain:firebaselogging-pa.googleapis.com",
+    "domain:crashlytics.com",
+    "domain:settings.crashlytics.com",
+    # Samsung
+    "domain:samsungqbe.com",
+    "domain:analyticsv2.samsungcloud.com",
+    "domain:log-config.samsungcloud.com",
+    # Android / AOSP
+    "domain:android.clients.google.com",   # только для телеметрии, GMS оставить
+    "domain:connectivitycheck.gstatic.com",
+    # Xiaomi / MIUI
+    "domain:data.mistat.xiaomi.com",
+    "domain:api.ad.xiaomi.com",
+    "domain:sdkconfig.ad.xiaomi.com",
+    "domain:globalapi.ad.xiaomi.com",
+    "domain:globalapi.ad.intl.xiaomi.com",
+    "domain:tracking.miui.com",
+    "domain:dig.miui.com",
+    # Huawei
+    "domain:logservice.hicloud.com",
+    "domain:logservice1.hicloud.com",
+    "domain:metrics2.data.hicloud.com",
+    "domain:metrics3.data.hicloud.com",
+    # Amazon телеметрия
+    "domain:device-metrics-us.amazon.com",
+    "domain:device-metrics-us-2.amazon.com",
+    "domain:firs.amazon.com",
+]
+
+# ── Malware / Phishing / Scam ─────────────────────────────────────────────────
+MALWARE_DOMAINS: list[str] = [
+    "geosite:malware",
+    "geosite:phishing",
+    "geosite:cryptominers",
+]
+
+# ── Расширенный список рекламы (глобальный) ───────────────────────────────────
 ADBLOCK_DNS_DOMAINS: list[str] = [
-    # GeoSite категории
     "geosite:category-ads-all",
     "geosite:category-ads",
 ]
 
-# Домены для блокировки через routing (blackhole)
 ADBLOCK_ROUTING_DOMAINS: list[str] = [
     # ── GeoSite категории ──────────────────────────────────────────────────
     "geosite:category-ads-all",
     "geosite:category-ads",
 
+    # ── YouTube реклама ────────────────────────────────────────────────────
+    *YOUTUBE_AD_DOMAINS,
+
+    # ── Российская реклама ─────────────────────────────────────────────────
+    *RU_AD_DOMAINS,
+
+    # ── Телеметрия ─────────────────────────────────────────────────────────
+    *TELEMETRY_DOMAINS,
+
+    # ── Malware / Phishing ─────────────────────────────────────────────────
+    *MALWARE_DOMAINS,
+
     # ── Google Ads / DoubleClick ───────────────────────────────────────────
     "domain:ads.google.com",
     "domain:adservice.google.com",
-    "domain:doubleclick.net",
     "domain:googleadservices.com",
     "domain:googlesyndication.com",
     "domain:googletagmanager.com",
     "domain:googletagservices.com",
     "domain:g.doubleclick.net",
-    "domain:stats.g.doubleclick.net",
     "domain:pagead2.googlesyndication.com",
     "domain:adwords.google.com",
-    "domain:adsensecustomsearchads.com",
 
     # ── Facebook / Meta Ads ────────────────────────────────────────────────
     "domain:an.facebook.com",
-    "domain:graph.facebook.com",
     "domain:connect.facebook.net",
-    "domain:fbcdn.net",          # CDN рекламных креативов
-    "domain:facebook-hardware.com",
-
-    # ── Yandex Реклама ────────────────────────────────────────────────────
-    "domain:an.yandex.ru",
-    "domain:bs.yandex.ru",
-    "domain:mc.yandex.ru",
-    "domain:banners.adfox.ru",
-    "domain:ads.adfox.ru",
-    "domain:pagead.l.doubleclick.net",
 
     # ── TikTok / ByteDance Ads ────────────────────────────────────────────
     "domain:ads.tiktok.com",
@@ -204,7 +413,6 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     # ── Twitter / X Ads ───────────────────────────────────────────────────
     "domain:ads-twitter.com",
     "domain:ads.twitter.com",
-    "domain:t.co",               # редиректы трекеров
 
     # ── Amazon Ads ────────────────────────────────────────────────────────
     "domain:amazon-adsystem.com",
@@ -220,7 +428,7 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:config.unityads.unity3d.com",
     "domain:publisher-event.unityads.unity3d.com",
     "domain:auction.unityads.unity3d.com",
-    "domain:pangle.io",            # ByteDance mobile
+    "domain:pangle.io",
     "domain:pangleglobal.com",
     "domain:inmobi.com",
     "domain:mopub.com",
@@ -266,11 +474,8 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:fullstory.com",
     "domain:rs.fullstory.com",
     "domain:logrocket.com",
-    "domain:sentry.io",         # можно убрать если нужен crash reporting
     "domain:newrelic.com",
     "domain:bam.nr-data.net",
-    "domain:datadog-browser-agent.com",
-    "domain:browser-intake-datadoghq.com",
     "domain:appsflyer.com",
     "domain:deep.link",
     "domain:singular.net",
@@ -278,18 +483,11 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:control.kochava.com",
     "domain:flurry.com",
     "domain:data.flurry.com",
-    "domain:firebaselogging-pa.googleapis.com",
-    "domain:app-measurement.com",   # Firebase Analytics
-    "domain:crashlytics.com",
-    "domain:settings.crashlytics.com",
-    "domain:firebase-settings.crashlytics.com",
 
     # ── Criteo / Retargeting ──────────────────────────────────────────────
-    "domain:criteo.com",
     "domain:widget.criteo.com",
     "domain:static.criteo.net",
     "domain:dis.us.criteo.com",
-    "domain:dis.eu.criteo.com",
 
     # ── Outbrain / Taboola / Native Ads ──────────────────────────────────
     "domain:outbrain.com",
@@ -310,7 +508,6 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:ib.adnxs.com",
     "domain:adnxs.com",
     "domain:smartadserver.com",
-    "domain:europeaninternetregistry.eu",
     "domain:triplelift.com",
     "domain:tlx.3lift.com",
     "domain:indexexchange.com",
@@ -334,9 +531,9 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:adform.net",
     "domain:track.adform.net",
     "domain:xandr.com",
-    "domain:adsrvr.org",         # The Trade Desk
+    "domain:adsrvr.org",
     "domain:thetradedesk.com",
-    "domain:id5-sync.com",       # ID sync
+    "domain:id5-sync.com",
     "domain:liveintent.com",
     "domain:liveramp.com",
     "domain:ats.rlcdn.com",
@@ -355,29 +552,25 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:deviceatlas.com",
     "domain:iovation.com",
     "domain:threatmetrix.com",
-    "domain:h.clarity.ms",       # Microsoft Clarity
+    "domain:h.clarity.ms",
     "domain:clarity.ms",
-    "domain:bat.bing.com",       # Bing Ads tracking
+    "domain:bat.bing.com",
     "domain:ads.microsoft.com",
     "domain:c.msn.com",
 
     # ── Push-уведомления рекламные ────────────────────────────────────────
     "domain:onesignal.com",
     "domain:cdn.onesignal.com",
-    "domain:onesignal.push.googleapis.com",
     "domain:pushwoosh.com",
     "domain:cp.pushwoosh.com",
     "domain:airship.com",
     "domain:go.urbanairship.com",
     "domain:device-api.urbanairship.com",
     "domain:pushpad.eu",
-    "domain:web.push.apple.com",  # Оставить в белом, если нужен Apple Push — убрать
 
     # ── Spy-пиксели ───────────────────────────────────────────────────────
     "domain:px.ads.linkedin.com",
     "domain:snap.licdn.com",
-    "domain:linkedin.com",        # если хотите только пиксель — убрать всю строку
-    "domain:pin.it",              # Pinterest tracking
     "domain:ct.pinterest.com",
     "domain:trk.pinterest.com",
     "domain:ads.pinterest.com",
@@ -389,22 +582,11 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:securepubads.g.doubleclick.net",
     "domain:tpc.googlesyndication.com",
     "domain:partner.googleadservices.com",
-    "domain:cse.google.com",      # Custom Search Ads
-    "domain:fundingchoicesmessages.google.com",  # GDPR consent overlay
-    "domain:imasdk.googleapis.com",              # IMA SDK (video ads)
-    "domain:ad.youtube.com",
-    "domain:youtube.com",         # ОСТОРОЖНО: заблокирует весь YouTube
-                                  # ↑ Раскомментируйте если нужны только преролы
-                                  # Лучше убрать эту строку!
+    "domain:cse.google.com",
+    "domain:imasdk.googleapis.com",
 ]
 
-# Убираем youtube.com из списка — он блокирует весь сервис, а не только рекламу
-ADBLOCK_ROUTING_DOMAINS = [
-    d for d in ADBLOCK_ROUTING_DOMAINS
-    if d != "domain:youtube.com"
-]
-
-# IP-подсети рекламных CDN (blackhole на уровне IP)
+# IP-подсети рекламных CDN
 ADBLOCK_ROUTING_IPS: list[str] = [
     # DoubleClick / Google Ads
     "74.125.0.0/16",
@@ -414,10 +596,18 @@ ADBLOCK_ROUTING_IPS: list[str] = [
     # AppNexus / Xandr
     "68.67.128.0/21",
     "185.20.8.0/22",
+    # Taboola
+    "87.248.100.0/21",
+    # Yandex Ads
+    "213.180.193.0/24",
+    "77.88.21.0/24",
+    # Mail.ru Ads
+    "94.100.180.0/22",
+    # Smaato
+    "66.235.200.0/21",
 ]
 
-# ─── Правило блокировки рекламы для Xray routing ─────────────────────────────
-# Единый объект — используется в routing_single() и routing_balancer()
+# Правило блокировки для Xray routing
 ADBLOCK_RULE: dict = {
     "type":        "field",
     "outboundTag": "block",
@@ -425,14 +615,106 @@ ADBLOCK_RULE: dict = {
     "ip":          ADBLOCK_ROUTING_IPS,
 }
 
-# ─── Правила для Clash ────────────────────────────────────────────────────────
-# REJECT-правила вставляются в начало списка rules Clash конфига
+# ── Правила для Clash ─────────────────────────────────────────────────────────
+
 CLASH_ADBLOCK_RULES: list[str] = [
     # GeoSite
     "GEOSITE,category-ads-all,REJECT",
     "GEOSITE,category-ads,REJECT",
+    "GEOSITE,malware,REJECT",
+    "GEOSITE,phishing,REJECT",
+    "GEOSITE,cryptominers,REJECT",
 
-    # Google Ads
+    # ── YouTube реклама ────────────────────────────────────────────────────
+    "DOMAIN-SUFFIX,imasdk.googleapis.com,REJECT",
+    "DOMAIN-SUFFIX,ad.youtube.com,REJECT",
+    "DOMAIN-SUFFIX,ads.youtube.com,REJECT",
+    "DOMAIN-SUFFIX,fundingchoicesmessages.google.com,REJECT",
+    "DOMAIN-SUFFIX,fundingchoices.google.com,REJECT",
+    # Блокировка рекламных запросов YouTube через keyword (Clash поддерживает)
+    "DOMAIN-KEYWORD,pagead,REJECT",
+    "DOMAIN-KEYWORD,adservice,REJECT",
+    "DOMAIN-KEYWORD,doubleclick,REJECT",
+
+    # ── Российская реклама ─────────────────────────────────────────────────
+    "DOMAIN-SUFFIX,an.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,bs.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,mc.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,webvisor.com,REJECT",
+    "DOMAIN-SUFFIX,metrika.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,metrika.yandex.com,REJECT",
+    "DOMAIN-SUFFIX,counter.yadro.ru,REJECT",
+    "DOMAIN-SUFFIX,top.mail.ru,REJECT",
+    "DOMAIN-SUFFIX,top-fwz1.mail.ru,REJECT",
+    "DOMAIN-SUFFIX,rs.mail.ru,REJECT",
+    "DOMAIN-SUFFIX,imgsmail.ru,REJECT",
+    "DOMAIN-SUFFIX,banners.adfox.ru,REJECT",
+    "DOMAIN-SUFFIX,ads.adfox.ru,REJECT",
+    "DOMAIN-SUFFIX,adfox.ru,REJECT",
+    "DOMAIN-SUFFIX,adfox.me,REJECT",
+    "DOMAIN-SUFFIX,sape.ru,REJECT",
+    "DOMAIN-SUFFIX,begun.ru,REJECT",
+    "DOMAIN-SUFFIX,nolix.ru,REJECT",
+    "DOMAIN-SUFFIX,soloway.ru,REJECT",
+    "DOMAIN-SUFFIX,ads.rbc.ru,REJECT",
+    "DOMAIN-SUFFIX,banners.rbc.ru,REJECT",
+    "DOMAIN-SUFFIX,teasernet.com,REJECT",
+    "DOMAIN-SUFFIX,gnezdo.ru,REJECT",
+    "DOMAIN-SUFFIX,advertur.ru,REJECT",
+    "DOMAIN-SUFFIX,ad.rambler.ru,REJECT",
+    "DOMAIN-SUFFIX,tns-counter.ru,REJECT",
+    "DOMAIN-SUFFIX,targetmail.ru,REJECT",
+    "DOMAIN-SUFFIX,dmp.one,REJECT",
+    "DOMAIN-SUFFIX,hybrid.ai,REJECT",
+    "DOMAIN-SUFFIX,hyb.ru,REJECT",
+    "DOMAIN-SUFFIX,ads.ok.ru,REJECT",
+    "DOMAIN-SUFFIX,ads.vk.com,REJECT",
+    "DOMAIN-SUFFIX,vk-apps.com,REJECT",
+    "DOMAIN-SUFFIX,yabs.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,awaps.yandex.net,REJECT",
+    "DOMAIN-SUFFIX,awaps.yandex.ru,REJECT",
+    "DOMAIN-SUFFIX,mindbox.ru,REJECT",
+    "DOMAIN-SUFFIX,retailrocket.ru,REJECT",
+    "DOMAIN-SUFFIX,retailrocket.net,REJECT",
+    "DOMAIN-SUFFIX,calltouch.ru,REJECT",
+    "DOMAIN-SUFFIX,comagic.ru,REJECT",
+    "DOMAIN-SUFFIX,roistat.com,REJECT",
+    "DOMAIN-SUFFIX,target.my.com,REJECT",
+    "DOMAIN-SUFFIX,targetix.net,REJECT",
+    "DOMAIN-SUFFIX,mradx.net,REJECT",
+    "DOMAIN-SUFFIX,relap.io,REJECT",
+    "DOMAIN-SUFFIX,kadam.net,REJECT",
+    "DOMAIN-SUFFIX,adsmart.ru,REJECT",
+    "DOMAIN-SUFFIX,getintent.com,REJECT",
+    "DOMAIN-SUFFIX,segmento.ru,REJECT",
+    "DOMAIN-SUFFIX,weborama.ru,REJECT",
+    "DOMAIN-SUFFIX,weborama.com,REJECT",
+    "DOMAIN-SUFFIX,hotlog.ru,REJECT",
+    "DOMAIN-SUFFIX,gemius.pl,REJECT",
+    "DOMAIN-SUFFIX,bigmir.net,REJECT",
+    "DOMAIN-SUFFIX,hit.ua,REJECT",
+
+    # ── Телеметрия Windows ─────────────────────────────────────────────────
+    "DOMAIN-SUFFIX,telemetry.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,vortex.data.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,vortex-win.data.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,settings-win.data.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,v10.events.data.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,v20.events.data.microsoft.com,REJECT",
+    "DOMAIN-SUFFIX,watson.telemetry.microsoft.com,REJECT",
+
+    # ── Телеметрия мобильных ───────────────────────────────────────────────
+    "DOMAIN-SUFFIX,tracking.miui.com,REJECT",
+    "DOMAIN-SUFFIX,dig.miui.com,REJECT",
+    "DOMAIN-SUFFIX,api.ad.xiaomi.com,REJECT",
+    "DOMAIN-SUFFIX,sdkconfig.ad.xiaomi.com,REJECT",
+    "DOMAIN-SUFFIX,globalapi.ad.xiaomi.com,REJECT",
+    "DOMAIN-SUFFIX,data.mistat.xiaomi.com,REJECT",
+    "DOMAIN-SUFFIX,samsungqbe.com,REJECT",
+    "DOMAIN-SUFFIX,analyticsv2.samsungcloud.com,REJECT",
+    "DOMAIN-SUFFIX,metrics.apple.com,REJECT",
+
+    # ── Google Ads ─────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,ads.google.com,REJECT",
     "DOMAIN-SUFFIX,adservice.google.com,REJECT",
     "DOMAIN-SUFFIX,doubleclick.net,REJECT",
@@ -441,34 +723,26 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,googletagmanager.com,REJECT",
     "DOMAIN-SUFFIX,googletagservices.com,REJECT",
     "DOMAIN-SUFFIX,pagead2.googlesyndication.com,REJECT",
-    "DOMAIN-SUFFIX,imasdk.googleapis.com,REJECT",
-    "DOMAIN-SUFFIX,fundingchoicesmessages.google.com,REJECT",
-    "DOMAIN-SUFFIX,ad.youtube.com,REJECT",
     "DOMAIN-SUFFIX,google-analytics.com,REJECT",
     "DOMAIN-SUFFIX,app-measurement.com,REJECT",
+    "DOMAIN-SUFFIX,crashlytics.com,REJECT",
 
-    # Facebook / Meta
+    # ── Facebook / Meta ────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,an.facebook.com,REJECT",
     "DOMAIN-SUFFIX,connect.facebook.net,REJECT",
 
-    # Yandex
-    "DOMAIN-SUFFIX,an.yandex.ru,REJECT",
-    "DOMAIN-SUFFIX,bs.yandex.ru,REJECT",
-    "DOMAIN-SUFFIX,mc.yandex.ru,REJECT",
-    "DOMAIN-SUFFIX,banners.adfox.ru,REJECT",
-    "DOMAIN-SUFFIX,ads.adfox.ru,REJECT",
-
-    # TikTok
+    # ── TikTok ────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,ads.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,analytics.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,log.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,mon.tiktok.com,REJECT",
 
-    # Amazon
+    # ── Amazon ────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,amazon-adsystem.com,REJECT",
     "DOMAIN-SUFFIX,fls-na.amazon.com,REJECT",
+    "DOMAIN-SUFFIX,device-metrics-us.amazon.com,REJECT",
 
-    # Mobile SDKs
+    # ── Mobile SDKs ───────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,adcolony.com,REJECT",
     "DOMAIN-SUFFIX,applovin.com,REJECT",
     "DOMAIN-SUFFIX,vungle.com,REJECT",
@@ -483,7 +757,7 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,fyber.com,REJECT",
     "DOMAIN-SUFFIX,startapp.com,REJECT",
 
-    # Analytics / Trackers
+    # ── Analytics / Trackers ──────────────────────────────────────────────
     "DOMAIN-SUFFIX,adjust.com,REJECT",
     "DOMAIN-SUFFIX,branch.io,REJECT",
     "DOMAIN-SUFFIX,mixpanel.com,REJECT",
@@ -497,9 +771,8 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,flurry.com,REJECT",
     "DOMAIN-SUFFIX,mparticle.com,REJECT",
     "DOMAIN-SUFFIX,singular.net,REJECT",
-    "DOMAIN-SUFFIX,crashlytics.com,REJECT",
 
-    # Programmatic
+    # ── Programmatic ──────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,criteo.com,REJECT",
     "DOMAIN-SUFFIX,outbrain.com,REJECT",
     "DOMAIN-SUFFIX,taboola.com,REJECT",
@@ -520,26 +793,29 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,bidswitch.net,REJECT",
     "DOMAIN-SUFFIX,adform.net,REJECT",
 
-    # Fingerprinting / Spy
+    # ── Fingerprinting / Spy ──────────────────────────────────────────────
     "DOMAIN-SUFFIX,fingerprintjs.com,REJECT",
     "DOMAIN-SUFFIX,clarity.ms,REJECT",
     "DOMAIN-SUFFIX,bat.bing.com,REJECT",
     "DOMAIN-SUFFIX,ads.microsoft.com,REJECT",
 
-    # Push
+    # ── Push ──────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,onesignal.com,REJECT",
     "DOMAIN-SUFFIX,pushwoosh.com,REJECT",
 
-    # Pixels
+    # ── Пиксели ───────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,px.ads.linkedin.com,REJECT",
     "DOMAIN-SUFFIX,ct.pinterest.com,REJECT",
     "DOMAIN-SUFFIX,trk.pinterest.com,REJECT",
     "DOMAIN-SUFFIX,ads.pinterest.com,REJECT",
 
-    # IP-блоки
+    # ── IP-блоки ──────────────────────────────────────────────────────────
     "IP-CIDR,74.125.0.0/16,REJECT,no-resolve",
     "IP-CIDR,209.85.128.0/17,REJECT,no-resolve",
     "IP-CIDR,68.67.128.0/21,REJECT,no-resolve",
+    "IP-CIDR,87.248.100.0/21,REJECT,no-resolve",
+    "IP-CIDR,213.180.193.0/24,REJECT,no-resolve",
+    "IP-CIDR,94.100.180.0/22,REJECT,no-resolve",
 ]
 
 # ─── Парсинг VLESS URL ────────────────────────────────────────────────────────
@@ -807,12 +1083,12 @@ async def check_one(
         )
 
 
-# ─── DNS конфиг Xray — жёсткий адблок через резолвинг ────────────────────────
+# ─── DNS конфиг Xray ─────────────────────────────────────────────────────────
 
 def build_xray_dns() -> dict:
     """
-    DNS-сервера с приоритетом на блокирующие (AdGuard, NextDNS, Mullvad).
-    Рекламные домены принудительно резолвятся через AdGuard → получают NXDOMAIN.
+    Блокирующие DNS-серверы в приоритете.
+    Рекламные домены резолвятся через AdGuard → NXDOMAIN / 0.0.0.0.
     """
     return {
         "servers": [
@@ -831,7 +1107,6 @@ def build_xray_dns() -> dict:
             "185.228.168.9",
             "185.228.169.9",
             # Принудительный резолв рекламных доменов через AdGuard
-            # → они вернут NXDOMAIN или 0.0.0.0 автоматически
             {
                 "address": "94.140.14.14",
                 "port":    53,
@@ -921,23 +1196,10 @@ def routing_balancer(balancer_tag: str = "proxy-balancer") -> dict:
             }
         ],
         "rules": [
-            # Адблок — первым, чтобы перехватить до любого другого правила
-            ADBLOCK_RULE,
-            {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
-            {"type": "field", "network": "tcp,udp", "balancerTag": balancer_tag},
-        ],
-    }
-
-
-def routing_single() -> dict:
-    return {
-        "domainMatcher": "hybrid",
-        "domainStrategy": "IPIfNonMatch",
-        "rules": [
             # Адблок — первым
             ADBLOCK_RULE,
             {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
-            {"type": "field", "network": "tcp,udp", "outboundTag": "proxy"},
+            {"type": "field", "network": "tcp,udp", "balancerTag": balancer_tag},
         ],
     }
 
@@ -969,19 +1231,6 @@ def build_auto_config(
         + DIRECT_OUTBOUNDS
     )
     cfg["routing"] = routing_balancer()
-    return cfg
-
-
-# ─── Сборка одиночного конфига ────────────────────────────────────────────────
-
-def build_single_config(parsed: dict, result: CheckResult) -> dict:
-    desc = server_description(parsed)
-    cfg = xray_skeleton(result.name, desc)
-    cfg["outbounds"] = [
-        build_xray_outbound(parsed, "proxy"),
-        *DIRECT_OUTBOUNDS,
-    ]
-    cfg["routing"] = routing_single()
     return cfg
 
 
@@ -1075,16 +1324,27 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "mode":        "rule",
         "log-level":   "info",
         "ipv6":        False,
-        # ── Встроенные DNS Clash с блокирующими серверами ─────────────────
+        # ── DNS Clash с блокирующими серверами ────────────────────────────
         "dns": {
-            "enable":            True,
-            "ipv6":              False,
-            "enhanced-mode":     "fake-ip",
-            "fake-ip-range":     "198.18.0.1/16",
-            # Рекламные домены → fake-ip (они уйдут в REJECT через rules)
-            "fake-ip-filter":    [
+            "enable":        True,
+            "ipv6":          False,
+            "enhanced-mode": "fake-ip",
+            "fake-ip-range": "198.18.0.1/16",
+            # Рекламные домены → fake-ip (уйдут в REJECT через rules)
+            "fake-ip-filter": [
                 "*.lan",
                 "localhost.ptlogin2.qq.com",
+                # Исключаем YouTube из fake-ip чтобы он работал нормально
+                "*.youtube.com",
+                "*.googlevideo.com",
+                "*.ytimg.com",
+                "*.ggpht.com",
+                # VK, OK работают напрямую
+                "*.vk.com",
+                "*.ok.ru",
+                # Telegram
+                "*.telegram.org",
+                "*.t.me",
             ],
             "nameserver": [
                 # AdGuard DNS с блокировкой рекламы
@@ -1094,7 +1354,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
                 "https://dns.nextdns.io",
                 # Cloudflare for Families
                 "https://family.cloudflare-dns.com/dns-query",
-                # Mullvad (фильтрация)
+                # Mullvad
                 "https://base.dns.mullvad.net/dns-query",
             ],
             "fallback": [
@@ -1102,12 +1362,12 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
                 "https://dns.google/dns-query",
             ],
             "fallback-filter": {
-                "geoip":     True,
+                "geoip":      True,
                 "geoip-code": "CN",
-                "ipcidr": ["240.0.0.0/4"],
+                "ipcidr":     ["240.0.0.0/4"],
             },
         },
-        "proxies":     proxies,
+        "proxies":      proxies,
         "proxy-groups": [auto_group, select_group] + country_groups,
         # ── Rules: сначала адблок, потом остальное ────────────────────────
         "rules": CLASH_ADBLOCK_RULES + [
@@ -1226,8 +1486,18 @@ async def main() -> None:
             by_country.setdefault(code, []).append(item)
 
     GROUP_SIZE = 10
-    country_auto_configs: list[dict] = []
+    # ── Только авто-конфиги, без одиночных серверов ───────────────────────
+    auto_configs: list[dict] = []
 
+    # 1. Глобальный авто (все серверы)
+    auto_all = build_auto_config(
+        BRAND_AUTO,
+        entries,
+        auto_description(entries),
+    )
+    auto_configs.append(auto_all)
+
+    # 2. Авто по странам
     for code, items in sorted(by_country.items(), key=lambda x: -len(x[1])):
         if len(items) < 2:
             continue
@@ -1236,26 +1506,18 @@ async def main() -> None:
         for idx, chunk in enumerate(chunks, start=1):
             group_label = build_group_name(code, idx if len(chunks) > 1 else None)
             desc = auto_description(chunk)
-            country_auto_configs.append(build_auto_config(group_label, chunk, desc))
+            auto_configs.append(build_auto_config(group_label, chunk, desc))
 
         flag = COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
         ru   = country_name_ru(code)
         print(f"   {flag} {ru}: {len(items)} серверов → {len(chunks)} групп(ы)")
 
-    auto_all = build_auto_config(
-        BRAND_AUTO,
-        entries,
-        auto_description(entries),
-    )
-
-    single_configs = [build_single_config(p, r) for p, _, r in entries]
-
-    subscription = [auto_all] + country_auto_configs + single_configs
+    # ── Сохранение — только авто, без одиночных ───────────────────────────
     Path(OUTPUT_JSON).write_text(
-        json.dumps(subscription, ensure_ascii=False, indent=2),
+        json.dumps(auto_configs, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"\n[+] {OUTPUT_JSON} — {len(subscription)} конфигов")
+    print(f"\n[+] {OUTPUT_JSON} — {len(auto_configs)} авто-конфигов (без одиночных серверов)")
 
     Path(OUTPUT_YAML).write_text(
         build_clash_config(entries),
