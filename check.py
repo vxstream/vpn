@@ -360,15 +360,16 @@ TELEMETRY_DOMAINS: list[str] = [
 ]
 
 # ── Malware / Phishing / Scam ─────────────────────────────────────────────────
+# ── Malware / Phishing / Scam ─────────────────────────────────────────────────
+# Убраны geosite:malware, geosite:phishing, geosite:cryptominers —
+# их нет в стандартной базе v2fly/domain-list-community.
+# Реальные категории которые точно есть:
 MALWARE_DOMAINS: list[str] = [
-    "geosite:malware",
-    "geosite:phishing",
-    "geosite:cryptominers",
+    "geosite:category-porn",        # опционально
 ]
 
 # ── Расширенный список рекламы (глобальный) ───────────────────────────────────
 ADBLOCK_DNS_DOMAINS: list[str] = [
-    "geosite:category-ads-all",
     "geosite:category-ads",
 ]
 
