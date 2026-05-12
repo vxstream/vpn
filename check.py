@@ -6,7 +6,9 @@ check.py — Legion VPN subscription builder
 
 import asyncio
 import json
+import shutil
 import socket
+import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -127,6 +129,35 @@ GEO_APIS: list[tuple] = [
     ),
     (
         lambda ip: f"https://api.ipbase.com/v1/json/?ip={ip}",
+        lambda d: d.get("country_code"),
+    ),
+]
+
+# Geo APIs for through-proxy check (caller's IP based, simpler URLs)
+# These are queried THROUGH the proxy to determine exit country
+PROXY_GEO_APIS: list[tuple] = [
+    (
+        "http://ip-api.com/json?fields=countryCode",
+        lambda d: d.get("countryCode"),
+    ),
+    (
+        "https://ipwho.is/",
+        lambda d: d.get("country_code"),
+    ),
+    (
+        "http://ipinfo.io/json",
+        lambda d: d.get("country"),
+    ),
+    (
+        "http://freeipapi.com/api/json",
+        lambda d: d.get("countryCode"),
+    ),
+    (
+        "https://ipapi.is/json/",
+        lambda d: (d.get("location") or {}).get("country_code"),
+    ),
+    (
+        "https://api.ipbase.com/v1/json/",
         lambda d: d.get("country_code"),
     ),
 ]
@@ -1084,6 +1115,134 @@ async def check_one(
         )
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+#  Ч Е Р Е З - П Р О К С И  П Р О В Е Р К А  С Т Р А Н Ы
+# ══════════════════════════════════════════════════════════════════════════════
+
+def build_test_xray_config(parsed: dict, socks_port: int) -> dict:
+    outbound = build_xray_outbound(parsed, "proxy")
+    return {
+        "log": {"loglevel": "none"},
+        "inbounds": [{
+            "tag": "socks-in",
+            "listen": "127.0.0.1",
+            "port": socks_port,
+            "protocol": "socks",
+            "settings": {"auth": "noauth", "udp": False},
+        }],
+        "outbounds": [outbound, {"tag": "direct", "protocol": "freedom"}],
+        "routing": {
+            "domainStrategy": "AsIs",
+            "rules": [{"type": "field", "network": "tcp,udp", "outboundTag": "proxy"}],
+        },
+    }
+
+
+async def _wait_for_socks(
+    host: str, port: int, timeout: float = 3.0,
+) -> bool:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        try:
+            _, writer = await asyncio.wait_for(
+                asyncio.open_connection(host, port), timeout=0.5,
+            )
+            writer.close()
+            return True
+        except (OSError, asyncio.TimeoutError):
+            await asyncio.sleep(0.05)
+    return False
+
+
+async def _query_proxy_geo(
+    url: str,
+    extractor,
+    socks_port: int,
+    timeout: float = 4.0,
+) -> str | None:
+    cmd = [
+        "curl", "-s", "--max-time", str(int(timeout)),
+        "--socks5-hostname", f"127.0.0.1:{socks_port}",
+        url,
+    ]
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            *cmd, stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
+        stdout, _ = await asyncio.wait_for(
+            proc.communicate(), timeout=timeout + 1,
+        )
+        if proc.returncode != 0:
+            return None
+        data = json.loads(stdout.decode())
+        return _extract_code(data, extractor)
+    except Exception:
+        return None
+
+
+async def get_proxy_country_consensus(
+    socks_port: int, timeout: float = 5.0,
+) -> tuple[str, str]:
+    tasks = [
+        _query_proxy_geo(url, ext, socks_port, timeout)
+        for url, ext in PROXY_GEO_APIS
+    ]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    votes: dict[str, int] = {}
+    for r in results:
+        if isinstance(r, str) and r and r != "XX":
+            votes[r] = votes.get(r, 0) + 1
+
+    if not votes:
+        return "XX", ICON_UNKNOWN
+    winner = max(votes, key=votes.__getitem__)
+    return winner, COUNTRY_FLAGS.get(winner, ICON_UNKNOWN)
+
+
+async def check_country_through_proxy(
+    parsed: dict, index: int,
+) -> tuple[str, str]:
+    socks_port = 10808 + (index % 200)
+    config = build_test_xray_config(parsed, socks_port)
+
+    with tempfile.TemporaryDirectory(prefix="xray_test_") as tmpdir:
+        config_path = Path(tmpdir) / "config.json"
+        config_path.write_text(
+            json.dumps(config, ensure_ascii=False), encoding="utf-8",
+        )
+
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                "xray", "run", "-c", str(config_path),
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+        except FileNotFoundError:
+            return "XX", ICON_UNKNOWN
+
+        try:
+            ready = await _wait_for_socks(
+                "127.0.0.1", socks_port, timeout=3.0,
+            )
+            if not ready:
+                return "XX", ICON_UNKNOWN
+            return await get_proxy_country_consensus(
+                socks_port, timeout=4.0,
+            )
+        finally:
+            try:
+                proc.terminate()
+                await asyncio.wait_for(proc.wait(), timeout=2.0)
+            except (asyncio.TimeoutError, ProcessLookupError):
+                try:
+                    proc.kill()
+                    await proc.wait()
+                except Exception:
+                    pass
+
+
 # ─── DNS конфиг Xray ─────────────────────────────────────────────────────────
 
 def build_xray_dns() -> dict:
@@ -1413,6 +1572,29 @@ async def main() -> None:
 
     print(f"[+] Живых: {len(alive)} | Мёртвых: {len(dead)}")
 
+    # ── Through-proxy country verification for alive servers ──
+    if shutil.which("xray"):
+        print("[*] Проверка страны через прокси...")
+        proxy_sem = asyncio.Semaphore(10)
+
+        async def _proxy_check(i: int, parsed: dict):
+            async with proxy_sem:
+                country, flag = await check_country_through_proxy(parsed, i)
+                return i, country, flag
+
+        proxy_verified = 0
+        for i, country, flag in await asyncio.gather(*[
+            _proxy_check(i, parsed) for i, (parsed, _) in enumerate(alive)
+        ]):
+            if country != "XX":
+                alive[i][1].country = country
+                alive[i][1].flag = flag
+                proxy_verified += 1
+
+        print(f"   → {proxy_verified}/{len(alive)} подтверждены через прокси")
+    else:
+        print("[!] xray не найден, проверка через прокси пропущена")
+
     log_lines = [
         f"{'─' * 60}",
         f"  {BRAND} VPN · Лог проверки",
@@ -1434,6 +1616,7 @@ async def main() -> None:
             geo = f"{ICON_UNKNOWN} Неизвестно       "
         log_lines.append(f"  ✓  {geo}  {ms_str}  {r.host}:{r.port}")
     log_lines.append(f"{'─' * 60}")
+
     for parsed, r in dead:
         log_lines.append(f"  ✗  🇸🇴 Недоступен               TIMEOUT  {r.host}:{r.port}")
     Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
