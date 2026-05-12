@@ -25,7 +25,7 @@ jobs:
           pip install httpx pyyaml
 
       - name: Install xray-core
-        run: bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+        run: sudo bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
 
       - name: Step 1 - Collect configs from subscriptions
         run: python t.py
