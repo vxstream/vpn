@@ -136,30 +136,10 @@ GEO_APIS: list[tuple] = [
 # Geo APIs for through-proxy check (caller's IP based, simpler URLs)
 # These are queried THROUGH the proxy to determine exit country
 PROXY_GEO_APIS: list[tuple] = [
-    (
-        "http://ip-api.com/json?fields=countryCode",
-        lambda d: d.get("countryCode"),
-    ),
-    (
-        "https://ipwho.is/",
-        lambda d: d.get("country_code"),
-    ),
-    (
-        "http://ipinfo.io/json",
-        lambda d: d.get("country"),
-    ),
-    (
-        "http://freeipapi.com/api/json",
-        lambda d: d.get("countryCode"),
-    ),
-    (
-        "https://ipapi.is/json/",
-        lambda d: (d.get("location") or {}).get("country_code"),
-    ),
-    (
-        "https://api.ipbase.com/v1/json/",
-        lambda d: d.get("country_code"),
-    ),
+    ("http://ip-api.com/json?fields=countryCode", lambda d: d.get("countryCode")),
+    ("https://ipwho.is/", lambda d: d.get("country_code")),
+    ("http://ipinfo.io/json", lambda d: d.get("country")),
+    ("http://freeipapi.com/api/json", lambda d: d.get("countryCode")),
 ]
 
 # ─── Датакласс результата ─────────────────────────────────────────────────────
@@ -996,7 +976,7 @@ def build_group_name(code: str, group_index: int | None = None) -> str:
 
 # ─── TCP-проверка ─────────────────────────────────────────────────────────────
 
-def tcp_check(host: str, port: int, timeout: float = 4.0) -> float | None:
+def tcp_check(host: str, port: int, timeout: float = 3.0) -> float | None:
     try:
         t = time.monotonic()
         with socket.create_connection((host, port), timeout=timeout):
@@ -1025,7 +1005,7 @@ async def _query_one_geo(
 ) -> str | None:
     try:
         url = url_fn(ip)
-        r = await client.get(url, timeout=5.0, follow_redirects=True)
+        r = await client.get(url, timeout=4.0, follow_redirects=True)
         if r.status_code != 200:
             return None
         data = r.json()
@@ -1123,6 +1103,13 @@ def build_test_xray_config(parsed: dict, socks_port: int) -> dict:
     outbound = build_xray_outbound(parsed, "proxy")
     return {
         "log": {"loglevel": "none"},
+        "dns": {
+            "servers": [
+                "https://dns.adguard-dns.com/dns-query",
+                "1.1.1.1",
+                "8.8.8.8",
+            ],
+        },
         "inbounds": [{
             "tag": "socks-in",
             "listen": "127.0.0.1",
@@ -1130,7 +1117,7 @@ def build_test_xray_config(parsed: dict, socks_port: int) -> dict:
             "protocol": "socks",
             "settings": {"auth": "noauth", "udp": False},
         }],
-        "outbounds": [outbound, {"tag": "direct", "protocol": "freedom"}],
+        "outbounds": [outbound],
         "routing": {
             "domainStrategy": "AsIs",
             "rules": [{"type": "field", "network": "tcp,udp", "outboundTag": "proxy"}],
@@ -1206,6 +1193,9 @@ async def check_country_through_proxy(
 ) -> tuple[str, str]:
     socks_port = 10808 + (index % 200)
     config = build_test_xray_config(parsed, socks_port)
+    xray_path = shutil.which("xray")
+    if not xray_path:
+        return "XX", ICON_UNKNOWN
 
     with tempfile.TemporaryDirectory(prefix="xray_test_") as tmpdir:
         config_path = Path(tmpdir) / "config.json"
@@ -1213,28 +1203,26 @@ async def check_country_through_proxy(
             json.dumps(config, ensure_ascii=False), encoding="utf-8",
         )
 
-        try:
-            proc = await asyncio.create_subprocess_exec(
-                "xray", "run", "-c", str(config_path),
-                stdout=asyncio.subprocess.DEVNULL,
-                stderr=asyncio.subprocess.DEVNULL,
-            )
-        except FileNotFoundError:
-            return "XX", ICON_UNKNOWN
+        proc = await asyncio.create_subprocess_exec(
+            xray_path, "run", "-c", str(config_path),
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
 
         try:
             ready = await _wait_for_socks(
-                "127.0.0.1", socks_port, timeout=3.0,
+                "127.0.0.1", socks_port, timeout=5.0,
             )
             if not ready:
                 return "XX", ICON_UNKNOWN
+            await asyncio.sleep(0.5)
             return await get_proxy_country_consensus(
                 socks_port, timeout=4.0,
             )
         finally:
             try:
                 proc.terminate()
-                await asyncio.wait_for(proc.wait(), timeout=2.0)
+                await asyncio.wait_for(proc.wait(), timeout=3.0)
             except (asyncio.TimeoutError, ProcessLookupError):
                 try:
                     proc.kill()
@@ -1553,7 +1541,7 @@ async def main() -> None:
 
     print(f"[*] Распарсено: {len(parsed_list)}")
 
-    sem = asyncio.Semaphore(20)
+    sem = asyncio.Semaphore(30)
     print(f"[*] Проверка...")
 
     async with httpx.AsyncClient(
@@ -1575,7 +1563,7 @@ async def main() -> None:
     # ── Through-proxy country verification for alive servers ──
     if shutil.which("xray"):
         print("[*] Проверка страны через прокси...")
-        proxy_sem = asyncio.Semaphore(10)
+        proxy_sem = asyncio.Semaphore(20)
 
         async def _proxy_check(i: int, parsed: dict):
             async with proxy_sem:
@@ -1583,15 +1571,21 @@ async def main() -> None:
                 return i, country, flag
 
         proxy_verified = 0
+        proxy_changed = 0
         for i, country, flag in await asyncio.gather(*[
             _proxy_check(i, parsed) for i, (parsed, _) in enumerate(alive)
         ]):
             if country != "XX":
+                old = alive[i][1].country
                 alive[i][1].country = country
                 alive[i][1].flag = flag
+                alive[i][1].exit_country = country
+                alive[i][1].exit_flag = flag
+                if old != country:
+                    proxy_changed += 1
                 proxy_verified += 1
 
-        print(f"   → {proxy_verified}/{len(alive)} подтверждены через прокси")
+        print(f"   → {proxy_verified}/{len(alive)} прокси проверены ({proxy_changed} смена страны)")
     else:
         print("[!] xray не найден, проверка через прокси пропущена")
 
