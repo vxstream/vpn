@@ -1,4 +1,4 @@
-name: Update Legion VPN
+name: Update Ascome VPN
 
 on:
   schedule:
@@ -18,8 +18,22 @@ jobs:
       - name: Зависимости
         run: pip install httpx pyyaml requests
 
-      - name: Установка xray-core
-        run: sudo bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+      - name: Cache xray
+        id: cache-xray
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/xray
+          key: xray-v1.8.25
+
+      - name: Install xray (if not cached)
+        if: steps.cache-xray.outputs.cache-hit != 'true'
+        run: |
+          curl -LO https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+          sudo apt-get install -y unzip
+          unzip -o Xray-linux-64.zip -d /tmp/xray
+          sudo mv /tmp/xray/xray /usr/local/bin/xray
+          chmod +x /usr/local/bin/xray
+          rm -rf Xray-linux-64.zip /tmp/xray
 
       - name: Собрать подписки
         run: python t.py
