@@ -12,7 +12,7 @@ BOT_TOKEN    = "8685204296:AAGyTKHPInqHAJ63OTcgucTpCRlPQBovsFQ"          # то�
 CHANNEL_ID   = "@fameproxies"           # id или username канала
 
 # Источник: URL страницы или путь к .txt файлу с прокси-ссылками
-SOURCE       = "https://example.com/proxies"   # или "proxies.txt"
+SOURCE       = "https://raw.githubusercontent.com/kort0881/telegram-proxy-collector/main/proxy_ru.txt"   # или "proxies.txt"
 
 # Макс. кнопок (Telegram разрешает до ~100, но лучше ≤ 20)
 MAX_PROXIES  = 20
