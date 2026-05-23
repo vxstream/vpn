@@ -43,7 +43,7 @@ jobs:
         run: python t.py
 
       - name: Проверить и построить JSON
-        run: python check.py
+        run: python check.py --tcp --xray
 
       - name: Commit results
         run: |
@@ -63,6 +63,3 @@ jobs:
             ${{ secrets.WORKER_URL }}/admin/update/1)
           echo "Статус CF: $STATUS"
           [ "$STATUS" = "200" ] || exit 1
-
-      - name: Лог
-        run: cat check_log.txt
