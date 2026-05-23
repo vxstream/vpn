@@ -1,10 +1,11 @@
 """
-check.py — Legion VPN subscription builder
+Legion VPN subscription builder
 Проверяет конфиги по TCP, определяет страну через несколько API,
 генерирует JSON-массив и Clash Meta конфиг.
 """
 
 import asyncio
+import base64
 import json
 import shutil
 import socket
@@ -28,8 +29,18 @@ OUTPUT_LOG  = "check_log.txt"
 BRAND             = "Ascome"
 ICON_UNKNOWN      = "🇸🇴"
 BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"
-BRAND_AUTO_PREFIX = f"{BRAND} · Авто · "
+BRAND_AUTO_PREFIX = f"{BRAND} · "
 BRAND_PREFIX      = f"{BRAND} · "
+
+# ─── Xray путь ─────────────────────────────────────────────────────────────────
+
+def find_xray() -> str | None:
+    """Ищет xray в папке рядом со скриптом, затем в PATH."""
+    local = Path(__file__).parent / "xray" / "xray.exe"
+    if local.is_file():
+        return str(local.resolve())
+    return shutil.which("xray")
+
 
 # ─── Гео ─────────────────────────────────────────────────────────────────────
 
@@ -133,8 +144,6 @@ GEO_APIS: list[tuple] = [
     ),
 ]
 
-# Geo APIs for through-proxy check (caller's IP based, simpler URLs)
-# These are queried THROUGH the proxy to determine exit country
 PROXY_GEO_APIS: list[tuple] = [
     ("http://ip-api.com/json?fields=countryCode", lambda d: d.get("countryCode")),
     ("https://ipwho.is/", lambda d: d.get("country_code")),
@@ -162,29 +171,21 @@ class CheckResult:
 #  А Д Б Л О К  —  расширенные списки
 # ══════════════════════════════════════════════════════════════════════════════
 
-# ── YouTube-специфичная реклама ───────────────────────────────────────────────
-# Блокируем только инфраструктуру доставки рекламы, НЕ сам YouTube
 YOUTUBE_AD_DOMAINS: list[str] = [
-    # IMA SDK — главный механизм показа рекламы в YouTube
     "domain:imasdk.googleapis.com",
     "domain:ad.youtube.com",
     "domain:ads.youtube.com",
-    # Сервер монетизации
-    "domain:youtubei.googleapis.com",          # частичная — только /ads endpoint
-    # Трекинг просмотра рекламы
+    "domain:youtubei.googleapis.com",
     "domain:www.youtube.com/api/stats/ads",
     "domain:www.youtube.com/pagead",
     "domain:www.youtube.com/ptracking",
     "domain:www.youtube.com/youtubei/v1/log_event",
-    # DoubleClick внутри YouTube
     "domain:doubleclick.net",
     "domain:ad.doubleclick.net",
     "domain:stats.g.doubleclick.net",
     "domain:securepubads.g.doubleclick.net",
-    # Consent / GDPR overlay
     "domain:fundingchoicesmessages.google.com",
     "domain:fundingchoices.google.com",
-    # Google Ads общие
     "domain:adservice.google.com",
     "domain:googleadservices.com",
     "domain:pagead2.googlesyndication.com",
@@ -193,120 +194,83 @@ YOUTUBE_AD_DOMAINS: list[str] = [
     "domain:adsensecustomsearchads.com",
 ]
 
-# ── Российские рекламные и трекинг-домены ─────────────────────────────────────
 RU_AD_DOMAINS: list[str] = [
-    # Яндекс реклама
     "domain:an.yandex.ru",
     "domain:bs.yandex.ru",
     "domain:mc.yandex.ru",
     "domain:webvisor.com",
     "domain:metrika.yandex.ru",
     "domain:metrika.yandex.com",
-    "domain:yandex-team.ru",           # внутренняя аналитика
+    "domain:yandex-team.ru",
     "domain:counter.yadro.ru",
     "domain:top.mail.ru",
     "domain:top-fwz1.mail.ru",
-    "domain:rs.mail.ru",               # Mail.ru трекер
-    "domain:imgsmail.ru",              # рекламные баннеры Mail.ru
-    # Adfox
+    "domain:rs.mail.ru",
+    "domain:imgsmail.ru",
     "domain:banners.adfox.ru",
     "domain:ads.adfox.ru",
     "domain:adfox.ru",
     "domain:adfox.me",
-    # Sape, Begun, Nolix
     "domain:sape.ru",
     "domain:begun.ru",
     "domain:nolix.ru",
     "domain:adspirit.de",
-    # Soloway
     "domain:soloway.ru",
-    # Rbk.money / РБК реклама
     "domain:ads.rbc.ru",
     "domain:banners.rbc.ru",
-    # Teasernet
     "domain:teasernet.com",
     "domain:gnezdo.ru",
-    # Advertur
     "domain:advertur.ru",
-    # Rambler реклама
     "domain:ad.rambler.ru",
     "domain:tns-counter.ru",
     "domain:rambler-co.ru",
-    # TargetMail / DMP
     "domain:targetmail.ru",
     "domain:dmp.one",
-    # Hybrid (российская programmatic)
     "domain:hybrid.ai",
     "domain:hyb.ru",
-    # ОК / Одноклассники реклама
     "domain:ads.ok.ru",
     "domain:static.ok.ru",
-    # ВКонтакте реклама
     "domain:ads.vk.com",
-    "domain:vk-apps.com",              # tracking
-    # Спонсорский контент / Яндекс
+    "domain:vk-apps.com",
     "domain:yabs.yandex.ru",
     "domain:awaps.yandex.net",
     "domain:awaps.yandex.ru",
-    "domain:storage.mds.yandex.net",   # рекламные креативы
-    # Mindbox / RetailRocket
+    "domain:storage.mds.yandex.net",
     "domain:mindbox.ru",
     "domain:retailrocket.ru",
     "domain:retailrocket.net",
-    # Carrot quest / Jivosite чаты-всплывашки (опционально)
     "domain:carrotquest.io",
-    # Calltouch
     "domain:calltouch.ru",
-    # CoMagic
     "domain:comagic.ru",
-    # Roistat
     "domain:roistat.com",
-    # Mango Office
     "domain:mango-office.ru",
-    # Albato / Bitrix трекеры
     "domain:albato.ru",
-    # Click.ru
     "domain:click.ru",
-    # Kadam
     "domain:kadam.net",
-    # AdSmart
     "domain:adsmart.ru",
-    # GetIntent
     "domain:getintent.com",
-    # Segmento
     "domain:segmento.ru",
-    # MyTarget (Mail.ru Group)
     "domain:target.my.com",
     "domain:targetix.net",
     "domain:mradx.net",
     "domain:mx5.mail.ru",
-    # Relap
     "domain:relap.io",
-    # eSputnik
     "domain:esputnik.com",
-    # Criteo RU
     "domain:dis.eu.criteo.com",
     "domain:criteo.com",
-    # Sociomantic / Dunnhumby
     "domain:sociomantic.com",
-    # Weborama
     "domain:weborama.ru",
     "domain:weborama.com",
-    # Gemius
     "domain:gemius.pl",
     "domain:hit.gemius.pl",
-    # Hotlog
     "domain:hotlog.ru",
-    # Liveinternet счётчик
     "domain:counter.rambler.ru",
     "domain:tns-counter.ru",
     "domain:hit.ua",
     "domain:bigmir.net",
 ]
 
-# ── Телеметрия ОС и приложений ────────────────────────────────────────────────
 TELEMETRY_DOMAINS: list[str] = [
-    # Windows телеметрия
     "domain:telemetry.microsoft.com",
     "domain:vortex.data.microsoft.com",
     "domain:vortex-win.data.microsoft.com",
@@ -335,23 +299,18 @@ TELEMETRY_DOMAINS: list[str] = [
     "domain:v10.events.data.microsoft.com",
     "domain:v10.vortex-win.data.microsoft.com",
     "domain:v20.events.data.microsoft.com",
-    # Apple телеметрия
     "domain:metrics.apple.com",
     "domain:xp.apple.com",
     "domain:radarsubmissions.apple.com",
-    # Google телеметрия
     "domain:app-measurement.com",
     "domain:firebaselogging-pa.googleapis.com",
     "domain:crashlytics.com",
     "domain:settings.crashlytics.com",
-    # Samsung
     "domain:samsungqbe.com",
     "domain:analyticsv2.samsungcloud.com",
     "domain:log-config.samsungcloud.com",
-    # Android / AOSP
-    "domain:android.clients.google.com",   # только для телеметрии, GMS оставить
+    "domain:android.clients.google.com",
     "domain:connectivitycheck.gstatic.com",
-    # Xiaomi / MIUI
     "domain:data.mistat.xiaomi.com",
     "domain:api.ad.xiaomi.com",
     "domain:sdkconfig.ad.xiaomi.com",
@@ -359,49 +318,30 @@ TELEMETRY_DOMAINS: list[str] = [
     "domain:globalapi.ad.intl.xiaomi.com",
     "domain:tracking.miui.com",
     "domain:dig.miui.com",
-    # Huawei
     "domain:logservice.hicloud.com",
     "domain:logservice1.hicloud.com",
     "domain:metrics2.data.hicloud.com",
     "domain:metrics3.data.hicloud.com",
-    # Amazon телеметрия
     "domain:device-metrics-us.amazon.com",
     "domain:device-metrics-us-2.amazon.com",
     "domain:firs.amazon.com",
 ]
 
-# ── Malware / Phishing / Scam ─────────────────────────────────────────────────
-# ── Malware / Phishing / Scam ─────────────────────────────────────────────────
-# Убраны geosite:malware, geosite:phishing, geosite:cryptominers —
-# их нет в стандартной базе v2fly/domain-list-community.
-# Реальные категории которые точно есть:
 MALWARE_DOMAINS: list[str] = [
-    "geosite:category-porn",        # опционально
+    "geosite:category-porn",
 ]
 
-# ── Расширенный список рекламы (глобальный) ───────────────────────────────────
 ADBLOCK_DNS_DOMAINS: list[str] = [
     "geosite:category-ads",
 ]
 
 ADBLOCK_ROUTING_DOMAINS: list[str] = [
-    # ── GeoSite категории ──────────────────────────────────────────────────
     "geosite:category-ads-all",
     "geosite:category-ads",
-
-    # ── YouTube реклама ────────────────────────────────────────────────────
     *YOUTUBE_AD_DOMAINS,
-
-    # ── Российская реклама ─────────────────────────────────────────────────
     *RU_AD_DOMAINS,
-
-    # ── Телеметрия ─────────────────────────────────────────────────────────
     *TELEMETRY_DOMAINS,
-
-    # ── Malware / Phishing ─────────────────────────────────────────────────
     *MALWARE_DOMAINS,
-
-    # ── Google Ads / DoubleClick ───────────────────────────────────────────
     "domain:ads.google.com",
     "domain:adservice.google.com",
     "domain:googleadservices.com",
@@ -411,27 +351,17 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:g.doubleclick.net",
     "domain:pagead2.googlesyndication.com",
     "domain:adwords.google.com",
-
-    # ── Facebook / Meta Ads ────────────────────────────────────────────────
     "domain:an.facebook.com",
     "domain:connect.facebook.net",
-
-    # ── TikTok / ByteDance Ads ────────────────────────────────────────────
     "domain:ads.tiktok.com",
     "domain:analytics.tiktok.com",
     "domain:log.tiktok.com",
     "domain:mon.tiktok.com",
-
-    # ── Twitter / X Ads ───────────────────────────────────────────────────
     "domain:ads-twitter.com",
     "domain:ads.twitter.com",
-
-    # ── Amazon Ads ────────────────────────────────────────────────────────
     "domain:amazon-adsystem.com",
     "domain:aax.amazon-adsystem.com",
     "domain:fls-na.amazon.com",
-
-    # ── Mobile Ad Networks ────────────────────────────────────────────────
     "domain:adcolony.com",
     "domain:applovin.com",
     "domain:vungle.com",
@@ -459,8 +389,6 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:loopme.com",
     "domain:startapp.com",
     "domain:kidoz.net",
-
-    # ── Analytics / Trackers ──────────────────────────────────────────────
     "domain:analytics.google.com",
     "domain:www.google-analytics.com",
     "domain:ssl.google-analytics.com",
@@ -495,21 +423,15 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:control.kochava.com",
     "domain:flurry.com",
     "domain:data.flurry.com",
-
-    # ── Criteo / Retargeting ──────────────────────────────────────────────
     "domain:widget.criteo.com",
     "domain:static.criteo.net",
     "domain:dis.us.criteo.com",
-
-    # ── Outbrain / Taboola / Native Ads ──────────────────────────────────
     "domain:outbrain.com",
     "domain:widgets.outbrain.com",
     "domain:taboola.com",
     "domain:trc.taboola.com",
     "domain:nr-data.taboola.com",
     "domain:zemanta.com",
-
-    # ── Programmatic / RTB ────────────────────────────────────────────────
     "domain:rubiconproject.com",
     "domain:fastlane.rubiconproject.com",
     "domain:pubmatic.com",
@@ -554,8 +476,6 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:pixel.quantserve.com",
     "domain:scorecardresearch.com",
     "domain:b.scorecardresearch.com",
-
-    # ── Spy / Fingerprinting ──────────────────────────────────────────────
     "domain:fingerprintjs.com",
     "domain:fp.fingerprintjs.com",
     "domain:cdn.fingerprintjs.com",
@@ -569,8 +489,6 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:bat.bing.com",
     "domain:ads.microsoft.com",
     "domain:c.msn.com",
-
-    # ── Push-уведомления рекламные ────────────────────────────────────────
     "domain:onesignal.com",
     "domain:cdn.onesignal.com",
     "domain:pushwoosh.com",
@@ -579,15 +497,11 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:go.urbanairship.com",
     "domain:device-api.urbanairship.com",
     "domain:pushpad.eu",
-
-    # ── Spy-пиксели ───────────────────────────────────────────────────────
     "domain:px.ads.linkedin.com",
     "domain:snap.licdn.com",
     "domain:ct.pinterest.com",
     "domain:trk.pinterest.com",
     "domain:ads.pinterest.com",
-
-    # ── Разное ────────────────────────────────────────────────────────────
     "domain:adskeeper.com",
     "domain:adgrx.com",
     "domain:ad.doubleclick.net",
@@ -598,28 +512,19 @@ ADBLOCK_ROUTING_DOMAINS: list[str] = [
     "domain:imasdk.googleapis.com",
 ]
 
-# IP-подсети рекламных CDN
 ADBLOCK_ROUTING_IPS: list[str] = [
-    # DoubleClick / Google Ads
     "74.125.0.0/16",
     "209.85.128.0/17",
-    # Criteo
     "178.250.0.0/21",
-    # AppNexus / Xandr
     "68.67.128.0/21",
     "185.20.8.0/22",
-    # Taboola
     "87.248.100.0/21",
-    # Yandex Ads
     "213.180.193.0/24",
     "77.88.21.0/24",
-    # Mail.ru Ads
     "94.100.180.0/22",
-    # Smaato
     "66.235.200.0/21",
 ]
 
-# Правило блокировки для Xray routing
 ADBLOCK_RULE: dict = {
     "type":        "field",
     "outboundTag": "block",
@@ -627,28 +532,20 @@ ADBLOCK_RULE: dict = {
     "ip":          ADBLOCK_ROUTING_IPS,
 }
 
-# ── Правила для Clash ─────────────────────────────────────────────────────────
-
 CLASH_ADBLOCK_RULES: list[str] = [
-    # GeoSite
     "GEOSITE,category-ads-all,REJECT",
     "GEOSITE,category-ads,REJECT",
     "GEOSITE,malware,REJECT",
     "GEOSITE,phishing,REJECT",
     "GEOSITE,cryptominers,REJECT",
-
-    # ── YouTube реклама ────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,imasdk.googleapis.com,REJECT",
     "DOMAIN-SUFFIX,ad.youtube.com,REJECT",
     "DOMAIN-SUFFIX,ads.youtube.com,REJECT",
     "DOMAIN-SUFFIX,fundingchoicesmessages.google.com,REJECT",
     "DOMAIN-SUFFIX,fundingchoices.google.com,REJECT",
-    # Блокировка рекламных запросов YouTube через keyword (Clash поддерживает)
     "DOMAIN-KEYWORD,pagead,REJECT",
     "DOMAIN-KEYWORD,adservice,REJECT",
     "DOMAIN-KEYWORD,doubleclick,REJECT",
-
-    # ── Российская реклама ─────────────────────────────────────────────────
     "DOMAIN-SUFFIX,an.yandex.ru,REJECT",
     "DOMAIN-SUFFIX,bs.yandex.ru,REJECT",
     "DOMAIN-SUFFIX,mc.yandex.ru,REJECT",
@@ -705,8 +602,6 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,gemius.pl,REJECT",
     "DOMAIN-SUFFIX,bigmir.net,REJECT",
     "DOMAIN-SUFFIX,hit.ua,REJECT",
-
-    # ── Телеметрия Windows ─────────────────────────────────────────────────
     "DOMAIN-SUFFIX,telemetry.microsoft.com,REJECT",
     "DOMAIN-SUFFIX,vortex.data.microsoft.com,REJECT",
     "DOMAIN-SUFFIX,vortex-win.data.microsoft.com,REJECT",
@@ -714,8 +609,6 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,v10.events.data.microsoft.com,REJECT",
     "DOMAIN-SUFFIX,v20.events.data.microsoft.com,REJECT",
     "DOMAIN-SUFFIX,watson.telemetry.microsoft.com,REJECT",
-
-    # ── Телеметрия мобильных ───────────────────────────────────────────────
     "DOMAIN-SUFFIX,tracking.miui.com,REJECT",
     "DOMAIN-SUFFIX,dig.miui.com,REJECT",
     "DOMAIN-SUFFIX,api.ad.xiaomi.com,REJECT",
@@ -725,8 +618,6 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,samsungqbe.com,REJECT",
     "DOMAIN-SUFFIX,analyticsv2.samsungcloud.com,REJECT",
     "DOMAIN-SUFFIX,metrics.apple.com,REJECT",
-
-    # ── Google Ads ─────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,ads.google.com,REJECT",
     "DOMAIN-SUFFIX,adservice.google.com,REJECT",
     "DOMAIN-SUFFIX,doubleclick.net,REJECT",
@@ -738,23 +629,15 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,google-analytics.com,REJECT",
     "DOMAIN-SUFFIX,app-measurement.com,REJECT",
     "DOMAIN-SUFFIX,crashlytics.com,REJECT",
-
-    # ── Facebook / Meta ────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,an.facebook.com,REJECT",
     "DOMAIN-SUFFIX,connect.facebook.net,REJECT",
-
-    # ── TikTok ────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,ads.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,analytics.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,log.tiktok.com,REJECT",
     "DOMAIN-SUFFIX,mon.tiktok.com,REJECT",
-
-    # ── Amazon ────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,amazon-adsystem.com,REJECT",
     "DOMAIN-SUFFIX,fls-na.amazon.com,REJECT",
     "DOMAIN-SUFFIX,device-metrics-us.amazon.com,REJECT",
-
-    # ── Mobile SDKs ───────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,adcolony.com,REJECT",
     "DOMAIN-SUFFIX,applovin.com,REJECT",
     "DOMAIN-SUFFIX,vungle.com,REJECT",
@@ -768,8 +651,6 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,tapjoy.com,REJECT",
     "DOMAIN-SUFFIX,fyber.com,REJECT",
     "DOMAIN-SUFFIX,startapp.com,REJECT",
-
-    # ── Analytics / Trackers ──────────────────────────────────────────────
     "DOMAIN-SUFFIX,adjust.com,REJECT",
     "DOMAIN-SUFFIX,branch.io,REJECT",
     "DOMAIN-SUFFIX,mixpanel.com,REJECT",
@@ -783,8 +664,6 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,flurry.com,REJECT",
     "DOMAIN-SUFFIX,mparticle.com,REJECT",
     "DOMAIN-SUFFIX,singular.net,REJECT",
-
-    # ── Programmatic ──────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,criteo.com,REJECT",
     "DOMAIN-SUFFIX,outbrain.com,REJECT",
     "DOMAIN-SUFFIX,taboola.com,REJECT",
@@ -804,24 +683,16 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "DOMAIN-SUFFIX,triplelift.com,REJECT",
     "DOMAIN-SUFFIX,bidswitch.net,REJECT",
     "DOMAIN-SUFFIX,adform.net,REJECT",
-
-    # ── Fingerprinting / Spy ──────────────────────────────────────────────
     "DOMAIN-SUFFIX,fingerprintjs.com,REJECT",
     "DOMAIN-SUFFIX,clarity.ms,REJECT",
     "DOMAIN-SUFFIX,bat.bing.com,REJECT",
     "DOMAIN-SUFFIX,ads.microsoft.com,REJECT",
-
-    # ── Push ──────────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,onesignal.com,REJECT",
     "DOMAIN-SUFFIX,pushwoosh.com,REJECT",
-
-    # ── Пиксели ───────────────────────────────────────────────────────────
     "DOMAIN-SUFFIX,px.ads.linkedin.com,REJECT",
     "DOMAIN-SUFFIX,ct.pinterest.com,REJECT",
     "DOMAIN-SUFFIX,trk.pinterest.com,REJECT",
     "DOMAIN-SUFFIX,ads.pinterest.com,REJECT",
-
-    # ── IP-блоки ──────────────────────────────────────────────────────────
     "IP-CIDR,74.125.0.0/16,REJECT,no-resolve",
     "IP-CIDR,209.85.128.0/17,REJECT,no-resolve",
     "IP-CIDR,68.67.128.0/21,REJECT,no-resolve",
@@ -830,7 +701,7 @@ CLASH_ADBLOCK_RULES: list[str] = [
     "IP-CIDR,94.100.180.0/22,REJECT,no-resolve",
 ]
 
-# ─── Парсинг VLESS URL ────────────────────────────────────────────────────────
+# ─── Парсинг URL-конфигов ─────────────────────────────────────────────────────
 
 def load_configs(path: str) -> list[str]:
     return [
@@ -863,6 +734,7 @@ def parse_vless_url(cfg: str) -> dict | None:
                 params[k] = v
         return {
             "raw":         cfg,
+            "protocol":    "vless",
             "uuid":        uuid_part,
             "host":        host,
             "port":        int(port),
@@ -880,63 +752,378 @@ def parse_vless_url(cfg: str) -> dict | None:
         return None
 
 
+def parse_trojan_url(cfg: str) -> dict | None:
+    try:
+        if not cfg.startswith("trojan://"):
+            return None
+        without_scheme = cfg[9:]
+        if "@" not in without_scheme:
+            return None
+        password, rest = without_scheme.split("@", 1)
+        fragment = ""
+        if "#" in rest:
+            rest, fragment = rest.split("#", 1)
+        host_port = rest
+        params: dict[str, str] = {}
+        if "?" in host_port:
+            host_port, params_str = host_port.split("?", 1)
+            for p in params_str.split("&"):
+                if "=" in p:
+                    k, v = p.split("=", 1)
+                    params[k] = v
+        host, port = host_port.rsplit(":", 1)
+        return {
+            "raw":         cfg,
+            "protocol":    "trojan",
+            "password":    password,
+            "host":        host,
+            "port":        int(port),
+            "security":    params.get("security", "tls"),
+            "sni":         params.get("sni", host),
+            "fp":          params.get("fp", "chrome"),
+            "type":        params.get("type", "tcp"),
+            "path":        params.get("path", ""),
+            "host_header": params.get("host", ""),
+            "skip_verify": params.get("allowInsecure", "0") in ("1", "true"),
+        }
+    except Exception:
+        return None
+
+
+def parse_ss_url(cfg: str) -> dict | None:
+    try:
+        if not cfg.startswith("ss://"):
+            return None
+        without_scheme = cfg[5:]
+        fragment = ""
+        if "#" in without_scheme:
+            without_scheme, fragment = without_scheme.split("#", 1)
+
+        params: dict[str, str] = {}
+        if "?" in without_scheme:
+            without_scheme, params_str = without_scheme.split("?", 1)
+            for p in params_str.split("&"):
+                if "=" in p:
+                    k, v = p.split("=", 1)
+                    params[k] = v
+
+        if "@" in without_scheme:
+            # SIP002 format: base64(method:password)@host:port  OR  method:password@host:port
+            auth_part, host_port = without_scheme.rsplit("@", 1)
+            # Try base64 decode first
+            try:
+                padding = 4 - len(auth_part) % 4
+                auth_decoded = base64.urlsafe_b64decode(auth_part + "=" * padding).decode("utf-8")
+            except Exception:
+                auth_decoded = auth_part
+            if ":" in auth_decoded:
+                method, password = auth_decoded.split(":", 1)
+            else:
+                method = "aes-256-gcm"
+                password = auth_decoded
+        else:
+            # Legacy format: base64(method:password@host:port)
+            try:
+                padding = 4 - len(without_scheme) % 4
+                decoded = base64.urlsafe_b64decode(without_scheme + "=" * padding).decode("utf-8")
+            except Exception:
+                return None
+            if "@" not in decoded:
+                return None
+            auth_part, host_port = decoded.rsplit("@", 1)
+            if ":" in auth_part:
+                method, password = auth_part.split(":", 1)
+            else:
+                method = "aes-256-gcm"
+                password = auth_part
+
+        host, port = host_port.rsplit(":", 1)
+        return {
+            "raw":       cfg,
+            "protocol":  "ss",
+            "method":    method,
+            "password":  password,
+            "host":      host,
+            "port":      int(port),
+            "plugin":    params.get("plugin", ""),
+            "obfs":      params.get("obfs", ""),
+            "obfs_host": params.get("obfs-host", ""),
+            "sni":       host,
+        }
+    except Exception:
+        return None
+
+
+def parse_vmess_url(cfg: str) -> dict | None:
+    """
+    Парсит vmess://base64(json) формат.
+    Поля JSON: v, ps, add, port, id, aid, scy/security, net, type, host, path, tls, sni, fp, alpn
+    """
+    try:
+        if not cfg.startswith("vmess://"):
+            return None
+        b64 = cfg[8:]
+        # Добавляем padding
+        padding = 4 - len(b64) % 4
+        try:
+            decoded = base64.urlsafe_b64decode(b64 + "=" * padding).decode("utf-8")
+        except Exception:
+            decoded = base64.b64decode(b64 + "=" * padding).decode("utf-8")
+        data = json.loads(decoded)
+
+        host = data.get("add", "")
+        port = int(data.get("port", 443))
+        net  = data.get("net", "tcp")
+        tls  = str(data.get("tls", "")).lower()
+        sni  = data.get("sni", "") or data.get("host", "") or host
+
+        return {
+            "raw":         cfg,
+            "protocol":    "vmess",
+            "uuid":        data.get("id", ""),
+            "alter_id":    int(data.get("aid", 0)),
+            "security":    tls if tls in ("tls", "none") else "none",
+            "cipher":      data.get("scy", data.get("security", "auto")),
+            "host":        host,
+            "port":        port,
+            "type":        net,
+            "path":        data.get("path", "/"),
+            "host_header": data.get("host", ""),
+            "sni":         sni,
+            "fp":          data.get("fp", "chrome"),
+            "ps":          data.get("ps", ""),
+        }
+    except Exception:
+        return None
+
+
+def parse_any_url(cfg: str) -> dict | None:
+    """Пробует все парсеры по очереди."""
+    if cfg.startswith("vless://"):
+        return parse_vless_url(cfg)
+    if cfg.startswith("vmess://"):
+        return parse_vmess_url(cfg)
+    if cfg.startswith("trojan://"):
+        return parse_trojan_url(cfg)
+    if cfg.startswith("ss://"):
+        return parse_ss_url(cfg)
+    return None
+
+
 # ─── Построение аутбаунда Xray ───────────────────────────────────────────────
 
 def build_xray_outbound(parsed: dict, tag: str) -> dict:
-    stream: dict = {"network": parsed["type"]}
+    protocol = parsed.get("protocol", "vless")
 
-    if parsed["security"] == "reality":
-        stream["security"] = "reality"
-        stream["realitySettings"] = {
-            "serverName":  parsed["sni"],
-            "publicKey":   parsed["pbk"],
-            "shortId":     parsed["sid"],
-            "fingerprint": parsed["fp"],
-            "spiderX":     "/",
+    if protocol == "vless":
+        stream: dict = {"network": parsed["type"]}
+
+        if parsed["security"] == "reality":
+            stream["security"] = "reality"
+            stream["realitySettings"] = {
+                "serverName":  parsed["sni"],
+                "publicKey":   parsed["pbk"],
+                "shortId":     parsed["sid"],
+                "fingerprint": parsed["fp"],
+                "spiderX":     "/",
+            }
+        elif parsed["security"] == "tls":
+            stream["security"] = "tls"
+            stream["tlsSettings"] = {
+                "serverName":  parsed["sni"],
+                "fingerprint": parsed["fp"],
+                "alpn":        ["h2", "http/1.1"],
+            }
+        else:
+            stream["security"] = "none"
+
+        if parsed["type"] == "ws":
+            stream["wsSettings"] = {
+                "path": parsed.get("path", "/"),
+                "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            }
+        elif parsed["type"] == "grpc":
+            stream["grpcSettings"] = {
+                "serviceName": parsed.get("path", ""),
+            }
+
+        user: dict = {"id": parsed["uuid"], "encryption": "none", "level": 8}
+        if parsed.get("flow"):
+            user["flow"] = parsed["flow"]
+
+        return {
+            "tag":      tag,
+            "protocol": "vless",
+            "settings": {
+                "vnext": [{"address": parsed["host"], "port": parsed["port"], "users": [user]}]
+            },
+            "streamSettings": stream,
         }
-    elif parsed["security"] == "tls":
+
+    elif protocol == "vmess":
+        stream: dict = {"network": parsed["type"]}
+
+        if parsed["security"] == "tls":
+            stream["security"] = "tls"
+            stream["tlsSettings"] = {
+                "serverName":    parsed["sni"],
+                "fingerprint":   parsed.get("fp", "chrome"),
+                "alpn":          ["h2", "http/1.1"],
+                "allowInsecure": False,
+            }
+        else:
+            stream["security"] = "none"
+
+        if parsed["type"] == "ws":
+            stream["wsSettings"] = {
+                "path":    parsed.get("path", "/"),
+                "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            }
+        elif parsed["type"] == "h2":
+            stream["httpSettings"] = {
+                "path": parsed.get("path", "/"),
+                "host": [parsed.get("host_header") or parsed["host"]],
+            }
+        elif parsed["type"] == "grpc":
+            stream["grpcSettings"] = {
+                "serviceName": parsed.get("path", ""),
+            }
+        elif parsed["type"] == "tcp" and parsed.get("host_header"):
+            stream["tcpSettings"] = {
+                "header": {
+                    "type": "http",
+                    "request": {
+                        "path":    [parsed.get("path", "/")],
+                        "headers": {"Host": [parsed.get("host_header")]},
+                    },
+                }
+            }
+
+        return {
+            "tag":      tag,
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [{
+                    "address": parsed["host"],
+                    "port":    parsed["port"],
+                    "users":   [{
+                        "id":       parsed["uuid"],
+                        "alterId":  parsed.get("alter_id", 0),
+                        "security": parsed.get("cipher", "auto"),
+                        "level":    8,
+                    }],
+                }]
+            },
+            "streamSettings": stream,
+        }
+
+    elif protocol == "trojan":
+        stream: dict = {"network": parsed.get("type", "tcp")}
+
         stream["security"] = "tls"
         stream["tlsSettings"] = {
-            "serverName":  parsed["sni"],
-            "fingerprint": parsed["fp"],
-            "alpn":        ["h2", "http/1.1"],
-        }
-    else:
-        stream["security"] = "none"
-
-    if parsed["type"] == "ws":
-        stream["wsSettings"] = {
-            "path": parsed.get("path", "/"),
-            "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            "serverName":    parsed["sni"],
+            "fingerprint":   parsed.get("fp", "chrome"),
+            "alpn":          ["h2", "http/1.1"],
+            "allowInsecure": parsed.get("skip_verify", False),
         }
 
-    user: dict = {"id": parsed["uuid"], "encryption": "none", "level": 8}
-    if parsed.get("flow"):
-        user["flow"] = parsed["flow"]
+        if parsed.get("type") == "ws":
+            stream["wsSettings"] = {
+                "path":    parsed.get("path", "/"),
+                "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            }
+        elif parsed.get("type") == "grpc":
+            stream["grpcSettings"] = {
+                "serviceName": parsed.get("path", ""),
+            }
 
-    return {
-        "tag":      tag,
-        "protocol": "vless",
-        "settings": {
-            "vnext": [{"address": parsed["host"], "port": parsed["port"], "users": [user]}]
-        },
-        "streamSettings": stream,
-    }
+        return {
+            "tag":      tag,
+            "protocol": "trojan",
+            "settings": {
+                "servers": [{
+                    "address":  parsed["host"],
+                    "port":     parsed["port"],
+                    "password": parsed["password"],
+                    "level":    8,
+                }]
+            },
+            "streamSettings": stream,
+        }
+
+    elif protocol == "ss":
+        stream: dict = {"network": "tcp"}
+
+        plugin_settings: dict = {}
+        if parsed.get("plugin"):
+            plugin = parsed["plugin"]
+            if "obfs" in plugin:
+                plugin_settings = {
+                    "plugin":       "obfs-local",
+                    "pluginOptions": f"obfs={parsed.get('obfs', 'http')};obfs-host={parsed.get('obfs_host', '')}",
+                }
+
+        server_entry: dict = {
+            "address":  parsed["host"],
+            "port":     parsed["port"],
+            "method":   parsed["method"],
+            "password": parsed["password"],
+            "level":    8,
+        }
+        if plugin_settings:
+            server_entry.update(plugin_settings)
+
+        return {
+            "tag":      tag,
+            "protocol": "shadowsocks",
+            "settings": {
+                "servers": [server_entry]
+            },
+            "streamSettings": stream,
+        }
+
+    return {}
 
 
 # ─── Описание сервера ─────────────────────────────────────────────────────────
 
 def server_description(parsed: dict) -> str:
-    sec = parsed.get("security", "none")
-    transport = parsed.get("type", "tcp")
-    parts = ["VLESS"]
-    if sec == "reality":
-        parts.append("Reality")
-    elif sec == "tls":
-        parts.append("TLS")
-    if transport != "tcp":
-        parts.append(transport.upper())
-    return " + ".join(parts)
+    protocol = parsed.get("protocol", "vless")
+
+    if protocol == "vless":
+        sec       = parsed.get("security", "none")
+        transport = parsed.get("type", "tcp")
+        parts     = ["VLESS"]
+        if sec == "reality":
+            parts.append("Reality")
+        elif sec == "tls":
+            parts.append("TLS")
+        if transport != "tcp":
+            parts.append(transport.upper())
+        return " + ".join(parts)
+
+    elif protocol == "vmess":
+        sec       = parsed.get("security", "none")
+        transport = parsed.get("type", "tcp")
+        parts     = ["VMess"]
+        if sec == "tls":
+            parts.append("TLS")
+        if transport != "tcp":
+            parts.append(transport.upper())
+        return " + ".join(parts)
+
+    elif protocol == "trojan":
+        transport = parsed.get("type", "tcp")
+        if transport != "tcp":
+            return f"Trojan + TLS + {transport.upper()}"
+        return "Trojan + TLS"
+
+    elif protocol == "ss":
+        method = parsed.get("method", "aes-256-gcm")
+        return f"Shadowsocks ({method})"
+
+    return protocol.upper()
 
 
 # ─── Имена конфигов ───────────────────────────────────────────────────────────
@@ -953,7 +1140,7 @@ def build_name(
     exit_code:  str = "",
     exit_flag:  str = ICON_UNKNOWN,
 ) -> str:
-    num = f"#{index + 1}"
+    num     = f"#{index + 1}"
     has_entry = entry_code and entry_code != "XX"
     has_exit  = exit_code  and exit_code  != "XX"
 
@@ -1005,7 +1192,7 @@ async def _query_one_geo(
 ) -> str | None:
     try:
         url = url_fn(ip)
-        r = await client.get(url, timeout=4.0, follow_redirects=True)
+        r   = await client.get(url, timeout=4.0, follow_redirects=True)
         if r.status_code != 200:
             return None
         data = r.json()
@@ -1015,7 +1202,7 @@ async def _query_one_geo(
 
 
 async def get_country_consensus(ip: str, client: httpx.AsyncClient) -> tuple[str, str]:
-    tasks = [_query_one_geo(ip, url_fn, ext, client) for url_fn, ext in GEO_APIS]
+    tasks   = [_query_one_geo(ip, url_fn, ext, client) for url_fn, ext in GEO_APIS]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     votes: dict[str, int] = {}
@@ -1062,11 +1249,16 @@ async def check_one(
     index: int,
     client: httpx.AsyncClient,
     sem: asyncio.Semaphore,
+    no_tcp: bool = False,
 ) -> CheckResult:
     async with sem:
         loop = asyncio.get_event_loop()
-        tcp_ms = await loop.run_in_executor(None, tcp_check, parsed["host"], parsed["port"])
-        alive  = tcp_ms is not None
+        if no_tcp:
+            tcp_ms = 0.0
+            alive  = True
+        else:
+            tcp_ms = await loop.run_in_executor(None, tcp_check, parsed["host"], parsed["port"])
+            alive  = tcp_ms is not None
 
         if not alive:
             return CheckResult(
@@ -1089,7 +1281,7 @@ async def check_one(
             tag=tag, name=name,
             host=parsed["host"], port=parsed["port"],
             tcp_ms=tcp_ms,
-            country=entry_code,    flag=entry_flag,
+            country=entry_code,     flag=entry_flag,
             exit_country=exit_code, exit_flag=exit_flag,
             alive=True,
         )
@@ -1111,9 +1303,9 @@ def build_test_xray_config(parsed: dict, socks_port: int) -> dict:
             ],
         },
         "inbounds": [{
-            "tag": "socks-in",
-            "listen": "127.0.0.1",
-            "port": socks_port,
+            "tag":      "socks-in",
+            "listen":   "127.0.0.1",
+            "port":     socks_port,
             "protocol": "socks",
             "settings": {"auth": "noauth", "udp": False},
         }],
@@ -1125,9 +1317,7 @@ def build_test_xray_config(parsed: dict, socks_port: int) -> dict:
     }
 
 
-async def _wait_for_socks(
-    host: str, port: int, timeout: float = 3.0,
-) -> bool:
+async def _wait_for_socks(host: str, port: int, timeout: float = 3.0) -> bool:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         try:
@@ -1157,9 +1347,7 @@ async def _query_proxy_geo(
             *cmd, stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.DEVNULL,
         )
-        stdout, _ = await asyncio.wait_for(
-            proc.communicate(), timeout=timeout + 1,
-        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout + 1)
         if proc.returncode != 0:
             return None
         data = json.loads(stdout.decode())
@@ -1168,9 +1356,7 @@ async def _query_proxy_geo(
         return None
 
 
-async def get_proxy_country_consensus(
-    socks_port: int, timeout: float = 5.0,
-) -> tuple[str, str]:
+async def get_proxy_country_consensus(socks_port: int, timeout: float = 5.0) -> tuple[str, str]:
     tasks = [
         _query_proxy_geo(url, ext, socks_port, timeout)
         for url, ext in PROXY_GEO_APIS
@@ -1188,20 +1374,16 @@ async def get_proxy_country_consensus(
     return winner, COUNTRY_FLAGS.get(winner, ICON_UNKNOWN)
 
 
-async def check_country_through_proxy(
-    parsed: dict, index: int,
-) -> tuple[str, str]:
+async def check_country_through_proxy(parsed: dict, index: int) -> tuple[str, str]:
     socks_port = 10808 + (index % 200)
-    config = build_test_xray_config(parsed, socks_port)
-    xray_path = shutil.which("xray")
+    config     = build_test_xray_config(parsed, socks_port)
+    xray_path  = find_xray()
     if not xray_path:
         return "XX", ICON_UNKNOWN
 
     with tempfile.TemporaryDirectory(prefix="xray_test_") as tmpdir:
         config_path = Path(tmpdir) / "config.json"
-        config_path.write_text(
-            json.dumps(config, ensure_ascii=False), encoding="utf-8",
-        )
+        config_path.write_text(json.dumps(config, ensure_ascii=False), encoding="utf-8")
 
         proc = await asyncio.create_subprocess_exec(
             xray_path, "run", "-c", str(config_path),
@@ -1210,15 +1392,11 @@ async def check_country_through_proxy(
         )
 
         try:
-            ready = await _wait_for_socks(
-                "127.0.0.1", socks_port, timeout=5.0,
-            )
+            ready = await _wait_for_socks("127.0.0.1", socks_port, timeout=5.0)
             if not ready:
                 return "XX", ICON_UNKNOWN
             await asyncio.sleep(0.5)
-            return await get_proxy_country_consensus(
-                socks_port, timeout=4.0,
-            )
+            return await get_proxy_country_consensus(socks_port, timeout=4.0)
         finally:
             try:
                 proc.terminate()
@@ -1234,33 +1412,22 @@ async def check_country_through_proxy(
 # ─── DNS конфиг Xray ─────────────────────────────────────────────────────────
 
 def build_xray_dns() -> dict:
-    """
-    Блокирующие DNS-серверы в приоритете.
-    Рекламные домены резолвятся через AdGuard → NXDOMAIN / 0.0.0.0.
-    """
     return {
         "servers": [
-            # AdGuard DNS — блокирует рекламу, трекеры, malware
             "94.140.14.14",
             "94.140.15.15",
-            # NextDNS — блокирует рекламу и трекеры
             "45.90.28.231",
             "45.90.30.231",
-            # Mullvad DNS с фильтрацией
             "194.242.2.3",
-            # Cloudflare for Families (блокировка malware)
             "1.1.1.3",
             "1.0.0.3",
-            # CleanBrowsing
             "185.228.168.9",
             "185.228.169.9",
-            # Принудительный резолв рекламных доменов через AdGuard
             {
                 "address": "94.140.14.14",
                 "port":    53,
                 "domains": ADBLOCK_DNS_DOMAINS,
             },
-            # Резервные
             "1.1.1.1",
             "8.8.8.8",
         ]
@@ -1270,20 +1437,22 @@ def build_xray_dns() -> dict:
 # ─── Скелет Xray-конфига ──────────────────────────────────────────────────────
 
 def xray_skeleton(remarks: str, description: str = "") -> dict:
-    cfg: dict = {"remarks": remarks}
-    if description:
-        cfg["meta"] = {"serverDescription": description}
+    """
+    Remarks и meta помещаются В КОНЕЦ конфига для лучшей совместимости
+    с импортом в клиенты (v2rayN, v2rayNG, Hiddify и т.д.).
+    """
+    cfg: dict = {}
     cfg.update({
         "log": {"loglevel": "warning", "dnsLog": False},
         "dns": build_xray_dns(),
         "policy": {
             "levels": {
                 "8": {
-                    "bufferSize":    3,
-                    "connIdle":      300,
-                    "downlinkOnly":  4,
-                    "handshake":     3,
-                    "uplinkOnly":    2,
+                    "bufferSize":   3,
+                    "connIdle":     300,
+                    "downlinkOnly": 4,
+                    "handshake":    3,
+                    "uplinkOnly":   2,
                 }
             }
         },
@@ -1316,6 +1485,10 @@ def xray_skeleton(remarks: str, description: str = "") -> dict:
             },
         ],
     })
+    # remarks и meta — в конце для корректного импорта
+    cfg["remarks"] = remarks
+    if description:
+        cfg["meta"] = {"serverDescription": description}
     return cfg
 
 
@@ -1334,7 +1507,7 @@ BURST_OBSERVATORY = {
 
 def routing_balancer(balancer_tag: str = "proxy-balancer") -> dict:
     return {
-        "domainMatcher": "hybrid",
+        "domainMatcher":  "hybrid",
         "domainStrategy": "IPIfNonMatch",
         "balancers": [
             {
@@ -1344,7 +1517,6 @@ def routing_balancer(balancer_tag: str = "proxy-balancer") -> dict:
             }
         ],
         "rules": [
-            # Адблок — первым
             ADBLOCK_RULE,
             {"type": "field", "ip": ["geoip:private"], "outboundTag": "direct"},
             {"type": "field", "network": "tcp,udp", "balancerTag": balancer_tag},
@@ -1384,28 +1556,29 @@ def build_auto_config(
 
 # ─── Clash Meta конфиг ────────────────────────────────────────────────────────
 
-def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
-    proxies   = []
-    names_all = []
+def _clash_proxy_from_parsed(parsed: dict, name: str) -> dict | None:
+    """Строит словарь прокси для Clash Meta из parsed-конфига."""
+    protocol = parsed.get("protocol", "vless")
 
-    for parsed, tag, result in entries:
-        name = result.name
+    if protocol == "vless":
         proxy: dict = {
-            "name":   name,
-            "type":   "vless",
-            "server": parsed["host"],
-            "port":   parsed["port"],
-            "uuid":   parsed["uuid"],
-            "udp":    True,
+            "name":             name,
+            "type":             "vless",
+            "server":           parsed["host"],
+            "port":             parsed["port"],
+            "uuid":             parsed["uuid"],
+            "udp":              True,
             "skip-cert-verify": False,
         }
-
         if parsed["type"] == "ws":
-            proxy["network"] = "ws"
-            proxy["ws-opts"] = {
+            proxy["network"]  = "ws"
+            proxy["ws-opts"]  = {
                 "path":    parsed.get("path", "/"),
                 "headers": {"Host": parsed.get("host_header") or parsed["host"]},
             }
+        elif parsed["type"] == "grpc":
+            proxy["network"]    = "grpc"
+            proxy["grpc-opts"]  = {"grpc-service-name": parsed.get("path", "")}
         else:
             proxy["network"] = "tcp"
 
@@ -1426,7 +1599,101 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
 
         if parsed.get("flow"):
             proxy["flow"] = parsed["flow"]
+        return proxy
 
+    elif protocol == "vmess":
+        proxy: dict = {
+            "name":             name,
+            "type":             "vmess",
+            "server":           parsed["host"],
+            "port":             parsed["port"],
+            "uuid":             parsed["uuid"],
+            "alterId":          parsed.get("alter_id", 0),
+            "cipher":           parsed.get("cipher", "auto"),
+            "udp":              True,
+            "skip-cert-verify": False,
+        }
+        net = parsed.get("type", "tcp")
+        if net == "ws":
+            proxy["network"] = "ws"
+            proxy["ws-opts"] = {
+                "path":    parsed.get("path", "/"),
+                "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            }
+        elif net == "h2":
+            proxy["network"]   = "h2"
+            proxy["h2-opts"]   = {
+                "host": [parsed.get("host_header") or parsed["host"]],
+                "path": parsed.get("path", "/"),
+            }
+        elif net == "grpc":
+            proxy["network"]   = "grpc"
+            proxy["grpc-opts"] = {"grpc-service-name": parsed.get("path", "")}
+        else:
+            proxy["network"] = "tcp"
+
+        if parsed.get("security") == "tls":
+            proxy["tls"]                = True
+            proxy["servername"]         = parsed["sni"] or parsed["host"]
+            proxy["client-fingerprint"] = parsed.get("fp", "chrome")
+        else:
+            proxy["tls"] = False
+        return proxy
+
+    elif protocol == "trojan":
+        proxy: dict = {
+            "name":             name,
+            "type":             "trojan",
+            "server":           parsed["host"],
+            "port":             parsed["port"],
+            "password":         parsed["password"],
+            "udp":              True,
+            "sni":              parsed["sni"] or parsed["host"],
+            "skip-cert-verify": parsed.get("skip_verify", False),
+            "client-fingerprint": parsed.get("fp", "chrome"),
+        }
+        net = parsed.get("type", "tcp")
+        if net == "ws":
+            proxy["network"] = "ws"
+            proxy["ws-opts"] = {
+                "path":    parsed.get("path", "/"),
+                "headers": {"Host": parsed.get("host_header") or parsed["host"]},
+            }
+        elif net == "grpc":
+            proxy["network"]   = "grpc"
+            proxy["grpc-opts"] = {"grpc-service-name": parsed.get("path", "")}
+        return proxy
+
+    elif protocol == "ss":
+        proxy: dict = {
+            "name":     name,
+            "type":     "ss",
+            "server":   parsed["host"],
+            "port":     parsed["port"],
+            "cipher":   parsed["method"],
+            "password": parsed["password"],
+            "udp":      True,
+        }
+        if parsed.get("plugin"):
+            proxy["plugin"]      = "obfs"
+            proxy["plugin-opts"] = {
+                "mode": parsed.get("obfs", "http"),
+                "host": parsed.get("obfs_host", ""),
+            }
+        return proxy
+
+    return None
+
+
+def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
+    proxies   = []
+    names_all = []
+
+    for parsed, tag, result in entries:
+        name  = result.name
+        proxy = _clash_proxy_from_parsed(parsed, name)
+        if proxy is None:
+            continue
         proxies.append(proxy)
         names_all.append(name)
 
@@ -1460,7 +1727,7 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
     }
 
     select_proxies = [BRAND_AUTO] + [g["name"] for g in country_groups] + names_all
-    select_group = {
+    select_group   = {
         "name":    f"⚡ {BRAND} · Выбор",
         "type":    "select",
         "proxies": select_proxies,
@@ -1472,37 +1739,28 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         "mode":        "rule",
         "log-level":   "info",
         "ipv6":        False,
-        # ── DNS Clash с блокирующими серверами ────────────────────────────
         "dns": {
             "enable":        True,
             "ipv6":          False,
             "enhanced-mode": "fake-ip",
             "fake-ip-range": "198.18.0.1/16",
-            # Рекламные домены → fake-ip (уйдут в REJECT через rules)
             "fake-ip-filter": [
                 "*.lan",
                 "localhost.ptlogin2.qq.com",
-                # Исключаем YouTube из fake-ip чтобы он работал нормально
                 "*.youtube.com",
                 "*.googlevideo.com",
                 "*.ytimg.com",
                 "*.ggpht.com",
-                # VK, OK работают напрямую
                 "*.vk.com",
                 "*.ok.ru",
-                # Telegram
                 "*.telegram.org",
                 "*.t.me",
             ],
             "nameserver": [
-                # AdGuard DNS с блокировкой рекламы
                 "https://dns.adguard-dns.com/dns-query",
                 "https://94.140.14.14/dns-query",
-                # NextDNS
                 "https://dns.nextdns.io",
-                # Cloudflare for Families
                 "https://family.cloudflare-dns.com/dns-query",
-                # Mullvad
                 "https://base.dns.mullvad.net/dns-query",
             ],
             "fallback": [
@@ -1517,7 +1775,6 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
         },
         "proxies":      proxies,
         "proxy-groups": [auto_group, select_group] + country_groups,
-        # ── Rules: сначала адблок, потом остальное ────────────────────────
         "rules": CLASH_ADBLOCK_RULES + [
             "GEOIP,PRIVATE,DIRECT",
             f"MATCH,⚡ {BRAND} · Выбор",
@@ -1527,104 +1784,187 @@ def build_clash_config(entries: list[tuple[dict, str, CheckResult]]) -> str:
     return yaml.dump(clash_cfg, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 
+# ─── Простое определение страны по SNI ───────────────────────────────────────
+
+SNI_COUNTRY_MAP: list[tuple[str, str]] = [
+    ("ru.", "RU"), (".ru", "RU"),
+    ("de.", "DE"), (".de", "DE"),
+    ("nl.", "NL"), (".nl", "NL"),
+    ("fr.", "FR"), (".fr", "FR"),
+    ("sg.", "SG"), (".sg", "SG"),
+    ("jp.", "JP"), (".jp", "JP"),
+    ("us.", "US"), (".us", "US"),
+    ("pl.", "PL"), (".pl", "PL"),
+    ("fi.", "FI"), (".fi", "FI"),
+    ("se.", "SE"), (".se", "SE"),
+    ("gb.", "GB"), (".gb", "GB"),
+    ("uk.", "GB"), (".uk", "GB"),
+    ("ae.", "AE"), (".ae", "AE"),
+    ("kz.", "KZ"), (".kz", "KZ"),
+    ("tr.", "TR"), (".tr", "TR"),
+    ("cz.", "CZ"), (".cz", "CZ"),
+    ("ch.", "CH"), (".ch", "CH"),
+    ("at.", "AT"), (".at", "AT"),
+    ("no.", "NO"), (".no", "NO"),
+    ("dk.", "DK"), (".dk", "DK"),
+]
+
+
+def country_from_sni(parsed: dict) -> tuple[str, str]:
+    sni = (parsed.get("sni") or parsed["host"]).lower().strip()
+    for pattern, code in SNI_COUNTRY_MAP:
+        if sni == pattern.strip(".") or sni.endswith(pattern) or sni.startswith(pattern):
+            return code, COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
+    return "XX", ICON_UNKNOWN
+
+
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 async def main() -> None:
+    import sys
+    do_tcp  = "--tcp"  in sys.argv
+    do_geo  = "--geo"  in sys.argv or do_tcp
+    do_xray = "--xray" in sys.argv or do_tcp
+
     raw_configs = load_configs(INPUT_FILE)
     print(f"[*] Загружено: {len(raw_configs)}")
 
     parsed_list: list[tuple[str, dict]] = []
     for cfg in raw_configs:
-        p = parse_vless_url(cfg)
+        p = parse_any_url(cfg)
         if p:
             parsed_list.append((cfg, p))
 
-    print(f"[*] Распарсено: {len(parsed_list)}")
+    # Статистика по протоколам
+    proto_counts: dict[str, int] = {}
+    for _, p in parsed_list:
+        proto = p.get("protocol", "unknown")
+        proto_counts[proto] = proto_counts.get(proto, 0) + 1
+    proto_summary = " | ".join(f"{k.upper()}: {v}" for k, v in sorted(proto_counts.items()))
+    print(f"[*] Распарсено: {len(parsed_list)}  ({proto_summary})")
 
-    sem = asyncio.Semaphore(30)
-    print(f"[*] Проверка...")
-
-    async with httpx.AsyncClient(
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=10.0,
-    ) as client:
-        tasks = [
-            check_one(parsed, f"proxy-{i + 1}", i, client, sem)
-            for i, (_, parsed) in enumerate(parsed_list)
-        ]
-        results: list[CheckResult] = await asyncio.gather(*tasks)
-
-    alive = [(parsed_list[i][1], r) for i, r in enumerate(results) if r.alive]
-    dead  = [(parsed_list[i][1], r) for i, r in enumerate(results) if not r.alive]
-    alive.sort(key=lambda x: x[1].tcp_ms or 9999)
-
-    print(f"[+] Живых: {len(alive)} | Мёртвых: {len(dead)}")
-
-    # ── Through-proxy country verification for alive servers ──
-    if shutil.which("xray"):
-        print("[*] Проверка страны через прокси...")
-        proxy_sem = asyncio.Semaphore(20)
-
-        async def _proxy_check(i: int, parsed: dict):
-            async with proxy_sem:
-                country, flag = await check_country_through_proxy(parsed, i)
-                return i, country, flag
-
-        proxy_verified = 0
-        proxy_changed = 0
-        for i, country, flag in await asyncio.gather(*[
-            _proxy_check(i, parsed) for i, (parsed, _) in enumerate(alive)
-        ]):
-            if country != "XX":
-                old = alive[i][1].country
-                alive[i][1].country = country
-                alive[i][1].flag = flag
-                alive[i][1].exit_country = country
-                alive[i][1].exit_flag = flag
-                if old != country:
-                    proxy_changed += 1
-                proxy_verified += 1
-
-        print(f"   → {proxy_verified}/{len(alive)} прокси проверены ({proxy_changed} смена страны)")
+    if not do_geo and not do_tcp:
+        print("[*] Режим: без проверок (SNI)")
     else:
-        print("[!] xray не найден, проверка через прокси пропущена")
+        modes = []
+        if do_tcp:  modes.append("TCP")
+        if do_geo:  modes.append("GEO")
+        if do_xray: modes.append("XRAY")
+        print(f"[*] Режим: {' + '.join(modes)}")
 
-    log_lines = [
-        f"{'─' * 60}",
-        f"  {BRAND} VPN · Лог проверки",
-        f"  Живых: {len(alive)}   Мёртвых: {len(dead)}",
-        f"{'─' * 60}",
-    ]
-    for parsed, r in alive:
-        ms_str = f"{r.tcp_ms:>6.1f}мс"
-        if r.exit_country and r.exit_country != "XX" and r.exit_country != r.country:
-            geo = (
-                f"{r.flag}{country_name_ru(r.country):<12}"
-                f" → {r.exit_flag}{country_name_ru(r.exit_country)}"
-            )
-        elif r.exit_country and r.exit_country != "XX":
-            geo = f"{r.exit_flag} {country_name_ru(r.exit_country):<16}"
-        elif r.country != "XX":
-            geo = f"{r.flag} {country_name_ru(r.country):<16}"
+    # ── Simple mode: no TCP, no geo, just SNI ──
+    if not do_geo and not do_tcp:
+        results: list[CheckResult] = []
+        for i, (_, parsed) in enumerate(parsed_list):
+            country, flag = country_from_sni(parsed)
+            results.append(CheckResult(
+                tag=f"proxy-{i + 1}",
+                name="",
+                host=parsed["host"],
+                port=parsed["port"],
+                tcp_ms=0.0,
+                country=country,
+                flag=flag,
+                exit_country=country,
+                exit_flag=flag,
+                alive=True,
+            ))
+        alive_pairs = [(parsed_list[i][1], r) for i, r in enumerate(results)]
+
+    # ── Full mode: TCP checks + geo APIs + optional xray ──
+    else:
+        sem = asyncio.Semaphore(100)
+        print(f"[*] Проверка...")
+
+        async with httpx.AsyncClient(
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10.0,
+        ) as client:
+            tasks = [
+                check_one(parsed, f"proxy-{i + 1}", i, client, sem)
+                for i, (_, parsed) in enumerate(parsed_list)
+            ]
+            raw_results: list[CheckResult] = await asyncio.gather(*tasks)
+
+        alive_pairs = [(parsed_list[i][1], r) for i, r in enumerate(raw_results) if r.alive]
+        dead_pairs  = [(parsed_list[i][1], r) for i, r in enumerate(raw_results) if not r.alive]
+        alive_pairs.sort(key=lambda x: x[1].tcp_ms or 9999)
+
+        print(f"[+] Живых: {len(alive_pairs)} | Мёртвых: {len(dead_pairs)}")
+
+        # ── Xray through-proxy ──
+        if do_xray and find_xray():
+            print("[*] Проверка страны через прокси...")
+            proxy_sem = asyncio.Semaphore(20)
+
+            async def _proxy_check(i: int, parsed: dict):
+                async with proxy_sem:
+                    country, flag = await check_country_through_proxy(parsed, i)
+                    return i, country, flag
+
+            proxy_verified = 0
+            proxy_changed  = 0
+            for i, country, flag in await asyncio.gather(*[
+                _proxy_check(i, parsed) for i, (parsed, _) in enumerate(alive_pairs)
+            ]):
+                if country != "XX":
+                    old = alive_pairs[i][1].country
+                    alive_pairs[i][1].country      = country
+                    alive_pairs[i][1].flag         = flag
+                    alive_pairs[i][1].exit_country = country
+                    alive_pairs[i][1].exit_flag    = flag
+                    if old != country:
+                        proxy_changed += 1
+                    proxy_verified += 1
+
+            print(f"   → {proxy_verified}/{len(alive_pairs)} прокси проверены ({proxy_changed} смена страны)")
+        elif do_xray:
+            print("[!] xray не найден, проверка через прокси пропущена")
+
+        # ── Log ──
+        log_lines = [
+            f"{'─' * 60}",
+            f"  {BRAND} VPN · Лог проверки",
+        ]
+        if do_tcp:
+            log_lines.append(f"  Живых: {len(alive_pairs)}   Мёртвых: {len(dead_pairs)}")
         else:
-            geo = f"{ICON_UNKNOWN} Неизвестно       "
-        log_lines.append(f"  ✓  {geo}  {ms_str}  {r.host}:{r.port}")
-    log_lines.append(f"{'─' * 60}")
+            log_lines.append(f"  Всего: {len(alive_pairs)}")
+        log_lines.append(f"{'─' * 60}")
 
-    for parsed, r in dead:
-        log_lines.append(f"  ✗  🇸🇴 Недоступен               TIMEOUT  {r.host}:{r.port}")
-    Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
-    print("\n".join(log_lines[:20]))
+        for parsed, r in alive_pairs:
+            ms_str = f"{r.tcp_ms:>6.1f}мс" if r.tcp_ms is not None else "   N/A"
+            if r.exit_country and r.exit_country != "XX" and r.exit_country != r.country:
+                geo = f"{r.flag}{country_name_ru(r.country):<12} → {r.exit_flag}{country_name_ru(r.exit_country)}"
+            elif r.exit_country and r.exit_country != "XX":
+                geo = f"{r.exit_flag} {country_name_ru(r.exit_country):<16}"
+            elif r.country != "XX":
+                geo = f"{r.flag} {country_name_ru(r.country):<16}"
+            else:
+                geo = f"{ICON_UNKNOWN} Неизвестно       "
+            proto_label = parsed.get("protocol", "?").upper()
+            log_lines.append(f"  ✓  {geo}  {ms_str}  [{proto_label}]  {r.host}:{r.port}")
+        log_lines.append(f"{'─' * 60}")
 
-    if not alive:
+        if do_tcp:
+            for parsed, r in dead_pairs:
+                proto_label = parsed.get("protocol", "?").upper()
+                log_lines.append(
+                    f"  ✗  {ICON_UNKNOWN} Недоступен               TIMEOUT  [{proto_label}]  {r.host}:{r.port}"
+                )
+        Path(OUTPUT_LOG).write_text("\n".join(log_lines), encoding="utf-8")
+        print("\n".join(log_lines[:20]))
+
+    if not alive_pairs:
         print("[!] Нет доступных конфигов.")
         return
 
+    # ── Build entries from alive pairs ──
     country_counter: dict[str, int] = {}
     entries: list[tuple[dict, str, CheckResult]] = []
     global_index = 0
 
-    for parsed, result in alive:
+    for parsed, result in alive_pairs:
         new_tag    = f"proxy-{global_index + 1}"
         group_code = (
             result.exit_country
@@ -1663,11 +2003,9 @@ async def main() -> None:
         if code != "XX":
             by_country.setdefault(code, []).append(item)
 
-    GROUP_SIZE = 10
-    # ── Только авто-конфиги, без одиночных серверов ───────────────────────
+    GROUP_SIZE   = 10
     auto_configs: list[dict] = []
 
-    # 1. Глобальный авто (все серверы)
     auto_all = build_auto_config(
         BRAND_AUTO,
         entries,
@@ -1675,22 +2013,18 @@ async def main() -> None:
     )
     auto_configs.append(auto_all)
 
-    # 2. Авто по странам
     for code, items in sorted(by_country.items(), key=lambda x: -len(x[1])):
         if len(items) < 2:
             continue
-
         chunks = [items[i:i + GROUP_SIZE] for i in range(0, len(items), GROUP_SIZE)]
         for idx, chunk in enumerate(chunks, start=1):
             group_label = build_group_name(code, idx if len(chunks) > 1 else None)
-            desc = auto_description(chunk)
+            desc        = auto_description(chunk)
             auto_configs.append(build_auto_config(group_label, chunk, desc))
-
         flag = COUNTRY_FLAGS.get(code, ICON_UNKNOWN)
         ru   = country_name_ru(code)
         print(f"   {flag} {ru}: {len(items)} серверов → {len(chunks)} групп(ы)")
 
-    # ── Сохранение — только авто, без одиночных ───────────────────────────
     Path(OUTPUT_JSON).write_text(
         json.dumps(auto_configs, ensure_ascii=False, indent=2),
         encoding="utf-8",
