@@ -310,7 +310,7 @@ def try_decode_base64_response(text: str) -> str | None:
 
 def collect_configs():
     input_file  = 'reps.txt'
-    output_file = 'configs/all_configs.txt'
+    output_file = 'configs/all_vless.txt'
     invalid_log = 'configs/invalid_configs.txt'
 
     unique_configs  = {}   # config_str -> True (сохраняем порядок через dict)
