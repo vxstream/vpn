@@ -41,6 +41,14 @@ jobs:
       - name: Проверить и построить JSON
         run: python check.py
 
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add configs/all_vless.txt runvpn.txt legion_clash.yaml runvpn.json
+          git diff --cached --quiet || git commit -m "♻️ Update configs $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
+
       - name: Отправить в Cloudflare
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
