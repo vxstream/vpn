@@ -60,7 +60,7 @@ jobs:
             -H "X-Admin-Key: ${{ secrets.ADMIN_KEY }}" \
             -H "Content-Type: application/json" \
             --data-binary @runvpn.json \
-            ${{ secrets.WORKER_URL }}/admin/update)
+            ${{ secrets.WORKER_URL }}/admin/update/1)
           echo "Статус CF: $STATUS"
           [ "$STATUS" = "200" ] || exit 1
 
