@@ -26,7 +26,7 @@ OUTPUT_LOG  = "check_log.txt"
 
 # ─── Бренд ───────────────────────────────────────────────────────────────────
 
-BRAND             = "Ascome"
+BRAND             = "Flash"
 ICON_UNKNOWN      = "🇸🇴"
 BRAND_AUTO        = f"{ICON_UNKNOWN} {BRAND} · Авто"
 BRAND_AUTO_PREFIX = f"{BRAND} · "
@@ -1497,9 +1497,9 @@ BURST_OBSERVATORY = {
         "connectivity": "http://connectivitycheck.platform.hicloud.com/generate_204",
         "destination":  "http://www.google.com/generate_204",
         "httpMethod":   "HEAD",
-        "interval":     "5m",
-        "sampling":     1,
-        "timeout":      "10s",
+        "interval":     "10m",
+        "sampling":     10,
+        "timeout":      "30s",
     },
     "subjectSelector": ["proxy-"],
 }
@@ -2003,7 +2003,7 @@ async def main() -> None:
         if code != "XX":
             by_country.setdefault(code, []).append(item)
 
-    GROUP_SIZE   = 10
+    GROUP_SIZE   = 5
     auto_configs: list[dict] = []
 
     auto_all = build_auto_config(
