@@ -49,7 +49,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add configs/all_vless.txt runvpn.txt legion_clash.yaml runvpn.json
+          git add configs/all_vless.txt master.txt clash.yaml runvpn.json
           git diff --cached --quiet || git commit -m "♻️ Update configs $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
 
