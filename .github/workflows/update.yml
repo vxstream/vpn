@@ -49,17 +49,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add configs/all_vless.txt master.txt clash.yaml runvpn.json
+          git add configs/all_vless.txt master.json clash.yaml runvpn.json
           git diff --cached --quiet || git commit -m "♻️ Update configs $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
-
-      - name: Отправить в Cloudflare
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST \
-            -H "X-Admin-Key: ${{ secrets.ADMIN_KEY }}" \
-            -H "Content-Type: application/json" \
-            --data-binary @runvpn.json \
-            ${{ secrets.WORKER_URL }}/admin/update/1)
-          echo "Статус CF: $STATUS"
-          [ "$STATUS" = "200" ] || exit 1
