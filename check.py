@@ -20,8 +20,8 @@ import yaml
 # ─── Пути ────────────────────────────────────────────────────────────────────
 
 INPUT_FILE  = "configs/all_vless.txt"
-OUTPUT_JSON = "runvpn.json"
-OUTPUT_YAML = "legion_clash.yaml"
+OUTPUT_JSON = "master.json"
+OUTPUT_YAML = "clash.yaml"
 OUTPUT_LOG  = "check_log.txt"
 
 # ─── Бренд ───────────────────────────────────────────────────────────────────
