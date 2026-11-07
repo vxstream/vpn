@@ -34,52 +34,65 @@ dns:
     ipcidr:
     - 240.0.0.0/4
 proxies:
-- name: '🇺🇸 США #1'
-  type: vless
-  server: 162.159.130.234
-  port: 2083
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fcommunity%2Fredirect.html'
-    headers:
-      Host: vp14.1145678.xyz
-  tls: true
-  servername: vp14.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #2'
+- name: '🇸🇴 Сервер #1'
   type: trojan
-  server: 104.24.0.1
+  server: 104.25.239.113
   port: 2053
   password: gHQP0D7D15
   udp: true
   sni: marvdasht.phonecomparisonblog.org
   skip-cert-verify: false
-  client-fingerprint: chrome
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.25.239.113
+- name: '🇸🇴 Сервер #2'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: ''
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #3'
+  type: trojan
+  server: 104.25.239.113
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.25.239.113
+- name: '🇸🇴 Сервер #4'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
   network: ws
   ws-opts:
     path: '%2F'
     headers:
       Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #3'
+- name: '🇸🇴 Сервер #5'
   type: trojan
-  server: 199.181.197.99
-  port: 443
-  password: 70756c73-0000-4000-8000-650000000000
-  udp: true
-  sni: parsa-panel-u48we.wotic15356.workers.dev
-  skip-cert-verify: false
-  client-fingerprint: safari
-  network: ws
-  ws-opts:
-    path: '%2Fpulse'
-    headers:
-      Host: parsa-panel-u48we.wotic15356.workers.dev
-- name: '🇸🇴 Сервер #4'
-  type: trojan
-  server: 172.66.0.1
+  server: 104.24.0.1
   port: 2053
   password: gHQP0D7D15
   udp: true
@@ -91,9 +104,9 @@ proxies:
     path: '%2F'
     headers:
       Host: marvdasht.phonecomparisonblog.org
-- name: '🇫🇮 Финляндия #1'
+- name: '🇸🇴 Сервер #6'
   type: trojan
-  server: 172.66.0.1
+  server: 104.27.0.1
   port: 2053
   password: gHQP0D7D15
   udp: true
@@ -102,9 +115,37 @@ proxies:
   client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /
+    path: '%2F'
     headers:
       Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #7'
+  type: trojan
+  server: 104.25.239.113
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: qq
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.25.239.113
+- name: '🇸🇴 Сервер #8'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 188.114.96.3
 - name: '🇳🇱 Нидерланды #1'
   type: vless
   server: 188.114.98.0
@@ -116,9 +157,85 @@ proxies:
   tls: true
   servername: nl29.dr-ping.ir
   client-fingerprint: unsafe
-- name: '🇺🇸 США #2'
+- name: '🇸🇴 Сервер #10'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /%3FTelegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NET
+    headers:
+      Host: 172.67.118.45
+- name: '🇳🇱 Нидерланды #2'
+  type: vless
+  server: 188.114.98.0
+  port: 443
+  uuid: 64c5f924-1c24-44a5-acff-2e3ebcd2f807
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: nl29.dr-ping.ir
+  client-fingerprint: firefox
+- name: '🇳🇱 Нидерланды #3'
+  type: vless
+  server: 188.114.98.0
+  port: 443
+  uuid: 64c5f924-1c24-44a5-acff-2e3ebcd2f807
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: nl29.dr-ping.ir
+  client-fingerprint: qq
+- name: '🇸🇴 Сервер #13'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F%3FTelegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NET'
+    headers:
+      Host: 172.67.118.45
+- name: '🇳🇱 Нидерланды #4'
+  type: vless
+  server: 188.114.98.0
+  port: 443
+  uuid: 64c5f924-1c24-44a5-acff-2e3ebcd2f807
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: nl29.dr-ping.ir
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #15'
+  type: vless
+  server: 172.64.190.13
+  port: 443
+  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Ftyxyws'
+    headers:
+      Host: jp3.yohototo.top
+  tls: true
+  servername: jp3.yohototo.top
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #16'
   type: vmess
-  server: 172.64.229.21
+  server: 172.66.203.67
   port: 443
   uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
   alterId: 0
@@ -133,207 +250,35 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #8'
+- name: '🇳🇱 Нидерланды #5'
   type: vless
-  server: 104.21.58.37
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
+  server: 188.114.98.0
+  port: 443
+  uuid: 64c5f924-1c24-44a5-acff-2e3ebcd2f807
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
+  network: tcp
   tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: android
-- name: '🇺🇸 США #3'
-  type: vless
-  server: 162.159.130.234
-  port: 2083
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp14.1145678.xyz
-  tls: true
-  servername: vp14.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #10'
-  type: vless
-  server: 104.21.58.37
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
+  servername: nl29.dr-ping.ir
   client-fingerprint: safari
-- name: '🇸🇴 Сервер #11'
-  type: vless
-  server: 104.21.58.37
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #12'
-  type: vless
-  server: 172.67.199.126
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #13'
-  type: vless
-  server: 172.67.165.32
-  port: 8443
-  uuid: 91ad30e9-ab06-4b4c-9fb9-1c2aa97d8b3a
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fnvl-n04-ws%2Fe0577fe8fd7c8823'
-    headers:
-      Host: n04.jinggai.online
-  tls: true
-  servername: n04.jinggai.online
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #14'
-  type: vmess
-  server: 104.21.0.1
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /or3
-    headers:
-      Host: 104.21.0.1
-  tls: true
-  servername: or3.sfacg.uk
-  client-fingerprint: ''
-- name: '🇯🇵 Япония #1'
-  type: vless
-  server: 104.16.111.202
-  port: 443
-  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /tyxyws
-    headers:
-      Host: jp3.yohototo.top
-  tls: true
-  servername: jp3.yohototo.top
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #16'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: workers.jijew83195.workers.dev
-  tls: true
-  servername: workers.jijew83195.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #17'
-  type: trojan
-  server: 104.24.0.1
-  port: 2053
-  password: gHQP0D7D15
-  udp: true
-  sni: marvdasht.phonecomparisonblog.org
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: 104.24.0.1
 - name: '🇸🇴 Сервер #18'
-  type: vless
-  server: 104.18.151.231
+  type: vmess
+  server: 172.66.203.67
   port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: damp-pine-ea85.wimaren917.workers.dev
-  tls: true
-  servername: 104.18.151.231
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #19'
-  type: vmess
-  server: 104.17.0.1
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /or3
+    path: /ws
     headers:
-      Host: or3.sfacg.uk
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: or3.sfacg.uk
+  servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #20'
-  type: vmess
-  server: or3.sfacg.uk
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /or3
-    headers:
-      Host: or3.sfacg.uk
-  tls: true
-  servername: or3.sfacg.uk
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #21'
+- name: '🇺🇸 США #1'
   type: vmess
   server: 172.66.0.1
   port: 443
@@ -350,22 +295,38 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #22'
-  type: vless
-  server: 104.19.52.70
-  port: 8443
-  uuid: fceb3200-2516-47d2-8e28-d04ecde9427a
+- name: '🇸🇴 Сервер #20'
+  type: trojan
+  server: 172.66.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #21'
+  type: vmess
+  server: 104.27.0.1
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: ''
+    path: /ws
     headers:
-      Host: edge-fef90023.pages.dev
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: 104.19.52.70
-  client-fingerprint: firefox
-- name: '🇸🇴 Сервер #23'
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇺🇸 США #2'
   type: vmess
   server: 104.17.136.198
   port: 443
@@ -382,7 +343,339 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #24'
+- name: '🇺🇸 США #3'
+  type: trojan
+  server: 172.66.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇺🇸 США #4'
+  type: vmess
+  server: 104.17.77.77
+  port: 8443
+  uuid: 60441548-b68e-43b2-8191-e3b884be4b3c
+  alterId: 0
+  cipher: none
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /lMnsZUN4/
+    headers:
+      Host: v2ray1.dozapp.xyz
+  tls: true
+  servername: v2ray1.dozapp.xyz
+  client-fingerprint: ''
+- name: '🇺🇸 США #5'
+  type: vmess
+  server: 172.64.229.21
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #26'
+  type: vmess
+  server: 172.64.229.21
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #27'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #28'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #29'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #30'
+  type: trojan
+  server: 104.16.186.130
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: android
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #31'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.24.0.1
+- name: '🇸🇴 Сервер #32'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #33'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.24.0.1
+- name: '🇸🇴 Сервер #34'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.24.0.1
+- name: '🇸🇴 Сервер #35'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: qq
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.24.0.1
+- name: '🇺🇸 США #6'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #37'
+  type: trojan
+  server: 104.25.239.113
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #38'
+  type: trojan
+  server: 104.25.239.113
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.25.239.113
+- name: '🇸🇴 Сервер #39'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #40'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #41'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #42'
+  type: vless
+  server: 172.67.165.32
+  port: 8443
+  uuid: 91ad30e9-ab06-4b4c-9fb9-1c2aa97d8b3a
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fnvl-n04-ws%2Fe0577fe8fd7c8823'
+    headers:
+      Host: n04.jinggai.online
+  tls: true
+  servername: n04.jinggai.online
+  client-fingerprint: safari
+- name: '🇺🇸 США #7'
+  type: trojan
+  server: 172.66.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇺🇸 США #8'
+  type: trojan
+  server: 104.27.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #45'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #46'
   type: vless
   server: 104.21.58.37
   port: 2053
@@ -396,10 +689,39 @@ proxies:
       Host: fast.145779.xyz
   tls: true
   servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #25'
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #47'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F%3FTelegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NET'
+    headers:
+      Host: 172.67.118.45
+- name: '🇸🇴 Сервер #48'
   type: vless
   server: fast.145779.xyz
+  port: 2053
+  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: qq
+- name: '🇸🇴 Сервер #49'
+  type: vless
+  server: 172.67.199.126
   port: 2053
   uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
   udp: true
@@ -411,44 +733,10 @@ proxies:
       Host: fast.145779.xyz
   tls: true
   servername: fast.145779.xyz
-  client-fingerprint: firefox
-- name: '🇸🇴 Сервер #26'
-  type: vmess
-  server: 172.66.203.67
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws?ed=2048
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #27'
-  type: vmess
-  server: 104.21.7.133
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws?ed=2048
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #28'
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #50'
   type: vless
-  server: fast.145779.xyz
+  server: 172.67.199.126
   port: 2053
   uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
   udp: true
@@ -461,7 +749,49 @@ proxies:
   tls: true
   servername: fast.145779.xyz
   client-fingerprint: chrome
-- name: '🇸🇴 Сервер #29'
+- name: '🇸🇴 Сервер #51'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #52'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #53'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #54'
   type: trojan
   server: 104.25.239.113
   port: 2053
@@ -474,8 +804,96 @@ proxies:
   ws-opts:
     path: '%2F'
     headers:
-      Host: 104.25.239.113
-- name: '🇸🇴 Сервер #30'
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #55'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #56'
+  type: vmess
+  server: 172.66.0.1
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #57'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.24.0.1
+- name: '🇸🇴 Сервер #58'
+  type: vless
+  server: 104.17.50.227
+  port: 443
+  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Ftyxyws'
+    headers:
+      Host: jp3.yohototo.top
+  tls: true
+  servername: jp3.yohototo.top
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #59'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #60'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #61'
   type: trojan
   server: 104.25.239.113
   port: 2053
@@ -489,9 +907,155 @@ proxies:
     path: /
     headers:
       Host: 104.25.239.113
-- name: '🇸🇴 Сервер #31'
+- name: '🇸🇴 Сервер #62'
   type: trojan
-  server: 104.25.239.113
+  server: 104.27.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 104.27.0.1
+- name: '🇺🇸 США #9'
+  type: trojan
+  server: 104.27.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇺🇸 США #10'
+  type: vmess
+  server: US122205.ssgreen.org
+  port: 443
+  uuid: fb49c594-fcbf-4733-bd9a-2f44bb90eb2c
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: US122205.ssgreen.org
+  tls: true
+  servername: US122205.ssgreen.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #65'
+  type: trojan
+  server: 104.16.186.130
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #66'
+  type: vmess
+  server: 172.67.167.78
+  port: 8443
+  uuid: 60441548-b68e-43b2-8191-e3b884be4b3c
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /lMnsZUN4/
+    headers:
+      Host: v2ray1.dozapp.xyz
+  tls: true
+  servername: v2ray1.dozapp.xyz
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #67'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇺🇸 США #11'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #69'
+  type: trojan
+  server: 104.24.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #70'
+  type: trojan
+  server: 172.67.118.45
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F%3FTelegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NET'
+    headers:
+      Host: 172.67.118.45
+- name: '🇸🇴 Сервер #71'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: ''
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #72'
+  type: trojan
+  server: 188.114.96.3
   port: 2053
   password: gHQP0D7D15
   udp: true
@@ -502,25 +1066,186 @@ proxies:
   ws-opts:
     path: '%2F'
     headers:
-      Host: 104.25.239.113
-- name: '🇸🇴 Сервер #32'
+      Host: 188.114.96.3
+- name: '🇸🇴 Сервер #73'
+  type: vless
+  server: fast.145779.xyz
+  port: 2053
+  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #74'
   type: vmess
-  server: 104.21.50.177
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
+  server: vipccc.cc
+  port: 443
+  uuid: 5bead32f-a987-4f57-b1a8-6698778facda
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /or3
+    path: /ray_proxy
     headers:
-      Host: or3.sfacg.uk
+      Host: vipccc.cc
   tls: true
-  servername: or3.sfacg.uk
+  servername: vipccc.cc
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #33'
+- name: '🇸🇴 Сервер #75'
+  type: vless
+  server: fast.145779.xyz
+  port: 2053
+  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: chrome
+- name: '🇳🇱 Нидерланды #6'
+  type: vless
+  server: 188.114.98.0
+  port: 443
+  uuid: 64c5f924-1c24-44a5-acff-2e3ebcd2f807
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: nl29.dr-ping.ir
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #77'
+  type: trojan
+  server: 172.66.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #78'
+  type: trojan
+  server: 172.66.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 172.66.0.1
+- name: '🇸🇴 Сервер #79'
+  type: trojan
+  server: 104.18.0.1
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #80'
+  type: vmess
+  server: 104.17.136.198
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #81'
+  type: vless
+  server: fast.145779.xyz
+  port: 2053
+  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #82'
+  type: vmess
+  server: 162.159.128.17
+  port: 443
+  uuid: c8b455ad-fff1-43e9-9af9-d97585c4534a
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ryinsocksv2board
+    headers:
+      Host: v2ray.ryin.vip
+  tls: true
+  servername: v2ray.ryin.vip
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #83'
+  type: vless
+  server: fast.145779.xyz
+  port: 2053
+  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: ios
+- name: '🇸🇴 Сервер #84'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: '%2F'
+    headers:
+      Host: 188.114.96.3
+- name: '🇸🇴 Сервер #85'
   type: vmess
   server: 172.66.0.1
   port: 443
@@ -537,451 +1262,7 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #34'
-  type: vless
-  server: 104.19.52.70
-  port: 8443
-  uuid: fceb3200-2516-47d2-8e28-d04ecde9427a
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /fp=firefox
-    headers:
-      Host: edge-fef90023.pages.dev
-  tls: true
-  servername: 104.19.52.70
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #35'
-  type: vless
-  server: 104.21.58.37
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: firefox
-- name: '🇸🇴 Сервер #36'
-  type: vless
-  server: 172.67.199.126
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #37'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #38'
-  type: vless
-  server: 104.16.10.9
-  port: 443
-  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /tyxyws
-    headers:
-      Host: jp3.yohototo.top
-  tls: true
-  servername: jp3.yohototo.top
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #39'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: jolly-silence-83b2.kidat76098.workers.dev
-  tls: true
-  servername: jolly-silence-83b2.kidat76098.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #40'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #41'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #42'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: safari
-- name: '🇸🇴 Сервер #43'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: qq
-- name: '🇸🇴 Сервер #44'
-  type: trojan
-  server: 104.27.0.1
-  port: 2053
-  password: gHQP0D7D15
-  udp: true
-  sni: marvdasht.phonecomparisonblog.org
-  skip-cert-verify: false
-  client-fingerprint: firefox
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #45'
-  type: trojan
-  server: 172.66.0.1
-  port: 2053
-  password: gHQP0D7D15
-  udp: true
-  sni: marvdasht.phonecomparisonblog.org
-  skip-cert-verify: false
-  client-fingerprint: ios
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #46'
-  type: trojan
-  server: 104.19.45.195
-  port: 443
-  password: pH%5B%5DS%5BBh%3A_%3AD6T4k
-  udp: true
-  sni: AZaDneT-692.PagEs.DEv
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: '%2FtrsVu9Ualb1DOfGjpw'
-    headers:
-      Host: 104.19.45.195
-- name: '🇸🇴 Сервер #47'
-  type: vless
-  server: 104.17.177.160
-  port: 8443
-  uuid: fceb3200-2516-47d2-8e28-d04ecde9427a
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: edge-fef90023.pages.dev
-  tls: true
-  servername: 104.17.177.160
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #48'
-  type: vless
-  server: www.speedtest.net
-  port: 443
-  uuid: 85550ebf-fd43-42dd-9801-bda528fea2fc
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: wallweb5.pages.dev
-  tls: true
-  servername: wallweb5.pages.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #49'
-  type: vless
-  server: mao.kipfelmao.de5.net
-  port: 443
-  uuid: 30610baf-4645-4c7b-9a22-0d0a0a79eab5
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fapi%2Fv1%2Fguests%2Fprofiles%2F5de14443985f%2F'
-    headers:
-      Host: mao.kipfelmao.de5.net
-  tls: true
-  servername: mao.kipfelmao.de5.net
-  client-fingerprint: chrome
-- name: '🇫🇮 Финляндия #2'
-  type: trojan
-  server: 104.18.0.1
-  port: 2053
-  password: gHQP0D7D15
-  udp: true
-  sni: marvdasht.phonecomparisonblog.org
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #51'
-  type: vless
-  server: 172.67.199.126
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #52'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: delicate-hall-bf16.vpndkah.workers.dev
-  tls: true
-  servername: delicate-hall-bf16.vpndkah.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #53'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: damp-pine-ea85.wimaren917.workers.dev
-  tls: true
-  servername: damp-pine-ea85.wimaren917.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #54'
-  type: vless
-  server: 104.19.12.94
-  port: 443
-  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Ftyxyws'
-    headers:
-      Host: jp3.yohototo.top
-  tls: true
-  servername: jp3.yohototo.top
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #55'
-  type: vmess
-  server: 104.27.0.1
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #56'
-  type: vless
-  server: 172.67.199.126
-  port: 2053
-  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #57'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: jolly-silence-83b2.kidat76098.workers.dev
-  tls: true
-  servername: jolly-silence-83b2.kidat76098.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #58'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: hidden-star-98c5.tebohi79684008.workers.dev
-  tls: true
-  servername: hidden-star-98c5.tebohi79684008.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #59'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: workers.retaxay188.workers.dev
-  tls: true
-  servername: workers.retaxay188.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #60'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: workers.jijew83195.workers.dev
-  tls: true
-  servername: workers.jijew83195.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #61'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: hidden-star-98c5.tebohi79684008.workers.dev
-  tls: true
-  servername: hidden-star-98c5.tebohi79684008.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #62'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #63'
-  type: vless
-  server: 172.86.86.21
-  port: 443
-  uuid: 3c4aa500-e3ae-4778-837b-f02dfea8c85f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: us2.qik-fin.uk
-  client-fingerprint: qq
-- name: '🇳🇱 Нидерланды #2'
+- name: '🇳🇱 Нидерланды #7'
   type: vless
   server: 188.114.98.0
   port: 443
@@ -992,24 +1273,9 @@ proxies:
   tls: true
   servername: nl29.dr-ping.ir
   client-fingerprint: unsafe
-- name: '🇸🇴 Сервер #65'
+- name: '🇸🇴 Сервер #87'
   type: vless
-  server: k9-85j.pages.dev
-  port: 443
-  uuid: 3dc83518-4002-485e-a066-d3bbcaaa2b2e
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /1WWzkWgNslKTcceU%3Fed%3D2560
-    headers:
-      Host: k9-85j.pages.dev
-  tls: true
-  servername: K9-85J.paGEs.Dev
-  client-fingerprint: randomized
-- name: '🇸🇴 Сервер #66'
-  type: vless
-  server: 172.67.165.32
+  server: n04.jinggai.online
   port: 8443
   uuid: 91ad30e9-ab06-4b4c-9fb9-1c2aa97d8b3a
   udp: true
@@ -1021,98 +1287,22 @@ proxies:
       Host: n04.jinggai.online
   tls: true
   servername: n04.jinggai.online
+  client-fingerprint: ios
+- name: '🇸🇴 Сервер #88'
+  type: trojan
+  server: 188.114.96.3
+  port: 2053
+  password: gHQP0D7D15
+  udp: true
+  sni: marvdasht.phonecomparisonblog.org
+  skip-cert-verify: false
   client-fingerprint: safari
-- name: '🇸🇴 Сервер #67'
-  type: vless
-  server: edge-relay-c9db.edge-edge-relay-be8e.workers.dev
-  port: 443
-  uuid: 8a540f3b-04c7-4e22-924a-51a0b6fad164
-  udp: true
-  skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /admin/proxyip=undefined
+    path: '%2F'
     headers:
-      Host: edge-relay-c9db.edge-edge-relay-be8e.workers.dev
-  tls: true
-  servername: edge-relay-c9db.edge-edge-relay-be8e.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #68'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: delicate-hall-bf16.vpndkah.workers.dev
-  tls: true
-  servername: delicate-hall-bf16.vpndkah.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #69'
-  type: vmess
-  server: or3.sfacg.uk
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /or3
-    headers:
-      Host: or3.sfacg.uk
-  tls: true
-  servername: cdn.sfacg.uk
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #70'
-  type: vless
-  server: 172.86.86.21
-  port: 443
-  uuid: 3c4aa500-e3ae-4778-837b-f02dfea8c85f
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: us2.qik-fin.uk
-  client-fingerprint: qq
-- name: '🇸🇴 Сервер #71'
-  type: vless
-  server: www.speedtest.net
-  port: 443
-  uuid: 85550ebf-fd43-42dd-9801-bda528fea2fc
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /fp=chrome
-    headers:
-      Host: wallweb5.pages.dev
-  tls: true
-  servername: wallweb5.pages.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #72'
-  type: vmess
-  server: 172.64.229.21
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws?ed=2048
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #73'
+      Host: marvdasht.phonecomparisonblog.org
+- name: '🇸🇴 Сервер #89'
   type: trojan
   server: 104.16.186.130
   port: 2053
@@ -1120,15 +1310,30 @@ proxies:
   udp: true
   sni: marvdasht.phonecomparisonblog.org
   skip-cert-verify: false
-  client-fingerprint: chrome
+  client-fingerprint: unsafe
   network: ws
   ws-opts:
     path: '%2F'
     headers:
       Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #74'
+- name: '🇸🇴 Сервер #90'
+  type: vless
+  server: fast.145779.xyz
+  port: 2053
+  uuid: e3149c82-00f6-4227-b2c0-b78f1dd81279
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
+  tls: true
+  servername: fast.145779.xyz
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #91'
   type: vmess
-  server: 172.64.229.21
+  server: 172.66.203.67
   port: 443
   uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
   alterId: 0
@@ -1143,210 +1348,75 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #75'
+- name: '🇸🇴 Сервер #92'
   type: vmess
-  server: 104.17.0.1
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
+  server: vipccc.cc
+  port: 443
+  uuid: 5bead32f-a987-4f57-b1a8-6698778facda
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /or3
+    path: /ray_proxy
     headers:
-      Host: 104.17.0.1
+      Host: vipccc.cc
   tls: true
-  servername: or3.sfacg.uk
+  servername: vipccc.cc
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #76'
-  type: vless
-  server: 104.19.63.148
-  port: 443
-  uuid: 811399f5-fa26-4a74-9727-36287af981e7
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /stream/DEVCOP/36287af981e7/loc-2
-    headers:
-      Host: nudok-wbz3.hkdi13.workers.dev
-  tls: true
-  servername: nudok-wbz3.hkdi13.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #77'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #78'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: qq
-- name: '🇯🇵 Япония #2'
+- name: '🇺🇸 США #12'
   type: vmess
-  server: or3.sfacg.uk
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
+  server: US032021.ssgreen.org
+  port: 443
+  uuid: cde5d0bf-3048-4952-b3f1-28f490092f1d
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /or3
+    path: /wes
     headers:
-      Host: or3.sfacg.uk
+      Host: US032021.ssgreen.org
   tls: true
-  servername: or3.sfacg.uk
+  servername: US032021.ssgreen.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #80'
-  type: vless
-  server: k9-85j.pages.dev
-  port: 443
-  uuid: 3dc83518-4002-485e-a066-d3bbcaaa2b2e
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2F1WWzkWgNslKTcceU%3Fed%3D2560'
-    headers:
-      Host: K9-85J.paGEs.Dev
-  tls: true
-  servername: K9-85J.paGEs.Dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #81'
-  type: vless
-  server: 104.17.177.160
-  port: 8443
-  uuid: fceb3200-2516-47d2-8e28-d04ecde9427a
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Ffp%3Dchrome'
-    headers:
-      Host: edge-fef90023.pages.dev
-  tls: true
-  servername: edge-fef90023.pages.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #82'
-  type: vless
-  server: fast.145779.xyz
-  port: 2053
-  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws-tesla'
-    headers:
-      Host: fast.145779.xyz
-  tls: true
-  servername: fast.145779.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #83'
-  type: vless
-  server: 104.17.177.160
-  port: 8443
-  uuid: fceb3200-2516-47d2-8e28-d04ecde9427a
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /fp=chrome
-    headers:
-      Host: edge-fef90023.pages.dev
-  tls: true
-  servername: 104.17.177.160
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #84'
+- name: '🇺🇸 США #13'
   type: vmess
-  server: 172.66.0.1
+  server: US122202.ssgreen.org
   port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  uuid: 224b4657-a076-4245-ad73-9b7e260fb2ec
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /ws
+    path: /wes
     headers:
-      Host: vmess.lbw666.dpdns.org
+      Host: US122202.ssgreen.org
   tls: true
-  servername: vmess.lbw666.dpdns.org
+  servername: US122202.ssgreen.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #85'
-  type: vless
-  server: 104.18.151.231
-  port: 443
-  uuid: eaf76557-2219-4799-8171-d7020adfefd0
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fws'
-    headers:
-      Host: damp-pine-ea85.wimaren917.workers.dev
-  tls: true
-  servername: damp-pine-ea85.wimaren917.workers.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #86'
-  type: vless
-  server: www.speedtest.net
-  port: 443
-  uuid: ec23f217-23a1-4f62-b98d-ba56070de89c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: wallweb4.pages.dev
-  tls: true
-  servername: wallweb4.pages.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #87'
+- name: '🇸🇴 Сервер #95'
   type: vmess
-  server: 172.66.0.1
+  server: JP032009.ssgreen.org
   port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  uuid: 00d44309-aba0-4a3c-beea-c54b13c70772
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /ws
+    path: /wes
     headers:
-      Host: vmess.lbw666.dpdns.org
+      Host: JP032009.ssgreen.org
   tls: true
-  servername: vmess.lbw666.dpdns.org
+  servername: JP032009.ssgreen.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #88'
+- name: '🇸🇴 Сервер #96'
   type: vmess
   server: 104.17.136.198
   port: 443
@@ -1363,204 +1433,155 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #89'
-  type: vless
-  server: www.speedtest.net
-  port: 443
-  uuid: ec23f217-23a1-4f62-b98d-ba56070de89c
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Ffp%3Dchrome'
-    headers:
-      Host: wallweb4.pages.dev
-  tls: true
-  servername: wallweb4.pages.dev
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #90'
-  type: vless
-  server: 172.86.86.21
-  port: 443
-  uuid: bc6c3e9a-592c-46b9-ad48-87c052c64486
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: us2.qik-fin.uk
-  client-fingerprint: qq
-- name: '🇸🇴 Сервер #91'
-  type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: firefox
-- name: '🇸🇴 Сервер #92'
-  type: trojan
-  server: 104.16.186.130
-  port: 2053
-  password: gHQP0D7D15
-  udp: true
-  sni: marvdasht.phonecomparisonblog.org
-  skip-cert-verify: false
-  client-fingerprint: android
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: marvdasht.phonecomparisonblog.org
-- name: '🇸🇴 Сервер #93'
-  type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #94'
-  type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #95'
-  type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #96'
-  type: vless
-  server: www.speedtest.net
-  port: 443
-  uuid: 85550ebf-fd43-42dd-9801-bda528fea2fc
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: wallweb5.pages.dev
-  tls: true
-  servername: wallweb5.pages.dev
-  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #97'
   type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  server: fast.145779.xyz
+  port: 2053
+  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: '%2Fws-tesla'
+    headers:
+      Host: fast.145779.xyz
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: edge
+  servername: fast.145779.xyz
+  client-fingerprint: ios
 - name: '🇸🇴 Сервер #98'
   type: vless
-  server: 185.178.208.140
-  port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  server: n04.jinggai.online
+  port: 8443
+  uuid: 91ad30e9-ab06-4b4c-9fb9-1c2aa97d8b3a
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: '%2Fnvl-n04-ws%2Fe0577fe8fd7c8823'
+    headers:
+      Host: n04.jinggai.online
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #99'
-  type: vless
-  server: 185.178.208.140
+  servername: n04.jinggai.online
+  client-fingerprint: android
+- name: '🇺🇸 США #14'
+  type: vmess
+  server: US122208.ssgreen.org
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 19f71384-452b-4765-843b-cbbea716da0f
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: US122208.ssgreen.org
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #100'
-  type: vless
-  server: 185.178.208.140
+  servername: US122208.ssgreen.org
+  client-fingerprint: ''
+- name: '🇯🇵 Япония #1'
+  type: vmess
+  server: JP032007.ssgreen.org
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: adfa46c1-5ac9-41cb-aeaa-265d8b4c8697
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: JP032007.ssgreen.org
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: safari
-- name: '🇸🇴 Сервер #101'
-  type: vless
-  server: 185.178.208.140
+  servername: JP032007.ssgreen.org
+  client-fingerprint: ''
+- name: '🇯🇵 Япония #2'
+  type: vmess
+  server: JP032010.ssgreen.org
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: c291f70e-2906-478c-aec0-a4a188c55f8f
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: JP032010.ssgreen.org
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #102'
-  type: vless
-  server: 185.178.208.140
+  servername: JP032010.ssgreen.org
+  client-fingerprint: ''
+- name: '🇯🇵 Япония #3'
+  type: vmess
+  server: JP032002.ssgreen.org
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 4a621100-cb2e-4d9e-a1fc-960715c7d378
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: JP032002.ssgreen.org
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: safari
+  servername: JP032002.ssgreen.org
+  client-fingerprint: ''
 - name: '🇸🇴 Сервер #103'
-  type: vless
-  server: 185.178.208.140
+  type: vmess
+  server: 104.27.0.1
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: qq
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
 - name: '🇸🇴 Сервер #104'
-  type: vless
-  server: 185.178.208.140
+  type: vmess
+  server: 104.17.136.198
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: firefox
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
 - name: '🇸🇴 Сервер #105'
-  type: vless
-  server: 185.178.208.140
+  type: vmess
+  server: vipccc.cc
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 5bead32f-a987-4f57-b1a8-6698778facda
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /ray_proxy
+    headers:
+      Host: vipccc.cc
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: safari
+  servername: vipccc.cc
+  client-fingerprint: ''
 - name: '🇸🇴 Сервер #106'
   type: vless
   server: 185.178.208.140
@@ -1571,7 +1592,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: firefox
+  client-fingerprint: qq
 - name: '🇸🇴 Сервер #107'
   type: vless
   server: 185.178.208.140
@@ -1582,7 +1603,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: ios
+  client-fingerprint: qq
 - name: '🇸🇴 Сервер #108'
   type: vless
   server: 185.178.208.140
@@ -1593,7 +1614,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: qq
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #109'
   type: vless
   server: 185.178.208.140
@@ -1604,7 +1625,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: firefox
+  client-fingerprint: ios
 - name: '🇸🇴 Сервер #110'
   type: vless
   server: 185.178.208.140
@@ -1615,18 +1636,24 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #111'
-  type: vless
-  server: 185.178.208.140
+  client-fingerprint: edge
+- name: '🇺🇸 США #15'
+  type: vmess
+  server: US032023.ssgreen.org
   port: 443
-  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  uuid: 956ef123-1ced-4b3e-83ef-b65dc5c148ec
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: US032023.ssgreen.org
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: edge
+  servername: US032023.ssgreen.org
+  client-fingerprint: ''
 - name: '🇸🇴 Сервер #112'
   type: vless
   server: 185.178.208.140
@@ -1670,7 +1697,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: edge
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #116'
   type: vless
   server: 185.178.208.140
@@ -1692,7 +1719,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: firefox
+  client-fingerprint: qq
 - name: '🇸🇴 Сервер #118'
   type: vless
   server: 185.178.208.140
@@ -1702,8 +1729,8 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: safari
+  servername: api.bakarova-top.ru
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #119'
   type: vless
   server: 185.178.208.140
@@ -1714,7 +1741,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: chrome
+  client-fingerprint: edge
 - name: '🇸🇴 Сервер #120'
   type: vless
   server: 185.178.208.140
@@ -1724,8 +1751,8 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: safari
+  servername: static.bakarova-top.ru
+  client-fingerprint: ios
 - name: '🇸🇴 Сервер #121'
   type: vless
   server: 185.178.208.140
@@ -1735,8 +1762,8 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: firefox
+  servername: static.bakarova-top.ru
+  client-fingerprint: safari
 - name: '🇸🇴 Сервер #122'
   type: vless
   server: 185.178.208.140
@@ -1746,8 +1773,8 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: static.bakarova-top.ru
-  client-fingerprint: qq
+  servername: api.bakarova-top.ru
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #123'
   type: vless
   server: 185.178.208.140
@@ -1758,7 +1785,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: chrome
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #124'
   type: vless
   server: 185.178.208.140
@@ -1769,35 +1796,29 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: safari
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #125'
   type: vless
-  server: us2.qik-fin.uk
+  server: 185.178.208.140
   port: 443
-  uuid: 3c4aa500-e3ae-4778-837b-f02dfea8c85f
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: us2.qik-fin.uk
-  client-fingerprint: qq
+  servername: static.bakarova-top.ru
+  client-fingerprint: ios
 - name: '🇸🇴 Сервер #126'
-  type: vmess
-  server: or3.sfacg.uk
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
-  alterId: 0
-  cipher: auto
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /or3
-    headers:
-      Host: or3.sfacg.uk
+  network: tcp
   tls: true
-  servername: or3.sfacg.uk
-  client-fingerprint: ''
+  servername: static.bakarova-top.ru
+  client-fingerprint: safari
 - name: '🇸🇴 Сервер #127'
   type: vless
   server: 185.178.208.140
@@ -1808,7 +1829,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: qq
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #128'
   type: vless
   server: 185.178.208.140
@@ -1819,7 +1840,7 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
-  client-fingerprint: edge
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #129'
   type: vless
   server: 185.178.208.140
@@ -1829,8 +1850,8 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: chrome
+  servername: static.bakarova-top.ru
+  client-fingerprint: safari
 - name: '🇸🇴 Сервер #130'
   type: vless
   server: 185.178.208.140
@@ -1840,118 +1861,9 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: api.bakarova-top.ru
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #131'
-  type: vmess
-  server: cf.0sm.com
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #132'
-  type: vmess
-  server: cf.0sm.com
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  tls: true
-  servername: vmess.lbw666.dpdns.org
-  client-fingerprint: ''
-- name: '🇸🇴 Сервер #133'
-  type: vless
-  server: 201.51.0.7
-  port: 993
-  uuid: 981c7ccc-2b17-473c-8358-7fd1d6eec1b4
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fstatic%2Fjs%2Fruntime.d9e71138.js'
-    headers:
-      Host: msk5.gacvpn.site
-  tls: true
-  servername: msk5.gacvpn.site
-  client-fingerprint: firefox
-- name: '🇸🇴 Сервер #134'
-  type: vless
-  server: 201.51.0.7
-  port: 993
-  uuid: 981c7ccc-2b17-473c-8358-7fd1d6eec1b4
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fstatic%2Fjs%2Fruntime.d9e71138.js'
-    headers:
-      Host: msk5.gacvpn.site
-  tls: true
-  servername: msk5.gacvpn.site
-  client-fingerprint: ios
-- name: '🇺🇸 США #4'
-  type: vless
-  server: saas.sin.fan
-  port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp22.1145678.xyz
-  tls: true
-  servername: vp22.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇺🇸 США #5'
-  type: vless
-  server: saas.sin.fan
-  port: 2053
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp11.1145678.xyz
-  tls: true
-  servername: vp11.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇨🇭 Швейцария #1'
-  type: vless
-  server: 46.19.138.214
-  port: 443
-  uuid: 90157e25-cee1-4217-921e-91f300bc1a24
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: perevodchiki.su
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: 1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs
-    short-id: 428ef87fd47a3a32
-  flow: xtls-rprx-vision
-- name: '🇸🇴 Сервер #138'
+  servername: static.bakarova-top.ru
+  client-fingerprint: qq
+- name: '🇷🇺 Россия #1'
   type: vless
   server: 185.178.208.140
   port: 443
@@ -1961,7 +1873,92 @@ proxies:
   network: tcp
   tls: true
   servername: static.bakarova-top.ru
+  client-fingerprint: edge
+- name: '🇸🇴 Сервер #132'
+  type: vless
+  server: lorettmay.top
+  port: 443
+  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fblog%2Fposts'
+    headers:
+      Host: lorettmay.top
+  tls: true
+  servername: lorettmay.top
   client-fingerprint: ios
+- name: '🇸🇴 Сервер #133'
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: api.bakarova-top.ru
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #134'
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: api.bakarova-top.ru
+  client-fingerprint: safari
+- name: '🇷🇺 Россия #2'
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: static.bakarova-top.ru
+  client-fingerprint: firefox
+- name: '🇸🇴 Сервер #136'
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: api.bakarova-top.ru
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #137'
+  type: vless
+  server: lorettmay.top
+  port: 443
+  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fblog%2Fposts'
+    headers:
+      Host: lorettmay.top
+  tls: true
+  servername: lorettmay.top
+  client-fingerprint: chrome
+- name: '🇷🇺 Россия #3'
+  type: vless
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: static.bakarova-top.ru
+  client-fingerprint: safari
 - name: '🇸🇴 Сервер #139'
   type: vless
   server: 185.178.208.140
@@ -1971,38 +1968,30 @@ proxies:
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: static.bakarova-top.ru
+  servername: api.bakarova-top.ru
   client-fingerprint: ios
-- name: '🇸🇴 LK #1'
+- name: '🇸🇴 Сервер #140'
   type: vless
-  server: news.zoom.us
-  port: 2087
-  uuid: 0ef68b97-f878-4cea-b756-c56ea3632851
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: free.vkehi.store
+  network: tcp
   tls: true
-  servername: free.vkehi.store
-  client-fingerprint: chrome
+  servername: static.bakarova-top.ru
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #141'
   type: vless
-  server: mao.kipfelmao.de5.net
+  server: 185.178.208.140
   port: 443
-  uuid: 30610baf-4645-4c7b-9a22-0d0a0a79eab5
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fapi%2Fv1%2Fguests%2Fprofiles%2F5de14443985f%2F'
-    headers:
-      Host: mao.kipfelmao.de5.net
+  network: tcp
   tls: true
-  servername: mao.kipfelmao.de5.net
-  client-fingerprint: safari
+  servername: static.bakarova-top.ru
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #142'
   type: vless
   server: lorettmay.top
@@ -2033,53 +2022,39 @@ proxies:
   tls: true
   servername: lorettmay.top
   client-fingerprint: firefox
-- name: '🇩🇪 Германия #1'
-  type: vmess
-  server: 195.208.65.155
+- name: '🇸🇴 Сервер #144'
+  type: vless
+  server: 185.178.208.140
   port: 443
-  uuid: 27653b37-603c-4c90-b1f5-25c4d23f8932
-  alterId: 0
-  cipher: auto
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /api/v1/gpu-stream/o36ecpsebqjq/socket
-    headers:
-      Host: renderer-stream-1-871.mirra.now
+  network: tcp
   tls: true
-  servername: renderer-stream-1-871.mirra.now
-  client-fingerprint: ''
-- name: '🇺🇸 США #6'
+  servername: static.bakarova-top.ru
+  client-fingerprint: qq
+- name: '🇸🇴 Сервер #145'
   type: vless
-  server: saas.sin.fan
-  port: 2096
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Findex%2Fcontent'
-    headers:
-      Host: vp13.1145678.xyz
+  network: tcp
   tls: true
-  servername: vp13.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #146'
+  servername: api.bakarova-top.ru
+  client-fingerprint: firefox
+- name: '🇷🇺 Россия #4'
   type: vless
-  server: news.zoom.us
-  port: 2087
-  uuid: 0ef68b97-f878-4cea-b756-c56ea3632851
+  server: 185.178.208.140
+  port: 443
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2F'
-    headers:
-      Host: free.vkehi.store
+  network: tcp
   tls: true
-  servername: free.vkehi.store
-  client-fingerprint: edge
+  servername: static.bakarova-top.ru
+  client-fingerprint: qq
 - name: '🇸🇴 Сервер #147'
   type: vless
   server: lorettmay.top
@@ -2094,7 +2069,7 @@ proxies:
       Host: lorettmay.top
   tls: true
   servername: lorettmay.top
-  client-fingerprint: chrome
+  client-fingerprint: firefox
 - name: '🇸🇴 Сервер #148'
   type: vless
   server: lorettmay.top
@@ -2109,38 +2084,88 @@ proxies:
       Host: lorettmay.top
   tls: true
   servername: lorettmay.top
-  client-fingerprint: firefox
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #149'
   type: vless
-  server: lorettmay.top
-  port: 443
-  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
+  server: 168.113.128.70
+  port: 20105
+  uuid: 9aff658c-1f80-4c82-9213-48ca26996142
   udp: true
   skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fblog%2Fposts'
-    headers:
-      Host: lorettmay.top
+  network: tcp
   tls: true
-  servername: lorettmay.top
+  servername: ripelever.net
   client-fingerprint: safari
-- name: '🇸🇴 Сервер #150'
+  flow: xtls-rprx-vision
+- name: '🇧🇬 Болгария #1'
   type: vless
-  server: lorettmay.top
+  server: 168.113.128.70
+  port: 20105
+  uuid: 9aff658c-1f80-4c82-9213-48ca26996142
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: ripelever.net
+  client-fingerprint: edge
+  flow: xtls-rprx-vision
+- name: '🇸🇴 Сервер #151'
+  type: vless
+  server: 185.178.208.140
   port: 443
-  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
+  uuid: ea277838-a188-44f1-a2e8-94aa110c4f27
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: api.bakarova-top.ru
+  client-fingerprint: android
+- name: '🇸🇴 Сервер #152'
+  type: vless
+  server: 168.113.128.70
+  port: 20105
+  uuid: 9aff658c-1f80-4c82-9213-48ca26996142
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: ripelever.net
+  client-fingerprint: ios
+  flow: xtls-rprx-vision
+- name: '🇸🇴 Сервер #153'
+  type: vless
+  server: 87.242.87.165
+  port: 8445
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: codifyr.ru
+  client-fingerprint: ios
+  reality-opts:
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
+- name: '🇺🇸 США #16'
+  type: vmess
+  server: US032012.westmgreen.com
+  port: 443
+  uuid: c6fe7601-c254-4a1c-b607-13c42c88f319
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2Fblog%2Fposts'
+    path: /wes
     headers:
-      Host: lorettmay.top
+      Host: US032012.westmgreen.com
   tls: true
-  servername: lorettmay.top
-  client-fingerprint: chrome
-- name: '🇯🇵 Япония #3'
+  servername: US032012.westmgreen.com
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #155'
   type: vmess
   server: JP032001.ssgreen.org
   port: 443
@@ -2157,413 +2182,224 @@ proxies:
   tls: true
   servername: JP032001.ssgreen.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #152'
+- name: '🇸🇴 Сервер #156'
   type: vless
-  server: saas.sin.fan
-  port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fservicefp%3Dchrome'
-    headers:
-      Host: vp5.1145678.xyz
-  tls: true
-  servername: vp5.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #153'
-  type: vless
-  server: saas.sin.fan
-  port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp5.1145678.xyz
-  tls: true
-  servername: vp5.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #154'
-  type: vless
-  server: lorettmay.top
-  port: 443
-  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fblog%2Fposts'
-    headers:
-      Host: lorettmay.top
-  tls: true
-  servername: lorettmay.top
-  client-fingerprint: chrome
-- name: '🇨🇭 Швейцария #2'
-  type: vless
-  server: prvtch.titun.su
-  port: 443
-  uuid: 90157e25-cee1-4217-921e-91f300bc1a24
+  server: 87.242.87.165
+  port: 8443
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: perevodchiki.su
+  servername: codifyr.ru
   client-fingerprint: firefox
   reality-opts:
-    public-key: 1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs
-    short-id: 428ef87fd47a3a32
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
   flow: xtls-rprx-vision
-- name: '🇺🇸 США #7'
-  type: vless
-  server: saas.sin.fan
-  port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fplaylist'
-    headers:
-      Host: vp22.1145678.xyz
-  tls: true
-  servername: vp22.1145678.xyz
-  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #157'
   type: vless
-  server: lorettmay.top
-  port: 443
-  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fblog%2Fposts'
-    headers:
-      Host: lorettmay.top
-  tls: true
-  servername: lorettmay.top
-  client-fingerprint: qq
-- name: '🇺🇸 США #8'
-  type: vless
-  server: saas.sin.fan
-  port: 2087
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp2.1145678.xyz
-  tls: true
-  servername: vp2.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇺🇸 США #9'
-  type: vless
-  server: saas.sin.fan
-  port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fm%2Fclub%2Fseasons'
-    headers:
-      Host: vp22.1145678.xyz
-  tls: true
-  servername: vp22.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇺🇸 США #10'
-  type: vless
-  server: saas.sin.fan
-  port: 2096
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp13.1145678.xyz
-  tls: true
-  servername: vp13.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #161'
-  type: vless
-  server: lorettmay.top
-  port: 443
-  uuid: 2232d904-8e6a-4202-8240-6efd8aec02e9
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fblog%2Fposts'
-    headers:
-      Host: lorettmay.top
-  tls: true
-  servername: lorettmay.top
-  client-fingerprint: ios
-- name: '🇸🇴 Сервер #162'
-  type: vless
-  server: www.sarzaminaryan.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-y8179aild6rsmj'
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: soliconf-gghosin4-cell.dormhost.app
-  client-fingerprint: chrome
-- name: '🇪🇪 Эстония #1'
-  type: vless
-  server: rapira-dof.whitenw.net
-  port: 8445
-  uuid: cd138479-c87a-4d4c-b6ea-4beeb6ef2b47
+  server: 87.242.87.165
+  port: 8443
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
   udp: true
   skip-cert-verify: false
   network: tcp
   tls: true
-  servername: passport.yandex.ru
-  client-fingerprint: chrome
+  servername: codifyr.ru
+  client-fingerprint: edge
   reality-opts:
-    public-key: l06r0clkHjHk7HRGpkDBJwZ1JJscSqfwHUQOrV3v3hQ
-    short-id: ''
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
   flow: xtls-rprx-vision
-- name: '🇸🇴 Сервер #164'
-  type: vless
-  server: www.agahiya.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-y8179aild6rsmj'
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: soliconf-gghosin4-cell.dormhost.app
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #165'
-  type: vless
-  server: www.sarzaminaryan.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /jx-y8179aild6rsmj
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: www.sarzaminaryan.ir
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #166'
-  type: vless
-  server: www.agahiya.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /jx-y8179aild6rsmj
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: www.agahiya.ir
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #167'
-  type: vless
-  server: www.farahghanizadeh.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /jx-y8179aild6rsmj
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: www.farahghanizadeh.ir
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #168'
-  type: vless
-  server: www.farahghanizadeh.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-y8179aild6rsmj'
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: soliconf-gghosin4-cell.dormhost.app
-  client-fingerprint: chrome
-- name: '🇪🇪 Эстония #2'
-  type: vless
-  server: rapira-dof.whitenw.net
-  port: 8445
-  uuid: cd138479-c87a-4d4c-b6ea-4beeb6ef2b47
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: passport.yandex.ru
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: l06r0clkHjHk7HRGpkDBJwZ1JJscSqfwHUQOrV3v3hQ
-    short-id: ''
-  flow: xtls-rprx-vision
-- name: '🇸🇴 Сервер #170'
-  type: vless
-  server: mifa.world
-  port: 443
-  uuid: 12345678-1234-1234-1234-123456789013
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: mifa.world
-  client-fingerprint: random
-  reality-opts:
-    public-key: aQly1zWk_i62TgzCZB1JnaInYIiNZuss4NA0JDWxtm0
-    short-id: ''
-- name: '🇸🇴 Сервер #171'
-  type: vless
-  server: fxhub.ir
-  port: 443
-  uuid: bc4a4b66-c3fc-4f91-938e-4d93698c0d43
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-ge7wex6ki2ixyk'
-    headers:
-      Host: soli-gghosin4-cell.dormhost.app
-  tls: true
-  servername: fxhub.ir
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #172'
-  type: vless
-  server: www.farahghanizadeh.ir
-  port: 443
-  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-y8179aild6rsmj'
-    headers:
-      Host: soliconf-gghosin4-cell.dormhost.app
-  tls: true
-  servername: www.farahghanizadeh.ir
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #173'
-  type: vless
-  server: mifa.world
-  port: 443
-  uuid: 12345678-1234-1234-1234-123456789012
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: mifa.world
-  client-fingerprint: random
-  reality-opts:
-    public-key: aQly1zWk_i62TgzCZB1JnaInYIiNZuss4NA0JDWxtm0
-    short-id: ''
-  flow: xtls-rprx-vision
-- name: '🇸🇴 Сервер #174'
-  type: vless
-  server: mahdroo.ir
-  port: 443
-  uuid: bc4a4b66-c3fc-4f91-938e-4d93698c0d43
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fjx-ge7wex6ki2ixyk'
-    headers:
-      Host: soli-gghosin4-cell.dormhost.app
-  tls: true
-  servername: mahdroo.ir
-  client-fingerprint: chrome
-- name: '🇨🇭 Швейцария #3'
-  type: vless
-  server: prvtch.titun.su
-  port: 443
-  uuid: 90157e25-cee1-4217-921e-91f300bc1a24
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: perevodchiki.su
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs
-    short-id: 428ef87fd47a3a32
-  flow: xtls-rprx-vision
-- name: '🇨🇭 Швейцария #4'
-  type: vless
-  server: prvtch.titun.su
-  port: 443
-  uuid: 90157e25-cee1-4217-921e-91f300bc1a24
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: perevodchiki.su
-  client-fingerprint: safari
-  reality-opts:
-    public-key: 1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs
-    short-id: 428ef87fd47a3a32
-  flow: xtls-rprx-vision
-- name: '🇨🇭 Швейцария #5'
-  type: vless
-  server: prvtch.titun.su
-  port: 443
-  uuid: 90157e25-cee1-4217-921e-91f300bc1a24
-  udp: true
-  skip-cert-verify: false
-  network: tcp
-  tls: true
-  servername: perevodchiki.su
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs
-    short-id: 428ef87fd47a3a32
-  flow: xtls-rprx-vision
-- name: '🇸🇴 Сервер #178'
+- name: '🇺🇸 США #17'
   type: vmess
-  server: cf.090227.xyz
+  server: US032017.ssgreen.org
   port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  uuid: 8b1b4177-ea9e-4d6c-aeef-edbadb5bb15d
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /ws
+    path: /wes
     headers:
-      Host: vmess.lbw666.dpdns.org
+      Host: US032017.ssgreen.org
   tls: true
-  servername: vmess.lbw666.dpdns.org
+  servername: US032017.ssgreen.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #179'
+- name: '🇸🇴 Сервер #159'
+  type: vless
+  server: content-iv1k.login.opendns.stream
+  port: 443
+  uuid: b4c190fb-e77e-4aff-8545-6067ba70e54d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws%2Fevents%2F961a89255e00'
+    headers:
+      Host: content-iv1k.login.opendns.stream
+  tls: true
+  servername: content-iv1k.login.opendns.stream
+  client-fingerprint: safari
+- name: '🇸🇴 Сервер #160'
+  type: vless
+  server: content-iv1k.login.opendns.stream
+  port: 443
+  uuid: b4c190fb-e77e-4aff-8545-6067ba70e54d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws%2Fevents%2F961a89255e00'
+    headers:
+      Host: content-iv1k.login.opendns.stream
+  tls: true
+  servername: content-iv1k.login.opendns.stream
+  client-fingerprint: qq
+- name: '🇸🇴 Сервер #161'
+  type: vless
+  server: 87.242.87.165
+  port: 8445
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: codifyr.ru
+  client-fingerprint: edge
+  reality-opts:
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
+- name: '🇺🇸 США #18'
+  type: vmess
+  server: US032014.ssgreen.org
+  port: 443
+  uuid: 4f3881c7-d833-4340-86b1-4756f94d84f6
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: US032014.ssgreen.org
+  tls: true
+  servername: US032014.ssgreen.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #163'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 747db87a-0cf6-4ea7-ae6b-3293afe2cef6
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #164'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 747db87a-0cf6-4ea7-ae6b-3293afe2cef6
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: safari
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #165'
+  type: vless
+  server: 9e72bbg.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: 9e72bbg.msk2.h1clayd.click
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 0R5QIf2DFXNgISIYDQdoWIdbNoImaJHrwOkc2tzRPyQ
+    short-id: cc07501e28b18687
+- name: '🇸🇴 Сервер #166'
+  type: vless
+  server: 9e72bbg.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: 9e72bbg.msk2.h1clayd.click
+  client-fingerprint: ios
+  reality-opts:
+    public-key: 0R5QIf2DFXNgISIYDQdoWIdbNoImaJHrwOkc2tzRPyQ
+    short-id: cc07501e28b18687
+- name: '🇸🇴 Сервер #167'
+  type: vless
+  server: content-iv1k.login.opendns.stream
+  port: 443
+  uuid: b4c190fb-e77e-4aff-8545-6067ba70e54d
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fws%2Fevents%2F961a89255e00'
+    headers:
+      Host: content-iv1k.login.opendns.stream
+  tls: true
+  servername: content-iv1k.login.opendns.stream
+  client-fingerprint: firefox
+- name: '🇸🇴 Сервер #168'
+  type: vless
+  server: 9e72bbg.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: 9e72bbg.msk2.h1clayd.click
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 0R5QIf2DFXNgISIYDQdoWIdbNoImaJHrwOkc2tzRPyQ
+    short-id: cc07501e28b18687
+- name: '🇸🇴 Сервер #169'
+  type: vless
+  server: 87.242.87.165
+  port: 8445
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
+  tls: true
+  servername: codifyr.ru
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
+- name: '🇸🇴 Сервер #170'
   type: vmess
   server: cf.0sm.com
   port: 443
@@ -2580,143 +2416,278 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #180'
+- name: '🇸🇴 Сервер #171'
+  type: vless
+  server: 87.242.87.165
+  port: 8443
+  uuid: fa8c52f8-d800-4ddd-bdc3-4f8a24b073c6
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: codifyr.ru
+  client-fingerprint: qq
+  reality-opts:
+    public-key: WCGVWrqI3t-c5ZIbUEmwjN3wiFFT7xV09PIio-OQGHU
+    short-id: d16860c57700c886
+  flow: xtls-rprx-vision
+- name: '🇸🇴 Сервер #172'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: edge
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #173'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #174'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 747db87a-0cf6-4ea7-ae6b-3293afe2cef6
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #175'
   type: vmess
-  server: cdn.sfacg.uk
-  port: 2083
-  uuid: ac251237-576f-40c8-a543-554960c958b1
+  server: cf.0sm.com
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
   alterId: 0
   cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /or3
+    path: /ws
     headers:
-      Host: or3.sfacg.uk
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: or3.sfacg.uk
+  servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #181'
-  type: vless
-  server: saas.sin.fan
-  port: 2087
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
+- name: '🇸🇴 Сервер #176'
+  type: vmess
+  server: cf.0sm.com
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2Fnew%2Fcomics'
+    path: /ws
     headers:
-      Host: vp3.1145678.xyz
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: vp3.1145678.xyz
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #177'
+  type: vless
+  server: mifa.world
+  port: 443
+  uuid: 12345678-1234-1234-1234-123456789012
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: mifa.world
+  client-fingerprint: random
+  reality-opts:
+    public-key: aQly1zWk_i62TgzCZB1JnaInYIiNZuss4NA0JDWxtm0
+    short-id: ''
+  flow: xtls-rprx-vision
+- name: '🇸🇴 Сервер #178'
+  type: vless
+  server: 9900edx.msk2.h1clayd.click
+  port: 443
+  uuid: 13e6bdfd-d51b-4e57-a40e-b88784cba8bd
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: 9900edx.msk2.h1clayd.click
+  client-fingerprint: safari
+  reality-opts:
+    public-key: yMB1YpMhoF4j800rMjlWy97QAwvNwHwjuH1qKNSGfCA
+    short-id: 0b10c773673c6438
+- name: '🇸🇴 Сервер #179'
+  type: vless
+  server: www.sarzaminaryan.ir
+  port: 443
+  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /jx-y8179aild6rsmj
+    headers:
+      Host: soliconf-gghosin4-cell.dormhost.app
+  tls: true
+  servername: www.sarzaminaryan.ir
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #180'
+  type: vless
+  server: www.agahiya.ir
+  port: 443
+  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fjx-y8179aild6rsmj'
+    headers:
+      Host: soliconf-gghosin4-cell.dormhost.app
+  tls: true
+  servername: soliconf-gghosin4-cell.dormhost.app
+  client-fingerprint: chrome
+- name: '🇸🇴 Сервер #181'
+  type: vless
+  server: www.farahghanizadeh.ir
+  port: 443
+  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: '%2Fjx-y8179aild6rsmj'
+    headers:
+      Host: soliconf-gghosin4-cell.dormhost.app
+  tls: true
+  servername: www.farahghanizadeh.ir
   client-fingerprint: chrome
 - name: '🇸🇴 Сервер #182'
   type: vless
-  server: saas.sin.fan
-  port: 2087
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
+  server: mahdroo.ir
+  port: 443
+  uuid: bc4a4b66-c3fc-4f91-938e-4d93698c0d43
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2Fnew%2Fcomics'
+    path: '%2Fjx-ge7wex6ki2ixyk'
     headers:
-      Host: vp3.1145678.xyz
+      Host: soli-gghosin4-cell.dormhost.app
   tls: true
-  servername: vp3.1145678.xyz
-  client-fingerprint: safari
+  servername: mahdroo.ir
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #183'
   type: vless
-  server: saas.sin.fan
-  port: 2087
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
+  server: www.sarzaminaryan.ir
+  port: 443
+  uuid: 57e089a8-0cd1-48d0-b572-105c4804f6b8
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2Fnew%2Fcomics'
+    path: '%2Fjx-y8179aild6rsmj'
     headers:
-      Host: vp3.1145678.xyz
+      Host: soliconf-gghosin4-cell.dormhost.app
   tls: true
-  servername: vp3.1145678.xyz
-  client-fingerprint: firefox
+  servername: soliconf-gghosin4-cell.dormhost.app
+  client-fingerprint: chrome
 - name: '🇸🇴 Сервер #184'
   type: vless
-  server: saas.sin.fan
-  port: 2087
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fnew%2Fcomics'
-    headers:
-      Host: vp3.1145678.xyz
-  tls: true
-  servername: vp3.1145678.xyz
-  client-fingerprint: ios
-- name: '🇺🇸 США #11'
-  type: vless
-  server: saas.sin.fan
-  port: 2053
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: vp21.1145678.xyz
-  tls: true
-  servername: vp21.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇺🇸 США #12'
-  type: vless
-  server: saas.sin.fan
-  port: 2053
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fvideos%2Fforum'
-    headers:
-      Host: vp11.1145678.xyz
-  tls: true
-  servername: vp11.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇺🇸 США #13'
-  type: vless
-  server: saas.sin.fan
-  port: 2083
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
-  udp: true
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: '%2Fcommunity%2Fredirect.html'
-    headers:
-      Host: vp14.1145678.xyz
-  tls: true
-  servername: vp14.1145678.xyz
-  client-fingerprint: chrome
-- name: '🇸🇴 Сервер #188'
-  type: vless
-  server: saas.sin.fan
+  server: e60833x.nl7.h1clayd.click
   port: 443
-  uuid: 5d7b401c-78fa-4254-872e-6d42bf7e75ec
+  uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: e60833x.nl7.h1clayd.click
+  client-fingerprint: ios
+  reality-opts:
+    public-key: jIRVNEf9SpuWP2nJrAbHGGIUnfzOmwZZlrNGw-Y-O2Q
+    short-id: 2d2598d60447a967
+- name: '🇸🇴 Сервер #185'
+  type: vmess
+  server: cf.0sm.com
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
   udp: true
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: '%2Fservicefp%3Dchrome'
+    path: /ws?ed=2048
     headers:
-      Host: vp5.1145678.xyz
+      Host: vmess.lbw666.dpdns.org
   tls: true
-  servername: vp5.1145678.xyz
-  client-fingerprint: firefox
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #186'
+  type: vless
+  server: mifa.world
+  port: 443
+  uuid: 12345678-1234-1234-1234-123456789013
+  udp: true
+  skip-cert-verify: false
+  network: tcp
+  tls: true
+  servername: mifa.world
+  client-fingerprint: random
+  reality-opts:
+    public-key: aQly1zWk_i62TgzCZB1JnaInYIiNZuss4NA0JDWxtm0
+    short-id: ''
+- name: '🇺🇸 США #19'
+  type: vmess
+  server: cf.877771.xyz
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇸🇴 Сервер #188'
+  type: vmess
+  server: free2.rajaserver2.web.id
+  port: 80
+  uuid: 4d4708ef-0729-44ac-b2b0-411ce0242e89
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /vmess
+    headers:
+      Host: free2.rajaserver2.web.id
+  tls: false
 - name: '🇸🇴 Сервер #189'
   type: vmess
   server: cf.877771.xyz
@@ -2734,9 +2705,26 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
-- name: '🇸🇴 Сервер #190'
+- name: '🇺🇸 США #20'
   type: vmess
-  server: cf.877771.xyz
+  server: cf.090227.xyz
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  udp: true
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  tls: true
+  servername: vmess.lbw666.dpdns.org
+  client-fingerprint: ''
+- name: '🇺🇸 США #21'
+  type: vmess
+  server: cf.090227.xyz
   port: 443
   uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
   alterId: 0
@@ -2751,35 +2739,74 @@ proxies:
   tls: true
   servername: vmess.lbw666.dpdns.org
   client-fingerprint: ''
+- name: '🇸🇴 Сервер #192'
+  type: vless
+  server: renderer-bridge-2-133.mirra.now
+  port: 443
+  uuid: 27653b37-603c-4c90-b1f5-25c4d23f8932
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: VideoRenderer
+  tls: true
+  servername: renderer-bridge-2-133.mirra.now
+  client-fingerprint: qq
+- name: '🇸🇴 Сервер #193'
+  type: vless
+  server: renderer-bridge-2-133.mirra.now
+  port: 443
+  uuid: 27653b37-603c-4c90-b1f5-25c4d23f8932
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: VideoRenderer
+  tls: true
+  servername: renderer-bridge-2-133.mirra.now
+  client-fingerprint: ios
+- name: '🇸🇴 Сервер #194'
+  type: vless
+  server: renderer-bridge-2-133.mirra.now
+  port: 443
+  uuid: 27653b37-603c-4c90-b1f5-25c4d23f8932
+  udp: true
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: VideoRenderer
+  tls: true
+  servername: renderer-bridge-2-133.mirra.now
+  client-fingerprint: firefox
 proxy-groups:
 - name: 🇸🇴 Flash · Авто
   type: url-test
   proxies:
-  - '🇺🇸 США #1'
+  - '🇸🇴 Сервер #1'
   - '🇸🇴 Сервер #2'
   - '🇸🇴 Сервер #3'
   - '🇸🇴 Сервер #4'
-  - '🇫🇮 Финляндия #1'
-  - '🇳🇱 Нидерланды #1'
-  - '🇺🇸 США #2'
+  - '🇸🇴 Сервер #5'
+  - '🇸🇴 Сервер #6'
+  - '🇸🇴 Сервер #7'
   - '🇸🇴 Сервер #8'
-  - '🇺🇸 США #3'
+  - '🇳🇱 Нидерланды #1'
   - '🇸🇴 Сервер #10'
-  - '🇸🇴 Сервер #11'
-  - '🇸🇴 Сервер #12'
+  - '🇳🇱 Нидерланды #2'
+  - '🇳🇱 Нидерланды #3'
   - '🇸🇴 Сервер #13'
-  - '🇸🇴 Сервер #14'
-  - '🇯🇵 Япония #1'
+  - '🇳🇱 Нидерланды #4'
+  - '🇸🇴 Сервер #15'
   - '🇸🇴 Сервер #16'
-  - '🇸🇴 Сервер #17'
+  - '🇳🇱 Нидерланды #5'
   - '🇸🇴 Сервер #18'
-  - '🇸🇴 Сервер #19'
+  - '🇺🇸 США #1'
   - '🇸🇴 Сервер #20'
   - '🇸🇴 Сервер #21'
-  - '🇸🇴 Сервер #22'
-  - '🇸🇴 Сервер #23'
-  - '🇸🇴 Сервер #24'
-  - '🇸🇴 Сервер #25'
+  - '🇺🇸 США #2'
+  - '🇺🇸 США #3'
+  - '🇺🇸 США #4'
+  - '🇺🇸 США #5'
   - '🇸🇴 Сервер #26'
   - '🇸🇴 Сервер #27'
   - '🇸🇴 Сервер #28'
@@ -2790,21 +2817,21 @@ proxy-groups:
   - '🇸🇴 Сервер #33'
   - '🇸🇴 Сервер #34'
   - '🇸🇴 Сервер #35'
-  - '🇸🇴 Сервер #36'
+  - '🇺🇸 США #6'
   - '🇸🇴 Сервер #37'
   - '🇸🇴 Сервер #38'
   - '🇸🇴 Сервер #39'
   - '🇸🇴 Сервер #40'
   - '🇸🇴 Сервер #41'
   - '🇸🇴 Сервер #42'
-  - '🇸🇴 Сервер #43'
-  - '🇸🇴 Сервер #44'
+  - '🇺🇸 США #7'
+  - '🇺🇸 США #8'
   - '🇸🇴 Сервер #45'
   - '🇸🇴 Сервер #46'
   - '🇸🇴 Сервер #47'
   - '🇸🇴 Сервер #48'
   - '🇸🇴 Сервер #49'
-  - '🇫🇮 Финляндия #2'
+  - '🇸🇴 Сервер #50'
   - '🇸🇴 Сервер #51'
   - '🇸🇴 Сервер #52'
   - '🇸🇴 Сервер #53'
@@ -2817,12 +2844,12 @@ proxy-groups:
   - '🇸🇴 Сервер #60'
   - '🇸🇴 Сервер #61'
   - '🇸🇴 Сервер #62'
-  - '🇸🇴 Сервер #63'
-  - '🇳🇱 Нидерланды #2'
+  - '🇺🇸 США #9'
+  - '🇺🇸 США #10'
   - '🇸🇴 Сервер #65'
   - '🇸🇴 Сервер #66'
   - '🇸🇴 Сервер #67'
-  - '🇸🇴 Сервер #68'
+  - '🇺🇸 США #11'
   - '🇸🇴 Сервер #69'
   - '🇸🇴 Сервер #70'
   - '🇸🇴 Сервер #71'
@@ -2830,33 +2857,33 @@ proxy-groups:
   - '🇸🇴 Сервер #73'
   - '🇸🇴 Сервер #74'
   - '🇸🇴 Сервер #75'
-  - '🇸🇴 Сервер #76'
+  - '🇳🇱 Нидерланды #6'
   - '🇸🇴 Сервер #77'
   - '🇸🇴 Сервер #78'
-  - '🇯🇵 Япония #2'
+  - '🇸🇴 Сервер #79'
   - '🇸🇴 Сервер #80'
   - '🇸🇴 Сервер #81'
   - '🇸🇴 Сервер #82'
   - '🇸🇴 Сервер #83'
   - '🇸🇴 Сервер #84'
   - '🇸🇴 Сервер #85'
-  - '🇸🇴 Сервер #86'
+  - '🇳🇱 Нидерланды #7'
   - '🇸🇴 Сервер #87'
   - '🇸🇴 Сервер #88'
   - '🇸🇴 Сервер #89'
   - '🇸🇴 Сервер #90'
   - '🇸🇴 Сервер #91'
   - '🇸🇴 Сервер #92'
-  - '🇸🇴 Сервер #93'
-  - '🇸🇴 Сервер #94'
+  - '🇺🇸 США #12'
+  - '🇺🇸 США #13'
   - '🇸🇴 Сервер #95'
   - '🇸🇴 Сервер #96'
   - '🇸🇴 Сервер #97'
   - '🇸🇴 Сервер #98'
-  - '🇸🇴 Сервер #99'
-  - '🇸🇴 Сервер #100'
-  - '🇸🇴 Сервер #101'
-  - '🇸🇴 Сервер #102'
+  - '🇺🇸 США #14'
+  - '🇯🇵 Япония #1'
+  - '🇯🇵 Япония #2'
+  - '🇯🇵 Япония #3'
   - '🇸🇴 Сервер #103'
   - '🇸🇴 Сервер #104'
   - '🇸🇴 Сервер #105'
@@ -2865,7 +2892,7 @@ proxy-groups:
   - '🇸🇴 Сервер #108'
   - '🇸🇴 Сервер #109'
   - '🇸🇴 Сервер #110'
-  - '🇸🇴 Сервер #111'
+  - '🇺🇸 США #15'
   - '🇸🇴 Сервер #112'
   - '🇸🇴 Сервер #113'
   - '🇸🇴 Сервер #114'
@@ -2885,53 +2912,53 @@ proxy-groups:
   - '🇸🇴 Сервер #128'
   - '🇸🇴 Сервер #129'
   - '🇸🇴 Сервер #130'
-  - '🇸🇴 Сервер #131'
+  - '🇷🇺 Россия #1'
   - '🇸🇴 Сервер #132'
   - '🇸🇴 Сервер #133'
   - '🇸🇴 Сервер #134'
-  - '🇺🇸 США #4'
-  - '🇺🇸 США #5'
-  - '🇨🇭 Швейцария #1'
-  - '🇸🇴 Сервер #138'
+  - '🇷🇺 Россия #2'
+  - '🇸🇴 Сервер #136'
+  - '🇸🇴 Сервер #137'
+  - '🇷🇺 Россия #3'
   - '🇸🇴 Сервер #139'
-  - '🇸🇴 LK #1'
+  - '🇸🇴 Сервер #140'
   - '🇸🇴 Сервер #141'
   - '🇸🇴 Сервер #142'
   - '🇸🇴 Сервер #143'
-  - '🇩🇪 Германия #1'
-  - '🇺🇸 США #6'
-  - '🇸🇴 Сервер #146'
+  - '🇸🇴 Сервер #144'
+  - '🇸🇴 Сервер #145'
+  - '🇷🇺 Россия #4'
   - '🇸🇴 Сервер #147'
   - '🇸🇴 Сервер #148'
   - '🇸🇴 Сервер #149'
-  - '🇸🇴 Сервер #150'
-  - '🇯🇵 Япония #3'
+  - '🇧🇬 Болгария #1'
+  - '🇸🇴 Сервер #151'
   - '🇸🇴 Сервер #152'
   - '🇸🇴 Сервер #153'
-  - '🇸🇴 Сервер #154'
-  - '🇨🇭 Швейцария #2'
-  - '🇺🇸 США #7'
+  - '🇺🇸 США #16'
+  - '🇸🇴 Сервер #155'
+  - '🇸🇴 Сервер #156'
   - '🇸🇴 Сервер #157'
-  - '🇺🇸 США #8'
-  - '🇺🇸 США #9'
-  - '🇺🇸 США #10'
+  - '🇺🇸 США #17'
+  - '🇸🇴 Сервер #159'
+  - '🇸🇴 Сервер #160'
   - '🇸🇴 Сервер #161'
-  - '🇸🇴 Сервер #162'
-  - '🇪🇪 Эстония #1'
+  - '🇺🇸 США #18'
+  - '🇸🇴 Сервер #163'
   - '🇸🇴 Сервер #164'
   - '🇸🇴 Сервер #165'
   - '🇸🇴 Сервер #166'
   - '🇸🇴 Сервер #167'
   - '🇸🇴 Сервер #168'
-  - '🇪🇪 Эстония #2'
+  - '🇸🇴 Сервер #169'
   - '🇸🇴 Сервер #170'
   - '🇸🇴 Сервер #171'
   - '🇸🇴 Сервер #172'
   - '🇸🇴 Сервер #173'
   - '🇸🇴 Сервер #174'
-  - '🇨🇭 Швейцария #3'
-  - '🇨🇭 Швейцария #4'
-  - '🇨🇭 Швейцария #5'
+  - '🇸🇴 Сервер #175'
+  - '🇸🇴 Сервер #176'
+  - '🇸🇴 Сервер #177'
   - '🇸🇴 Сервер #178'
   - '🇸🇴 Сервер #179'
   - '🇸🇴 Сервер #180'
@@ -2939,12 +2966,16 @@ proxy-groups:
   - '🇸🇴 Сервер #182'
   - '🇸🇴 Сервер #183'
   - '🇸🇴 Сервер #184'
-  - '🇺🇸 США #11'
-  - '🇺🇸 США #12'
-  - '🇺🇸 США #13'
+  - '🇸🇴 Сервер #185'
+  - '🇸🇴 Сервер #186'
+  - '🇺🇸 США #19'
   - '🇸🇴 Сервер #188'
   - '🇸🇴 Сервер #189'
-  - '🇸🇴 Сервер #190'
+  - '🇺🇸 США #20'
+  - '🇺🇸 США #21'
+  - '🇸🇴 Сервер #192'
+  - '🇸🇴 Сервер #193'
+  - '🇸🇴 Сервер #194'
   url: https://www.gstatic.com/generate_204
   interval: 180
   tolerance: 30
@@ -2953,37 +2984,35 @@ proxy-groups:
   type: select
   proxies:
   - 🇸🇴 Flash · Авто
-  - 🇺🇸 Flash · США
-  - 🇫🇮 Flash · Финляндия
   - 🇳🇱 Flash · Нидерланды
+  - 🇺🇸 Flash · США
   - 🇯🇵 Flash · Япония
-  - 🇨🇭 Flash · Швейцария
-  - 🇪🇪 Flash · Эстония
-  - '🇺🇸 США #1'
+  - 🇷🇺 Flash · Россия
+  - '🇸🇴 Сервер #1'
   - '🇸🇴 Сервер #2'
   - '🇸🇴 Сервер #3'
   - '🇸🇴 Сервер #4'
-  - '🇫🇮 Финляндия #1'
-  - '🇳🇱 Нидерланды #1'
-  - '🇺🇸 США #2'
+  - '🇸🇴 Сервер #5'
+  - '🇸🇴 Сервер #6'
+  - '🇸🇴 Сервер #7'
   - '🇸🇴 Сервер #8'
-  - '🇺🇸 США #3'
+  - '🇳🇱 Нидерланды #1'
   - '🇸🇴 Сервер #10'
-  - '🇸🇴 Сервер #11'
-  - '🇸🇴 Сервер #12'
+  - '🇳🇱 Нидерланды #2'
+  - '🇳🇱 Нидерланды #3'
   - '🇸🇴 Сервер #13'
-  - '🇸🇴 Сервер #14'
-  - '🇯🇵 Япония #1'
+  - '🇳🇱 Нидерланды #4'
+  - '🇸🇴 Сервер #15'
   - '🇸🇴 Сервер #16'
-  - '🇸🇴 Сервер #17'
+  - '🇳🇱 Нидерланды #5'
   - '🇸🇴 Сервер #18'
-  - '🇸🇴 Сервер #19'
+  - '🇺🇸 США #1'
   - '🇸🇴 Сервер #20'
   - '🇸🇴 Сервер #21'
-  - '🇸🇴 Сервер #22'
-  - '🇸🇴 Сервер #23'
-  - '🇸🇴 Сервер #24'
-  - '🇸🇴 Сервер #25'
+  - '🇺🇸 США #2'
+  - '🇺🇸 США #3'
+  - '🇺🇸 США #4'
+  - '🇺🇸 США #5'
   - '🇸🇴 Сервер #26'
   - '🇸🇴 Сервер #27'
   - '🇸🇴 Сервер #28'
@@ -2994,21 +3023,21 @@ proxy-groups:
   - '🇸🇴 Сервер #33'
   - '🇸🇴 Сервер #34'
   - '🇸🇴 Сервер #35'
-  - '🇸🇴 Сервер #36'
+  - '🇺🇸 США #6'
   - '🇸🇴 Сервер #37'
   - '🇸🇴 Сервер #38'
   - '🇸🇴 Сервер #39'
   - '🇸🇴 Сервер #40'
   - '🇸🇴 Сервер #41'
   - '🇸🇴 Сервер #42'
-  - '🇸🇴 Сервер #43'
-  - '🇸🇴 Сервер #44'
+  - '🇺🇸 США #7'
+  - '🇺🇸 США #8'
   - '🇸🇴 Сервер #45'
   - '🇸🇴 Сервер #46'
   - '🇸🇴 Сервер #47'
   - '🇸🇴 Сервер #48'
   - '🇸🇴 Сервер #49'
-  - '🇫🇮 Финляндия #2'
+  - '🇸🇴 Сервер #50'
   - '🇸🇴 Сервер #51'
   - '🇸🇴 Сервер #52'
   - '🇸🇴 Сервер #53'
@@ -3021,12 +3050,12 @@ proxy-groups:
   - '🇸🇴 Сервер #60'
   - '🇸🇴 Сервер #61'
   - '🇸🇴 Сервер #62'
-  - '🇸🇴 Сервер #63'
-  - '🇳🇱 Нидерланды #2'
+  - '🇺🇸 США #9'
+  - '🇺🇸 США #10'
   - '🇸🇴 Сервер #65'
   - '🇸🇴 Сервер #66'
   - '🇸🇴 Сервер #67'
-  - '🇸🇴 Сервер #68'
+  - '🇺🇸 США #11'
   - '🇸🇴 Сервер #69'
   - '🇸🇴 Сервер #70'
   - '🇸🇴 Сервер #71'
@@ -3034,33 +3063,33 @@ proxy-groups:
   - '🇸🇴 Сервер #73'
   - '🇸🇴 Сервер #74'
   - '🇸🇴 Сервер #75'
-  - '🇸🇴 Сервер #76'
+  - '🇳🇱 Нидерланды #6'
   - '🇸🇴 Сервер #77'
   - '🇸🇴 Сервер #78'
-  - '🇯🇵 Япония #2'
+  - '🇸🇴 Сервер #79'
   - '🇸🇴 Сервер #80'
   - '🇸🇴 Сервер #81'
   - '🇸🇴 Сервер #82'
   - '🇸🇴 Сервер #83'
   - '🇸🇴 Сервер #84'
   - '🇸🇴 Сервер #85'
-  - '🇸🇴 Сервер #86'
+  - '🇳🇱 Нидерланды #7'
   - '🇸🇴 Сервер #87'
   - '🇸🇴 Сервер #88'
   - '🇸🇴 Сервер #89'
   - '🇸🇴 Сервер #90'
   - '🇸🇴 Сервер #91'
   - '🇸🇴 Сервер #92'
-  - '🇸🇴 Сервер #93'
-  - '🇸🇴 Сервер #94'
+  - '🇺🇸 США #12'
+  - '🇺🇸 США #13'
   - '🇸🇴 Сервер #95'
   - '🇸🇴 Сервер #96'
   - '🇸🇴 Сервер #97'
   - '🇸🇴 Сервер #98'
-  - '🇸🇴 Сервер #99'
-  - '🇸🇴 Сервер #100'
-  - '🇸🇴 Сервер #101'
-  - '🇸🇴 Сервер #102'
+  - '🇺🇸 США #14'
+  - '🇯🇵 Япония #1'
+  - '🇯🇵 Япония #2'
+  - '🇯🇵 Япония #3'
   - '🇸🇴 Сервер #103'
   - '🇸🇴 Сервер #104'
   - '🇸🇴 Сервер #105'
@@ -3069,7 +3098,7 @@ proxy-groups:
   - '🇸🇴 Сервер #108'
   - '🇸🇴 Сервер #109'
   - '🇸🇴 Сервер #110'
-  - '🇸🇴 Сервер #111'
+  - '🇺🇸 США #15'
   - '🇸🇴 Сервер #112'
   - '🇸🇴 Сервер #113'
   - '🇸🇴 Сервер #114'
@@ -3089,53 +3118,53 @@ proxy-groups:
   - '🇸🇴 Сервер #128'
   - '🇸🇴 Сервер #129'
   - '🇸🇴 Сервер #130'
-  - '🇸🇴 Сервер #131'
+  - '🇷🇺 Россия #1'
   - '🇸🇴 Сервер #132'
   - '🇸🇴 Сервер #133'
   - '🇸🇴 Сервер #134'
-  - '🇺🇸 США #4'
-  - '🇺🇸 США #5'
-  - '🇨🇭 Швейцария #1'
-  - '🇸🇴 Сервер #138'
+  - '🇷🇺 Россия #2'
+  - '🇸🇴 Сервер #136'
+  - '🇸🇴 Сервер #137'
+  - '🇷🇺 Россия #3'
   - '🇸🇴 Сервер #139'
-  - '🇸🇴 LK #1'
+  - '🇸🇴 Сервер #140'
   - '🇸🇴 Сервер #141'
   - '🇸🇴 Сервер #142'
   - '🇸🇴 Сервер #143'
-  - '🇩🇪 Германия #1'
-  - '🇺🇸 США #6'
-  - '🇸🇴 Сервер #146'
+  - '🇸🇴 Сервер #144'
+  - '🇸🇴 Сервер #145'
+  - '🇷🇺 Россия #4'
   - '🇸🇴 Сервер #147'
   - '🇸🇴 Сервер #148'
   - '🇸🇴 Сервер #149'
-  - '🇸🇴 Сервер #150'
-  - '🇯🇵 Япония #3'
+  - '🇧🇬 Болгария #1'
+  - '🇸🇴 Сервер #151'
   - '🇸🇴 Сервер #152'
   - '🇸🇴 Сервер #153'
-  - '🇸🇴 Сервер #154'
-  - '🇨🇭 Швейцария #2'
-  - '🇺🇸 США #7'
+  - '🇺🇸 США #16'
+  - '🇸🇴 Сервер #155'
+  - '🇸🇴 Сервер #156'
   - '🇸🇴 Сервер #157'
-  - '🇺🇸 США #8'
-  - '🇺🇸 США #9'
-  - '🇺🇸 США #10'
+  - '🇺🇸 США #17'
+  - '🇸🇴 Сервер #159'
+  - '🇸🇴 Сервер #160'
   - '🇸🇴 Сервер #161'
-  - '🇸🇴 Сервер #162'
-  - '🇪🇪 Эстония #1'
+  - '🇺🇸 США #18'
+  - '🇸🇴 Сервер #163'
   - '🇸🇴 Сервер #164'
   - '🇸🇴 Сервер #165'
   - '🇸🇴 Сервер #166'
   - '🇸🇴 Сервер #167'
   - '🇸🇴 Сервер #168'
-  - '🇪🇪 Эстония #2'
+  - '🇸🇴 Сервер #169'
   - '🇸🇴 Сервер #170'
   - '🇸🇴 Сервер #171'
   - '🇸🇴 Сервер #172'
   - '🇸🇴 Сервер #173'
   - '🇸🇴 Сервер #174'
-  - '🇨🇭 Швейцария #3'
-  - '🇨🇭 Швейцария #4'
-  - '🇨🇭 Швейцария #5'
+  - '🇸🇴 Сервер #175'
+  - '🇸🇴 Сервер #176'
+  - '🇸🇴 Сервер #177'
   - '🇸🇴 Сервер #178'
   - '🇸🇴 Сервер #179'
   - '🇸🇴 Сервер #180'
@@ -3143,46 +3172,50 @@ proxy-groups:
   - '🇸🇴 Сервер #182'
   - '🇸🇴 Сервер #183'
   - '🇸🇴 Сервер #184'
-  - '🇺🇸 США #11'
-  - '🇺🇸 США #12'
-  - '🇺🇸 США #13'
+  - '🇸🇴 Сервер #185'
+  - '🇸🇴 Сервер #186'
+  - '🇺🇸 США #19'
   - '🇸🇴 Сервер #188'
   - '🇸🇴 Сервер #189'
-  - '🇸🇴 Сервер #190'
-- name: 🇺🇸 Flash · США
-  type: url-test
-  proxies:
-  - '🇺🇸 США #1'
-  - '🇺🇸 США #2'
-  - '🇺🇸 США #3'
-  - '🇺🇸 США #4'
-  - '🇺🇸 США #5'
-  - '🇺🇸 США #6'
-  - '🇺🇸 США #7'
-  - '🇺🇸 США #8'
-  - '🇺🇸 США #9'
-  - '🇺🇸 США #10'
-  - '🇺🇸 США #11'
-  - '🇺🇸 США #12'
-  - '🇺🇸 США #13'
-  url: https://www.gstatic.com/generate_204
-  interval: 180
-  tolerance: 30
-  lazy: true
-- name: 🇫🇮 Flash · Финляндия
-  type: url-test
-  proxies:
-  - '🇫🇮 Финляндия #1'
-  - '🇫🇮 Финляндия #2'
-  url: https://www.gstatic.com/generate_204
-  interval: 180
-  tolerance: 30
-  lazy: true
+  - '🇺🇸 США #20'
+  - '🇺🇸 США #21'
+  - '🇸🇴 Сервер #192'
+  - '🇸🇴 Сервер #193'
+  - '🇸🇴 Сервер #194'
 - name: 🇳🇱 Flash · Нидерланды
   type: url-test
   proxies:
   - '🇳🇱 Нидерланды #1'
   - '🇳🇱 Нидерланды #2'
+  - '🇳🇱 Нидерланды #3'
+  - '🇳🇱 Нидерланды #4'
+  - '🇳🇱 Нидерланды #5'
+  - '🇳🇱 Нидерланды #6'
+  - '🇳🇱 Нидерланды #7'
+  url: https://www.gstatic.com/generate_204
+  interval: 180
+  tolerance: 30
+  lazy: true
+- name: 🇺🇸 Flash · США
+  type: url-test
+  proxies:
+  - '🇺🇸 США #1'
+  - '🇺🇸 США #2'
+  - '🇺🇸 США #4'
+  - '🇺🇸 США #5'
+  - '🇺🇸 США #6'
+  - '🇺🇸 США #10'
+  - '🇺🇸 США #11'
+  - '🇺🇸 США #12'
+  - '🇺🇸 США #13'
+  - '🇺🇸 США #14'
+  - '🇺🇸 США #15'
+  - '🇺🇸 США #16'
+  - '🇺🇸 США #17'
+  - '🇺🇸 США #18'
+  - '🇺🇸 США #19'
+  - '🇺🇸 США #20'
+  - '🇺🇸 США #21'
   url: https://www.gstatic.com/generate_204
   interval: 180
   tolerance: 30
@@ -3197,23 +3230,13 @@ proxy-groups:
   interval: 180
   tolerance: 30
   lazy: true
-- name: 🇨🇭 Flash · Швейцария
+- name: 🇷🇺 Flash · Россия
   type: url-test
   proxies:
-  - '🇨🇭 Швейцария #1'
-  - '🇨🇭 Швейцария #2'
-  - '🇨🇭 Швейцария #3'
-  - '🇨🇭 Швейцария #4'
-  - '🇨🇭 Швейцария #5'
-  url: https://www.gstatic.com/generate_204
-  interval: 180
-  tolerance: 30
-  lazy: true
-- name: 🇪🇪 Flash · Эстония
-  type: url-test
-  proxies:
-  - '🇪🇪 Эстония #1'
-  - '🇪🇪 Эстония #2'
+  - '🇷🇺 Россия #1'
+  - '🇷🇺 Россия #2'
+  - '🇷🇺 Россия #3'
+  - '🇷🇺 Россия #4'
   url: https://www.gstatic.com/generate_204
   interval: 180
   tolerance: 30
